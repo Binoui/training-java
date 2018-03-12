@@ -11,9 +11,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComputerDAO {
+public class ComputerDAO implements IComputerDAO {
 	
-	public static List<Computer> listComputers() {
+	public List<Computer> listComputers() {
 		ArrayList<Computer> computers = new ArrayList<>();
 		Connection conn = null;
 		Statement st = null;

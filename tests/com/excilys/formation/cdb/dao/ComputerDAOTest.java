@@ -13,7 +13,7 @@ class ComputerDAOTest {
 
 	@Test
 	void test() {
-		List<Computer> computers = ComputerDAO.listComputers();
+		List<Computer> computers = new ComputerDAO().listComputers();
 		assertFalse(computers.isEmpty());
 		System.out.println(computers.size());
 	}

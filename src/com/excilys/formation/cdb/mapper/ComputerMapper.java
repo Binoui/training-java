@@ -13,12 +13,10 @@ public class ComputerMapper {
 		c.setId(rs.getLong("id"));
 
 		String name = rs.getString("name");
-		if (name != null)
-			c.setName(name);
+		c.setName(name);
 		
 		Long company_id = rs.getLong("company_id");
-		if (company_id != null)
-			c.setCompany(company_id);
+		c.setCompany(company_id);
 
 		Date introduced = rs.getDate("introduced");
 		if (introduced != null)
