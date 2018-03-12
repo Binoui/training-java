@@ -1,20 +1,16 @@
 package com.excilys.formation.cdb.model;
 
-import java.sql.Date;
-
 public class Company {
-	private int id;
+	private Long id;
 	private String name;
-	private Date introduced;
-	private Date discontinued;
 	
 	public Company() {}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -26,19 +22,4 @@ public class Company {
 		this.name = name;
 	}
 
-	public Date getIntroduced() {
-		return introduced;
-	}
-
-	public void setIntroduced(Date introduced) {
-		this.introduced = introduced;
-	}
-
-	public Date getDiscontinued() {
-		return discontinued;
-	}
-
-	public void setDiscontinued(Date discontinued) {
-		this.discontinued = discontinued;
-	}
 }

@@ -1,18 +1,22 @@
 package com.excilys.formation.cdb.model;
 
+import java.time.LocalDate;
+
 public class Computer {
 	
-	private int id;
+	private Long id;
 	private String name;
-	private Company company;
+	private Long company;
+	private LocalDate introduced;
+	private LocalDate discontinued;
 
 	public Computer() {}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -24,11 +28,27 @@ public class Computer {
 		this.name = name;
 	}
 
-	public Company getCompany() {
+	public LocalDate getDiscontinued() {
+		return discontinued;
+	}
+
+	public void setDiscontinued(LocalDate discontinued) {
+		this.discontinued = discontinued;
+	}
+
+	public LocalDate getIntroduced() {
+		return introduced;
+	}
+
+	public void setIntroduced(LocalDate introduced) {
+		this.introduced = introduced;
+	}
+
+	public Long getCompany() {
 		return company;
 	}
 
-	public void setCompany(Company company) {
-		this.company = company;
+	public void setCompany(Long company_id) {
+		this.company = company_id;
 	}
 }
