@@ -6,7 +6,7 @@ public class Computer {
 	
 	private Long id;
 	private String name;
-	private Long company;
+	private Long companyId;
 	private LocalDate introduced;
 	private LocalDate discontinued;
 
@@ -44,11 +44,17 @@ public class Computer {
 		this.introduced = introduced;
 	}
 
-	public Long getCompany() {
-		return company;
+	public Long getCompanyId() {
+		return companyId;
 	}
 
-	public void setCompany(Long company_id) {
-		this.company = company_id;
+	public void setCompanyId(Long company_id) {
+		this.companyId = company_id;
+	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder().append("Computer ").append(id).append(" : ").append(name).append(" (")
+				.append(introduced).append(" - ").append(discontinued).append(") from company ").append(companyId).toString();
 	}
 }

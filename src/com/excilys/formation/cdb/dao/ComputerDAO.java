@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,5 +36,23 @@ public class ComputerDAO implements IComputerDAO {
 		}
 		
 		return computers;
+	}
+
+	@Override
+	public void createComputer(String name, LocalDate introduced, LocalDate discontinued, Long companyId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateComputer(Long id, String name, LocalDate introduced, LocalDate discontinued, Long companyId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteComputer(Long id) {
+		// TODO Auto-generated method stub
+		
 	}
 }

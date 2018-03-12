@@ -26,5 +26,6 @@ class CompanyTest {
 		
 		assertEquals(c.getId(), 1);
 		assertEquals(c.getName(), "testCompany");
+		System.out.println(c);
 	}
 }

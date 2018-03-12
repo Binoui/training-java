@@ -16,7 +16,7 @@ public class ComputerMapper {
 		c.setName(name);
 		
 		Long company_id = rs.getLong("company_id");
-		c.setCompany(company_id);
+		c.setCompanyId(company_id);
 
 		Date introduced = rs.getDate("introduced");
 		if (introduced != null)
