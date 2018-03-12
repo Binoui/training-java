@@ -13,9 +13,28 @@ class ComputerDAOTest {
 
 	@Test
 	void test() {
-		List<Computer> computers = new ComputerDAO().listComputers();
+		ComputerDAO cDAO = new ComputerDAO();
+		
+		List<Computer> computers = cDAO.listComputers();
 		assertFalse(computers.isEmpty());
-		System.out.println(computers.size());
-	}
+		assertEquals(computers.size(), 574);
 
+		int pageSize = 10;
+		int pageCount = cDAO.getPageCount(pageSize);
+		assertEquals(pageCount, computers.size() / pageSize);
+		
+		computers = cDAO.listComputers(0, pageSize);
+		assertEquals(computers.size(), 10);
+
+		computers = cDAO.listComputers(1, pageSize);
+		assertEquals(computers.get(0).getId(), 11);
+
+		try {
+			computers = cDAO.listComputers(60, pageSize);
+			assertTrue(false);
+		} catch (IndexOutOfBoundsException i) {
+			// supposed to go here
+			assertTrue(true);
+		}
+	}
 }

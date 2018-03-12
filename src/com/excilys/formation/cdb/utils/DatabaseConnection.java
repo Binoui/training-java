@@ -10,17 +10,19 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.sql.SQLException;
 
-public class DatabaseConnection {
+public enum DatabaseConnection {
+	INSTANCE;
 
-	private static DatabaseConnection instance;
 	private Connection conn;
 
-	private DatabaseConnection() {
+	public Connection getConnection() {
+
+		
 		String url = null;
 		String user = null;
 		String pass = null;	
 
-		String propertiesPath = "connection.propeties";
+		String propertiesPath = "connection.properties";
 		InputStream input = null;
 		Properties properties = new Properties();
 
@@ -43,7 +45,6 @@ public class DatabaseConnection {
 			}
 		}
 
-
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
@@ -54,17 +55,11 @@ public class DatabaseConnection {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		return conn;
 	}
 
-	public static Connection getConnection() {
-		if (instance == null) {
-			instance = new DatabaseConnection();
-		}
-
-		return instance.conn;
-	}
-
-	public static void closeConnection(ResultSet rs, Statement st, Connection conn) {
+	public void closeConnection(ResultSet rs, Statement st, Connection conn) {
 		try {
 			if (rs != null) {
 				rs.close();

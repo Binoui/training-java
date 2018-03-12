@@ -2,12 +2,12 @@ package com.excilys.formation.cdb.dao;
 
 import java.util.List;
 
-import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.model.Company;
 
 public class CompanyDAO implements ICompanyDAO {
 
 	@Override
-	public List<Computer> listCompanies() {
+	public List<Company> listCompanies() {
 		return null;
 	}
 

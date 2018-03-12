@@ -10,7 +10,7 @@ class DatabaseConnectionTest {
 
 	@Test
 	void test() {
-		Connection conn = DatabaseConnection.getConnection();
+		Connection conn = DatabaseConnection.INSTANCE.getConnection();
 		assertNotNull(conn);
 	}
 
