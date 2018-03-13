@@ -12,7 +12,8 @@ import com.excilys.formation.cdb.mapper.CompanyMapper;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.utils.DatabaseConnection;
 
-public class CompanyDAO implements ICompanyDAO {
+public enum CompanyDAO implements ICompanyDAO {
+	INSTANCE;
 
 	@Override
 	public List<Company> listCompanies() {
