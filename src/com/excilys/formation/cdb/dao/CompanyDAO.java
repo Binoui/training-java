@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.formation.cdb.mapper.CompanyMapper;
-import com.excilys.formation.cdb.mapper.ComputerMapper;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.utils.DatabaseConnection;
 
@@ -20,7 +19,7 @@ public enum CompanyDAO implements ICompanyDAO {
 	private DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
 	
 	@Override
-	public List<Company> listCompanies() {
+	public List<Company> getListCompanies() {
 		ArrayList<Company> companies = new ArrayList<>();
 
 		try (Connection conn = dbConn.getConnection();
@@ -38,7 +37,7 @@ public enum CompanyDAO implements ICompanyDAO {
 		return companies;
 	}
 
-	public List<Company> listCompanies(int pageNumber, int pageSize) throws IndexOutOfBoundsException {
+	public List<Company> getListCompanies(int pageNumber, int pageSize) throws IndexOutOfBoundsException {
 		ArrayList<Company> companies = new ArrayList<>();
 		ResultSet rs = null;
 
@@ -86,6 +85,30 @@ public enum CompanyDAO implements ICompanyDAO {
 		}
 
 		return pageCount;
+	}
+	
+	public Company getCompany(Long id) {
+		
+		Company c = null;
+		ResultSet rs = null;
+		try (Connection conn = dbConn.getConnection(); 
+				PreparedStatement st = conn.prepareStatement("select * from company where id = ?"); ) {
+			
+			st.setLong(1, id);
+			rs = st.executeQuery();
+			if (rs.next()) {
+				c = mapper.createCompany(rs);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return c;
+	}
+	
+	public Company getCompany(Company c) {
+		return getCompany(c.getId());
 	}
 
 }

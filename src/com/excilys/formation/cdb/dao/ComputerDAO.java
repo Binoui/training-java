@@ -20,7 +20,7 @@ public enum ComputerDAO implements IComputerDAO {
 	private ComputerMapper mapper = ComputerMapper.INSTANCE;
 	private DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
 	
-	public List<Computer> listComputers() {
+	public List<Computer> getListComputers() {
 		ArrayList<Computer> computers = new ArrayList<>();
 
 		try (Connection conn = dbConn.getConnection();
@@ -38,7 +38,7 @@ public enum ComputerDAO implements IComputerDAO {
 		return computers;
 	}
 
-	public List<Computer> listComputers(int pageNumber, int pageSize) throws IndexOutOfBoundsException {
+	public List<Computer> getListComputers(int pageNumber, int pageSize) throws IndexOutOfBoundsException {
 		ArrayList<Computer> computers = new ArrayList<>();
 		ResultSet rs = null;
 

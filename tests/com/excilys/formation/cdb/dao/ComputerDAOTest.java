@@ -24,7 +24,7 @@ class ComputerDAOTest {
 	@Test
 	void test() {
 		
-		List<Computer> computers = cDAO.listComputers();
+		List<Computer> computers = cDAO.getListComputers();
 		assertFalse(computers.isEmpty());
 		assertEquals(computers.size(), 574);
 
@@ -32,14 +32,14 @@ class ComputerDAOTest {
 		int pageCount = cDAO.getPageCount(pageSize);
 		assertEquals(pageCount, computers.size() / pageSize);
 		
-		computers = cDAO.listComputers(0, pageSize);
+		computers = cDAO.getListComputers(0, pageSize);
 		assertEquals(computers.size(), 10);
 
-		computers = cDAO.listComputers(1, pageSize);
+		computers = cDAO.getListComputers(1, pageSize);
 		assertEquals(computers.get(0).getId(), 11);
 
 		try {
-			computers = cDAO.listComputers(60, pageSize);
+			computers = cDAO.getListComputers(60, pageSize);
 			assertTrue(false);
 		} catch (IndexOutOfBoundsException i) {
 			assertTrue(true);
@@ -48,7 +48,7 @@ class ComputerDAOTest {
 	
 	@Test
 	void createUpdateDeleteTest() {
-		List<Computer> computers = cDAO.listComputers();
+		List<Computer> computers = cDAO.getListComputers();
 		int oldSize = computers.size();
 
 		Computer c = new Computer();
@@ -62,7 +62,7 @@ class ComputerDAOTest {
 			e.printStackTrace();
 		}
 
-		computers = cDAO.listComputers();
+		computers = cDAO.getListComputers();
 		assertEquals(oldSize + 1, computers.size());
 
 		Computer newC = computers.get(oldSize);
@@ -76,12 +76,12 @@ class ComputerDAOTest {
 			e.printStackTrace();
 		}
 
-		newC = cDAO.listComputers().get(oldSize);
+		newC = cDAO.getListComputers().get(oldSize);
 		assertNotEquals(newC.getName(), c.getName());
 
 		if (newC.getName().equals(newName)) {
 			cDAO.deleteComputer(newC);
-			computers = cDAO.listComputers();
+			computers = cDAO.getListComputers();
 			assertEquals(oldSize, computers.size());
 		}
 		else {
