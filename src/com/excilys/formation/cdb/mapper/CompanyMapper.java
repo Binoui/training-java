@@ -5,8 +5,10 @@ import java.sql.SQLException;
 
 import com.excilys.formation.cdb.model.Company;
 
-public class CompanyMapper {
-	public static Company createCompany(ResultSet rs) throws SQLException {
+public enum CompanyMapper {
+	INSTANCE;
+
+	public Company createCompany(ResultSet rs) throws SQLException {
 		Company c = new Company();
 
 		c.setId(rs.getLong("id"));

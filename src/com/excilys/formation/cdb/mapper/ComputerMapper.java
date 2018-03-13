@@ -6,8 +6,10 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ComputerMapper {
-	public static Computer createComputer(ResultSet rs) throws SQLException {
+public enum ComputerMapper {
+	INSTANCE;
+	
+	public Computer createComputer(ResultSet rs) throws SQLException {
 		Computer c = new Computer();
 
 		c.setId(rs.getLong("id"));

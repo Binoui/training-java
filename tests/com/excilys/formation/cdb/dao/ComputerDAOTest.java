@@ -18,7 +18,7 @@ class ComputerDAOTest {
 	
 	@BeforeEach
 	void setUp() {
-		cDAO = new ComputerDAO();
+		cDAO = ComputerDAO.INSTANCE; 
 	}
 	
 	@Test

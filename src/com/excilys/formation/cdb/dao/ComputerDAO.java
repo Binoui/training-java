@@ -11,21 +11,24 @@ import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComputerDAO implements IComputerDAO {
+public enum ComputerDAO implements IComputerDAO {
+	INSTANCE;
 
+	private ComputerMapper mapper = ComputerMapper.INSTANCE;
+	private DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
+	
 	public List<Computer> listComputers() {
 		ArrayList<Computer> computers = new ArrayList<>();
 
-		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+		try (Connection conn = dbConn.getConnection();
 				Statement st = conn.createStatement();
 				ResultSet rs = st.executeQuery("select * from computer;")) {
 
 			while (rs.next()) {
-				computers.add(ComputerMapper.createComputer(rs));
+				computers.add(mapper.createComputer(rs));
 			}
 
 		} catch (SQLException e) {
@@ -39,7 +42,7 @@ public class ComputerDAO implements IComputerDAO {
 		ArrayList<Computer> computers = new ArrayList<>();
 		ResultSet rs = null;
 
-		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement("select * from computer limit ? offset ?;");) {
 
 			st.setInt(1, pageSize);
@@ -47,7 +50,7 @@ public class ComputerDAO implements IComputerDAO {
 			rs = st.executeQuery();
 
 			while (rs.next()) {
-				computers.add(ComputerMapper.createComputer(rs));
+				computers.add(mapper.createComputer(rs));
 			}
 
 			if (computers.isEmpty()) {
@@ -70,7 +73,7 @@ public class ComputerDAO implements IComputerDAO {
 	public int getPageCount(int pageSize) {
 		int pageCount = 0;
 
-		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement("select count(*) from computer;");
 				ResultSet rs = st.executeQuery()) {
 
@@ -91,7 +94,7 @@ public class ComputerDAO implements IComputerDAO {
 		if (c.getName() == null)
 			throw new SQLException("Name cannot be null;");
 
-		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement(
 						"insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?);");) {
 
@@ -112,7 +115,7 @@ public class ComputerDAO implements IComputerDAO {
 		if (c.getName() == null)
 			throw new SQLException("Name cannot be null;");
 
-		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement(
 						"update computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?");) {
 
@@ -151,7 +154,7 @@ public class ComputerDAO implements IComputerDAO {
 	@Override
 	public void deleteComputer(Computer c) {
 
-		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement("delete from computer where id = ?")) {
 
 			st.setLong(1, c.getId());

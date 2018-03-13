@@ -9,21 +9,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.formation.cdb.mapper.CompanyMapper;
+import com.excilys.formation.cdb.mapper.ComputerMapper;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.utils.DatabaseConnection;
 
-public class CompanyDAO implements ICompanyDAO {
+public enum CompanyDAO implements ICompanyDAO {
+	INSTANCE;
 
+	private CompanyMapper mapper = CompanyMapper.INSTANCE;
+	private DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
+	
 	@Override
 	public List<Company> listCompanies() {
 		ArrayList<Company> companies = new ArrayList<>();
 
-		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+		try (Connection conn = dbConn.getConnection();
 				Statement st = conn.createStatement();
 				ResultSet rs = st.executeQuery("select * from company;")) {
 
 			while (rs.next()) {
-				companies.add(CompanyMapper.createCompany(rs));
+				companies.add(mapper.createCompany(rs));
 			}
 
 		} catch (SQLException e) {
@@ -37,7 +42,7 @@ public class CompanyDAO implements ICompanyDAO {
 		ArrayList<Company> companies = new ArrayList<>();
 		ResultSet rs = null;
 
-		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement("select * from company limit ? offset ?;");) {
 
 			st.setInt(1, pageSize);
@@ -45,7 +50,7 @@ public class CompanyDAO implements ICompanyDAO {
 			rs = st.executeQuery();
 
 			while (rs.next()) {
-				companies.add(CompanyMapper.createCompany(rs));
+				companies.add(mapper.createCompany(rs));
 			}
 
 			if (companies.isEmpty()) {
@@ -68,7 +73,7 @@ public class CompanyDAO implements ICompanyDAO {
 	public int getPageCount(int pageSize) {
 		int pageCount = 0;
 
-		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement("select count(*) from company;");
 				ResultSet rs = st.executeQuery()) {
 
