@@ -1,0 +1,18 @@
+package com.excilys.formation.cdb.mapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import com.excilys.formation.cdb.model.Company;
+
+public class CompanyMapper {
+	public static Company createCompany(ResultSet rs) throws SQLException {
+		Company c = new Company();
+
+		c.setId(rs.getLong("id"));
+		String name = rs.getString("name");
+		c.setName(name);
+		
+		return c;
+	}
+}

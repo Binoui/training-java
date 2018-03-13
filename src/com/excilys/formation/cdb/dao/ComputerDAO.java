@@ -3,6 +3,7 @@ package com.excilys.formation.cdb.dao;
 import com.excilys.formation.cdb.mapper.ComputerMapper;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.utils.DatabaseConnection;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -98,6 +99,8 @@ public class ComputerDAO implements IComputerDAO {
 
 			st.executeUpdate();
 
+		} catch (MySQLIntegrityConstraintViolationException e) {
+			throw new SQLException("Given company ID isn't a valid company ID.");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -119,6 +122,8 @@ public class ComputerDAO implements IComputerDAO {
 
 			st.executeUpdate();
 
+		} catch (MySQLIntegrityConstraintViolationException e) {
+			throw new SQLException("Given company ID isn't a valid company ID.");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

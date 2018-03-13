@@ -1,32 +1,86 @@
 package com.excilys.formation.cdb.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.excilys.formation.cdb.mapper.CompanyMapper;
 import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.utils.DatabaseConnection;
 
 public class CompanyDAO implements ICompanyDAO {
 
 	@Override
 	public List<Company> listCompanies() {
-		return null;
+		ArrayList<Company> companies = new ArrayList<>();
+
+		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+				Statement st = conn.createStatement();
+				ResultSet rs = st.executeQuery("select * from company;")) {
+
+			while (rs.next()) {
+				companies.add(CompanyMapper.createCompany(rs));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return companies;
 	}
 
-	@Override
-	public void createCompany(String name) {
-		// TODO Auto-generated method stub
-		
+	public List<Company> listCompanies(int pageNumber, int pageSize) throws IndexOutOfBoundsException {
+		ArrayList<Company> companies = new ArrayList<>();
+		ResultSet rs = null;
+
+		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+				PreparedStatement st = conn.prepareStatement("select * from company limit ? offset ?;");) {
+
+			st.setInt(1, pageSize);
+			st.setInt(2, pageSize * pageNumber);
+			rs = st.executeQuery();
+
+			while (rs.next()) {
+				companies.add(CompanyMapper.createCompany(rs));
+			}
+
+			if (companies.isEmpty()) {
+				throw new IndexOutOfBoundsException("Given page number is greater than page count");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return companies;
 	}
 
-	@Override
-	public void updateCompany(Long id, String name) {
-		// TODO Auto-generated method stub
-		
-	}
+	public int getPageCount(int pageSize) {
+		int pageCount = 0;
 
-	@Override
-	public void deleteCompany(Long id) {
-		// TODO Auto-generated method stub
-		
+		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+				PreparedStatement st = conn.prepareStatement("select count(*) from company;");
+				ResultSet rs = st.executeQuery()) {
+
+			rs.next();
+			int companyCount = rs.getInt(1);
+			pageCount = companyCount / pageSize;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return pageCount;
 	}
 
 }
