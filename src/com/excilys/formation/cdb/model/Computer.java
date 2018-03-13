@@ -6,17 +6,17 @@ public class Computer {
 	
 	private Long id;
 	private String name;
-	private Long companyId;
+	private Company company;
 	private LocalDate introduced;
 	private LocalDate discontinued;
 
 	public Computer() {}
 
-	public Computer(String name, LocalDate introduced, LocalDate discontinued, Long companyId) {
+	public Computer(String name, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		this.companyId = companyId;
+		this.company = company;
 	}
 
 	public long getId() {
@@ -51,17 +51,17 @@ public class Computer {
 		this.introduced = introduced;
 	}
 
-	public Long getCompanyId() {
-		return companyId;
+	public Company getCompany() {
+		return company;
 	}
 
-	public void setCompanyId(Long company_id) {
-		this.companyId = company_id;
+	public void setCompanyId(Company company) {
+		this.company = company;
 	}
 
 	@Override
 	public String toString() {
 		return new StringBuilder().append("Computer ").append(id).append(" : ").append(name).append(" (")
-				.append(introduced).append(" - ").append(discontinued).append(") from company ").append(companyId).toString();
+				.append(introduced).append(" - ").append(discontinued).append(") from company ").append(company).toString();
 	}
 }

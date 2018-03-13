@@ -13,7 +13,7 @@ public enum ComputerValidator {
 	public void validateComputer(Computer c) throws IncorrectValidationException {
 		validateName(c.getName());
 		validateDates(c.getIntroduced(), c.getDiscontinued());
-		validateCompanyId(c.getCompanyId());
+		validateCompanyId(c.getCompany());
 	}
 	
 	private void validateName(String name) throws NullNameException {
