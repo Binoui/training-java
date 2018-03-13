@@ -16,7 +16,6 @@ public enum DatabaseConnection {
 	private Connection conn;
 
 	public Connection getConnection() {
-
 		
 		String url = null;
 		String user = null;
@@ -59,16 +58,13 @@ public enum DatabaseConnection {
 		return conn;
 	}
 
-	public void closeConnection(ResultSet rs, Statement st, Connection conn) {
+	public void closeConnection(ResultSet rs, Statement st) {
 		try {
 			if (rs != null) {
 				rs.close();
 			}
 			if (st != null) {
 				st.close();
-			}
-			if (conn != null) {
-				conn.close();
 			}
 		} catch (SQLException ignore) {
 		}

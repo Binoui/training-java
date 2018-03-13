@@ -5,6 +5,7 @@ import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.utils.DatabaseConnection;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -14,102 +15,106 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ComputerDAO implements IComputerDAO {
-	
+
 	public List<Computer> listComputers() {
 		ArrayList<Computer> computers = new ArrayList<>();
-		Connection conn = null;
-		Statement st = null;
-		ResultSet rs = null;
 
-		try {
-			conn = DatabaseConnection.INSTANCE.getConnection();
-			st = conn.createStatement();
-			rs = st.executeQuery("select * from computer;");
-			
+		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+				Statement st = conn.createStatement();
+				ResultSet rs = st.executeQuery("select * from computer;")) {
+
 			while (rs.next()) {
 				computers.add(ComputerMapper.createComputer(rs));
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DatabaseConnection.INSTANCE.closeConnection(rs, st, conn);
 		}
-		
+
 		return computers;
 	}
 
 	public List<Computer> listComputers(int pageNumber, int pageSize) throws IndexOutOfBoundsException {
 		ArrayList<Computer> computers = new ArrayList<>();
-		Connection conn = null;
 		PreparedStatement st = null;
 		ResultSet rs = null;
 
-		try {
-			conn = DatabaseConnection.INSTANCE.getConnection();
+		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();) {
+
 			st = conn.prepareStatement("select * from computer limit ? offset ?;");
 			st.setInt(1, pageSize);
 			st.setInt(2, pageSize * pageNumber);
 			rs = st.executeQuery();
-			
+
 			while (rs.next()) {
 				computers.add(ComputerMapper.createComputer(rs));
 			}
-			
+
 			if (computers.isEmpty()) {
 				throw new IndexOutOfBoundsException("Given page number is greater than page count");
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DatabaseConnection.INSTANCE.closeConnection(rs, st, conn);
+			DatabaseConnection.INSTANCE.closeConnection(rs, st);
 		}
-		
+
 		return computers;
 	}
-	
+
 	public int getPageCount(int pageSize) {
-		Connection conn = null;
-		PreparedStatement st = null;
-		ResultSet rs = null;
-		
 		int pageCount = 0;
 
-		try {
-			conn = DatabaseConnection.INSTANCE.getConnection();
-			st = conn.prepareStatement("select count(*) from computer;");
-			rs = st.executeQuery();
-			
+		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+				PreparedStatement st = conn.prepareStatement("select count(*) from computer;");
+				ResultSet rs = st.executeQuery()) {
+
 			rs.next();
 			int computerCount = rs.getInt(1);
-			pageCount = computerCount / pageSize;			
-			
+			pageCount = computerCount / pageSize;
+
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DatabaseConnection.INSTANCE.closeConnection(rs, st, conn);
 		}
-		
+
 		return pageCount;
 	}
 
-	
 	@Override
-	public void createComputer(String name, LocalDate introduced, LocalDate discontinued, Long companyId) {
-		// TODO Auto-generated method stub
-		
+	public void createComputer(Computer c) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+
+		try (Connection conn = DatabaseConnection.INSTANCE.getConnection()) {
+
+			st = conn.prepareStatement("insert into computer values (?, ?, ?, ?, ?);");
+			st.setLong(1, c.getId());
+			st.setString(2, c.getName());
+			st.setDate(3, Date.valueOf(c.getIntroduced()));
+			st.setDate(4, Date.valueOf(c.getDiscontinued()));
+			st.setLong(5, c.getCompanyId());
+
+			rs = st.executeQuery();
+
+		} catch (
+
+		SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DatabaseConnection.INSTANCE.closeConnection(rs, st);
+		}
 	}
 
 	@Override
-	public void updateComputer(Long id, String name, LocalDate introduced, LocalDate discontinued, Long companyId) {
+	public void updateComputer(Computer c) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void deleteComputer(Long id) {
+	public void deleteComputer(Computer c) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
