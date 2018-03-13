@@ -1,9 +1,7 @@
 package com.excilys.formation.cdb.model;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.sql.Date;
-import java.time.LocalDate;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

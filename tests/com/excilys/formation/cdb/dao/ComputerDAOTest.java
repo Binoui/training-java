@@ -42,7 +42,6 @@ class ComputerDAOTest {
 			computers = cDAO.listComputers(60, pageSize);
 			assertTrue(false);
 		} catch (IndexOutOfBoundsException i) {
-			// supposed to go here
 			assertTrue(true);
 		}
 	}

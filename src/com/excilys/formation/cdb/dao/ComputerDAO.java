@@ -98,8 +98,7 @@ public enum ComputerDAO implements IComputerDAO {
 				PreparedStatement st = conn.prepareStatement(
 						"insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?);");) {
 
-			setStatementArguments(c, st);
-
+			populateStatementFromComputer(c, st);
 			st.executeUpdate();
 
 		} catch (MySQLIntegrityConstraintViolationException e) {
@@ -119,10 +118,8 @@ public enum ComputerDAO implements IComputerDAO {
 				PreparedStatement st = conn.prepareStatement(
 						"update computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?");) {
 
-			setStatementArguments(c, st);
-
+			populateStatementFromComputer(c, st);
 			st.setLong(5, c.getId());
-
 			st.executeUpdate();
 
 		} catch (MySQLIntegrityConstraintViolationException e) {
@@ -132,7 +129,7 @@ public enum ComputerDAO implements IComputerDAO {
 		}
 	}
 
-	private void setStatementArguments(Computer c, PreparedStatement st) throws SQLException {
+	private void populateStatementFromComputer(Computer c, PreparedStatement st) throws SQLException {
 		st.setString(1, c.getName());
 
 		if (c.getIntroduced() != null)
