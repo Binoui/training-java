@@ -1,6 +1,5 @@
 package com.excilys.formation.cdb.services;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,13 +30,8 @@ public class ComputerService {
 	}
 	
 	public void createComputer(String name, LocalDate introduced, LocalDate discontinued, Long companyId) throws IncorrectValidationException {
-		
 		Computer c = new Computer(name, introduced, discontinued, companyId);
 		validator.validateComputer(c);
-		try {
-			dao.createComputer(c);
-		} catch (SQLException e) {
-			
-		}
+		dao.createComputer(c);
 	}
 }

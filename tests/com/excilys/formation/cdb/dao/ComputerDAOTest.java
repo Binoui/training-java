@@ -2,7 +2,6 @@ package com.excilys.formation.cdb.dao;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -56,11 +55,8 @@ class ComputerDAOTest {
 		c.setIntroduced(LocalDate.of(0001, 01, 01));
 		c.setDiscontinued(LocalDate.of(0001, 01, 02));
 		c.setCompanyId((long) 14);
-		try {
-			cDAO.createComputer(c);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+
+		cDAO.createComputer(c);
 
 		computers = cDAO.getListComputers();
 		assertEquals(oldSize + 1, computers.size());
@@ -70,11 +66,7 @@ class ComputerDAOTest {
 		
 		String newName = "newName";
 		newC.setName(newName);
-		try {
-			cDAO.updateComputer(newC);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		cDAO.updateComputer(newC);
 
 		newC = cDAO.getListComputers().get(oldSize);
 		assertNotEquals(newC.getName(), c.getName());

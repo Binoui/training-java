@@ -3,7 +3,6 @@ package com.excilys.formation.cdb.dao;
 import com.excilys.formation.cdb.mapper.ComputerMapper;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.utils.DatabaseConnection;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -89,10 +88,7 @@ public enum ComputerDAO implements IComputerDAO {
 	}
 
 	@Override
-	public void createComputer(Computer c) throws SQLException {
-
-		if (c.getName() == null)
-			throw new SQLException("Name cannot be null;");
+	public void createComputer(Computer c){
 
 		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement(
@@ -101,18 +97,13 @@ public enum ComputerDAO implements IComputerDAO {
 			populateStatementFromComputer(c, st);
 			st.executeUpdate();
 
-		} catch (MySQLIntegrityConstraintViolationException e) {
-			throw new SQLException("Given company ID isn't a valid company ID.");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void updateComputer(Computer c) throws SQLException {
-
-		if (c.getName() == null)
-			throw new SQLException("Name cannot be null;");
+	public void updateComputer(Computer c) {
 
 		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement(
@@ -122,8 +113,6 @@ public enum ComputerDAO implements IComputerDAO {
 			st.setLong(5, c.getId());
 			st.executeUpdate();
 
-		} catch (MySQLIntegrityConstraintViolationException e) {
-			throw new SQLException("Given company ID isn't a valid company ID.");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -1,7 +1,6 @@
 package com.excilys.formation.cdb.dao;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 
 import com.excilys.formation.cdb.model.Computer;
