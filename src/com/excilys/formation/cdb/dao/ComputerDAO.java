@@ -36,12 +36,11 @@ public class ComputerDAO implements IComputerDAO {
 
 	public List<Computer> listComputers(int pageNumber, int pageSize) throws IndexOutOfBoundsException {
 		ArrayList<Computer> computers = new ArrayList<>();
-		PreparedStatement st = null;
 		ResultSet rs = null;
 
-		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();) {
+		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+				PreparedStatement st = conn.prepareStatement("select * from computer limit ? offset ?;");) {
 
-			st = conn.prepareStatement("select * from computer limit ? offset ?;");
 			st.setInt(1, pageSize);
 			st.setInt(2, pageSize * pageNumber);
 			rs = st.executeQuery();
@@ -57,7 +56,11 @@ public class ComputerDAO implements IComputerDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DatabaseConnection.INSTANCE.closeConnection(rs, st);
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return computers;
@@ -82,39 +85,75 @@ public class ComputerDAO implements IComputerDAO {
 	}
 
 	@Override
-	public void createComputer(Computer c) {
-		PreparedStatement st = null;
-		ResultSet rs = null;
+	public void createComputer(Computer c) throws SQLException {
 
-		try (Connection conn = DatabaseConnection.INSTANCE.getConnection()) {
+		if (c.getName() == null)
+			throw new SQLException("Name cannot be null;");
 
-			st = conn.prepareStatement("insert into computer values (?, ?, ?, ?, ?);");
-			st.setLong(1, c.getId());
-			st.setString(2, c.getName());
-			st.setDate(3, Date.valueOf(c.getIntroduced()));
-			st.setDate(4, Date.valueOf(c.getDiscontinued()));
-			st.setLong(5, c.getCompanyId());
+		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+				PreparedStatement st = conn.prepareStatement(
+						"insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?);");) {
 
-			rs = st.executeQuery();
+			setStatementArguments(c, st);
 
-		} catch (
+			st.executeUpdate();
 
-		SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			DatabaseConnection.INSTANCE.closeConnection(rs, st);
 		}
 	}
 
 	@Override
-	public void updateComputer(Computer c) {
-		// TODO Auto-generated method stub
+	public void updateComputer(Computer c) throws SQLException {
 
+		if (c.getName() == null)
+			throw new SQLException("Name cannot be null;");
+
+		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+				PreparedStatement st = conn.prepareStatement(
+						"update computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?");) {
+
+			setStatementArguments(c, st);
+
+			st.setLong(5, c.getId());
+
+			st.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void setStatementArguments(Computer c, PreparedStatement st) throws SQLException {
+		st.setString(1, c.getName());
+
+		if (c.getIntroduced() != null)
+			st.setDate(2, Date.valueOf(c.getIntroduced()));
+		else
+			st.setNull(2, java.sql.Types.DATE);
+
+		if (c.getDiscontinued() != null)
+			st.setDate(3, Date.valueOf(c.getDiscontinued()));
+		else
+			st.setNull(3, java.sql.Types.DATE);
+
+		if (c.getCompanyId() != null)
+			st.setLong(4, c.getCompanyId());
+		else
+			st.setNull(4, java.sql.Types.BIGINT);
 	}
 
 	@Override
 	public void deleteComputer(Computer c) {
-		// TODO Auto-generated method stub
 
+		try (Connection conn = DatabaseConnection.INSTANCE.getConnection();
+				PreparedStatement st = conn.prepareStatement("delete from computer where id = ?")) {
+
+			st.setLong(1, c.getId());
+			st.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

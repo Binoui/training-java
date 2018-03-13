@@ -57,16 +57,4 @@ public enum DatabaseConnection {
 		
 		return conn;
 	}
-
-	public void closeConnection(ResultSet rs, Statement st) {
-		try {
-			if (rs != null) {
-				rs.close();
-			}
-			if (st != null) {
-				st.close();
-			}
-		} catch (SQLException ignore) {
-		}
-	}
 }
