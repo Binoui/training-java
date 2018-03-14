@@ -3,6 +3,7 @@ package com.excilys.formation.cdb.validators;
 import java.time.LocalDate;
 
 import com.excilys.formation.cdb.dao.CompanyDAO;
+import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 
 public enum ComputerValidator {
@@ -13,7 +14,7 @@ public enum ComputerValidator {
 	public void validateComputer(Computer c) throws IncorrectValidationException {
 		validateName(c.getName());
 		validateDates(c.getIntroduced(), c.getDiscontinued());
-		validateCompanyId(c.getCompany());
+		validateCompany(c.getCompany());
 	}
 	
 	private void validateName(String name) throws NullNameException {
@@ -28,9 +29,9 @@ public enum ComputerValidator {
 		}
 	}
 	
-	private void validateCompanyId(Long companyId) throws UnknownCompanyIdException {
-		if (companyId != null && dao.getCompany(companyId) == null) {
-			throw new UnknownCompanyIdException("Cannot find given company id");
+	private void validateCompany(Company company) throws UnknownCompanyIdException {
+		if (company != null && dao.getCompany(company) == null) {
+			throw new UnknownCompanyIdException("Cannot find given company");
 		}
 	}
 	

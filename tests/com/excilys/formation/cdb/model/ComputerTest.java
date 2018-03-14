@@ -24,7 +24,7 @@ class ComputerTest {
 		c.setName("comp1");
 		c.setIntroduced(LocalDate.of(0001, 01, 01));
 		c.setDiscontinued(LocalDate.of(0001, 01, 02));
-		c.setCompanyId((long) 1);
+		c.setCompany((long) 1);
 
 		assertEquals(c.getId(), 1);
 		assertEquals(c.getName(), "comp1");

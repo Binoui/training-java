@@ -54,7 +54,7 @@ class ComputerDAOTest {
 		c.setName("testName");
 		c.setIntroduced(LocalDate.of(0001, 01, 01));
 		c.setDiscontinued(LocalDate.of(0001, 01, 02));
-		c.setCompanyId((long) 14);
+		c.setCompany((long) 14);
 
 		cDAO.createComputer(c);
 

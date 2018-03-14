@@ -8,7 +8,8 @@ import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.validators.ComputerValidator;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 
-public class ComputerService {
+public enum ComputerService {
+	INSTANCE;
 	
 	private ComputerDAO dao = ComputerDAO.INSTANCE;
 	private ComputerValidator validator = ComputerValidator.INSTANCE;

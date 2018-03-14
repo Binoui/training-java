@@ -1,6 +1,7 @@
 package com.excilys.formation.cdb.mapper;
 
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.model.Company;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -8,6 +9,8 @@ import java.sql.SQLException;
 
 public enum ComputerMapper {
 	INSTANCE;
+	
+	public CompanyMapper companyMapper = CompanyMapper.INSTANCE;
 	
 	public Computer createComputer(ResultSet rs) throws SQLException {
 		Computer c = new Computer();
@@ -17,8 +20,8 @@ public enum ComputerMapper {
 		String name = rs.getString("name");
 		c.setName(name);
 		
-		Long company_id = rs.getLong("company_id");
-		c.setCompanyId(company_id);
+		Company company = companyMapper.createCompany(rs);
+		c.setCompany(company);
 
 		Date introduced = rs.getDate("introduced");
 		if (introduced != null)

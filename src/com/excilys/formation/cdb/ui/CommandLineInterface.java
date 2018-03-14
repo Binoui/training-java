@@ -2,7 +2,14 @@ package com.excilys.formation.cdb.ui;
 
 import java.util.Scanner;
 
+import com.excilys.formation.cdb.services.CompanyService;
+import com.excilys.formation.cdb.services.ComputerService;
+
 public class CommandLineInterface {
+	
+	private ComputerService computerService = ComputerService.INSTANCE;
+	private CompanyService companyService = CompanyService.INSTANCE;
+	
 	public String getMainMenu() {
 		StringBuilder menuBuilder = new StringBuilder();
 		
@@ -20,7 +27,7 @@ public class CommandLineInterface {
 	}
 	
 	public String getCompanyList() {
-		return "";
+		
 	}
 	
 	public String getComputerList() {

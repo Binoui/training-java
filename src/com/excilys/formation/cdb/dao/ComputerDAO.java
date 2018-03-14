@@ -24,7 +24,7 @@ public enum ComputerDAO implements IComputerDAO {
 
 		try (Connection conn = dbConn.getConnection();
 				Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery("select * from computer left join company on computer.id = company.id;")) {
+				ResultSet rs = st.executeQuery("select computer.id as computer_id, computer.name as computer_name, computer.introduced, computer.discontinued, company.id as company_id, company.name as company_name from computer left join company on computer.id = company.id")) {
 
 			while (rs.next()) {
 				computers.add(mapper.createComputer(rs));
@@ -42,7 +42,7 @@ public enum ComputerDAO implements IComputerDAO {
 		ResultSet rs = null;
 
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement("select computer.id as computer_id, computer.name as computer_id, computer.introduced, computer.discontinued, company. from computer left join company on computer.id = company.id limit ? offset ?;");) {
+				PreparedStatement st = conn.prepareStatement("select computer.id as computer_id, computer.name as computer_name, computer.introduced, computer.discontinued, company.id as company_id, company.name as company_name from computer left join company on computer.id = company.id limit ? offset ?;");) {
 
 			st.setInt(1, pageSize);
 			st.setInt(2, pageSize * pageNumber);
