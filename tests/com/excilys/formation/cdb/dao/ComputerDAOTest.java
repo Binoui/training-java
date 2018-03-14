@@ -29,7 +29,7 @@ class ComputerDAOTest {
 		assertEquals(computers.size(), 574);
 
 		int pageSize = 10;
-		int pageCount = cDAO.getPageCount(pageSize);
+		int pageCount = cDAO.getListComputersPageCount(pageSize);
 		assertEquals(pageCount, computers.size() / pageSize);
 		
 		computers = cDAO.getListComputers(0, pageSize);

@@ -1,10 +1,8 @@
 package com.excilys.formation.cdb.services;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import com.excilys.formation.cdb.dao.ComputerDAO;
-import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.validators.ComputerValidator;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
@@ -19,21 +17,27 @@ public enum ComputerService {
 		return dao.getListComputers();
 	}
 	
-	public List<Computer> getPageComputers(int page, int pageSize) {
-		List<Computer> computers = null;
-		
-		try {
-			computers = dao.getListComputers(page, pageSize);
-		} catch (IndexOutOfBoundsException e) {
-			return null;
-		}
-		
-		return computers;
+	public List<Computer> getListComputers(int pageNumber, int pageSize) {
+		return dao.getListComputers(pageNumber, pageSize);
 	}
 	
-	public void createComputer(String name, LocalDate introduced, LocalDate discontinued, Company company) throws IncorrectValidationException {
-		Computer c = new Computer(name, introduced, discontinued, company);
+	public int getListComputersPageCount(int pageSize) {
+		return dao.getListComputersPageCount(pageSize);
+	}
+	
+	public void createComputer(Computer c) throws IncorrectValidationException {
 		validator.validateComputer(c);
 		dao.createComputer(c);
+	}
+	
+	public void updateComputer(Computer c) throws IncorrectValidationException {
+		validator.validateComputer(c);
+		dao.updateComputer(c);
+	}
+
+	public void deleteComputer(Long id) {
+		Computer c = new Computer();
+		c.setId(id);
+		dao.deleteComputer(c);
 	}
 }

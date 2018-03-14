@@ -24,7 +24,7 @@ public enum ComputerValidator {
 	}
 	
 	private void validateDates(LocalDate introduced, LocalDate discontinued) throws InvalidDatesException {
-		if (! introduced.isBefore(discontinued)) {
+		if (discontinued != null && introduced != null && ! introduced.isBefore(discontinued)) {
 			throw new InvalidDatesException("Discontinued date cannot be before introducted date");
 		}
 	}

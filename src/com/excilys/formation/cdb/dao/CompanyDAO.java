@@ -42,7 +42,7 @@ public enum CompanyDAO implements ICompanyDAO {
 		ResultSet rs = null;
 
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement("select * from company limit ? offset ?;");) {
+				PreparedStatement st = conn.prepareStatement("select * from company order by ca_id limit ? offset ? ;");) {
 
 			st.setInt(1, pageSize);
 			st.setInt(2, pageSize * pageNumber);
@@ -69,7 +69,7 @@ public enum CompanyDAO implements ICompanyDAO {
 		return companies;
 	}
 
-	public int getPageCount(int pageSize) {
+	public int getListCompaniesPageCount(int pageSize) {
 		int pageCount = 0;
 
 		try (Connection conn = dbConn.getConnection();
