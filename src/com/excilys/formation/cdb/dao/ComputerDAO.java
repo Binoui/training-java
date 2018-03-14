@@ -86,17 +86,41 @@ public enum ComputerDAO implements IComputerDAO {
 
 		return pageCount;
 	}
+	
+	public Computer getComputer(Long id) {
+		ResultSet rs = null;
+		Computer c = null;
+
+		try (Connection conn = dbConn.getConnection();
+				PreparedStatement st = conn.prepareStatement("select * from computer left join company on computer.ca_id = company.ca_id where cu_id = ?;");) {
+			
+			st.setLong(1, id);
+			rs = st.executeQuery();
+			if (rs.next()) {
+				c = mapper.createComputer(rs);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return c;
+	}
 
 	@Override
 	public void createComputer(Computer c){
-
 		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement(
 							"insert into computer (cu_name, cu_introduced, cu_discontinued, ca_id) values (?, ?, ?, ?);");) {
 
 			populateStatementFromComputer(c, st);
-			System.out.println(st);
-//			st.executeUpdate();
+			st.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -105,7 +129,6 @@ public enum ComputerDAO implements IComputerDAO {
 
 	@Override
 	public void updateComputer(Computer c) {
-
 		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement(
 						"update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?;");) {

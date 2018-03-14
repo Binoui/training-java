@@ -19,10 +19,10 @@ class CompanyTest {
 	void testCompany() {
 		assertNotNull(c);
 		
-		c.setId(1);
+		c.setId(new Long(1));
 		c.setName("testCompany");
 		
-		assertEquals(c.getId(), 1);
+		assertEquals(c.getId(), new Long(1));
 		assertEquals(c.getName(), "testCompany");
 		System.out.println(c);
 	}

@@ -30,7 +30,7 @@ public enum ComputerValidator {
 	}
 	
 	private void validateCompany(Company company) throws UnknownCompanyIdException {
-		if (company != null && dao.getCompany(company) == null) {
+		if (company != null && company.getId() != null && dao.getCompany(company) == null) {
 			throw new UnknownCompanyIdException("Cannot find given company");
 		}
 	}

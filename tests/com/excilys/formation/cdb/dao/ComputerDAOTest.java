@@ -36,7 +36,7 @@ class ComputerDAOTest {
 		assertEquals(computers.size(), 10);
 
 		computers = cDAO.getListComputers(1, pageSize);
-		assertEquals(computers.get(0).getId(), 11);
+		assertEquals(computers.get(0).getId(), new Long(11));
 
 		try {
 			computers = cDAO.getListComputers(60, pageSize);

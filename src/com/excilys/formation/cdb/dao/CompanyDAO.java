@@ -94,7 +94,11 @@ public enum CompanyDAO implements ICompanyDAO {
 		try (Connection conn = dbConn.getConnection(); 
 				PreparedStatement st = conn.prepareStatement("select * from company where ca_id = ?"); ) {
 			
-			st.setLong(1, id);
+			if (id != null)
+				st.setLong(1, id);
+			else
+				st.setNull(1, java.sql.Types.BIGINT);
+
 			rs = st.executeQuery();
 			if (rs.next()) {
 				c = mapper.createCompany(rs);

@@ -27,7 +27,7 @@ public class CommandLineInterface {
 	public void getMainMenu() {
 		StringBuilder menuBuilder = new StringBuilder();
 
-		menuBuilder.append("******** Computer Database ********\n");
+		menuBuilder.append("******** Main Menu ********\n");
 		menuBuilder.append("Possible features : \n");
 		Stream.of(MenuChoice.values()).forEach(choice -> menuBuilder.append(choice.getValue()));
 		menuBuilder.append("Your choice : ");
@@ -36,7 +36,7 @@ public class CommandLineInterface {
 	}
 
 	public void getCompanyList() {
-		System.out.println("******** Companies List *******");
+		System.out.println("******** Companies List ********");
 
 		for (int i = 0; i < companyService.getListCompaniesPageCount(PAGE_SIZE); i++) {
 			companyService.getListCompanies(i, PAGE_SIZE).forEach(System.out::println);
@@ -45,15 +45,21 @@ public class CommandLineInterface {
 	}
 
 	public void getComputerList() {
-		System.out.println("******** Computer List *******");
+		System.out.println("******** Computer List ********");
 		for (int i = 0; i < computerService.getListComputersPageCount(PAGE_SIZE); i++) {
 			computerService.getListComputers(i, PAGE_SIZE).forEach(System.out::println);
 			scanner.nextLine();
 		}
 	}
+	
+	public void getDetailsComputer() {
+		Long id = readNotNullId();
+		System.out.println(computerService.getComputer(id));
+	}
 
 	public void createComputer() {
-		Computer c = readComputer();
+		Computer c = new Computer();
+		readComputer(c);
 
 		try {
 			computerService.createComputer(c);
@@ -63,7 +69,9 @@ public class CommandLineInterface {
 	}
 
 	public void updateComputer() {
-		Computer c = readComputer();
+		Computer c = new Computer();
+		c.setId(readNotNullId());
+		readComputer(c);
 		
 		try {
 			computerService.updateComputer(c);
@@ -76,23 +84,38 @@ public class CommandLineInterface {
 
 	}
 	
-	public Computer readComputer() {
-		Computer c = new Computer();
-		System.out.print("Enter computer name : ");
-		c.setName(scanner.nextLine());
+	public void readComputer(Computer c) {
+		clearScanner();
 		
-		System.out.print("Enter the computer's introduction date (yyyy-mm-dd) : ");
+		String name = null;
+		while (name == null) {
+			System.out.print("Enter new computer's name : ");
+			name = scanner.nextLine().trim();
+		}
+		
+		c.setName(name);
+		
+		System.out.print("Enter new computer's introduction date (yyyy-mm-dd) : ");
 		c.setIntroduced(readDate());
 
-		System.out.print("Enter the computer's discontinuation date (yyyy-mm-dd) : ");
+		System.out.print("Enter new computer's discontinuation date (yyyy-mm-dd) : ");
 		c.setDiscontinued(readDate());
 
-		System.out.print("Enter the computer's company ID : ");
 		Company company = new Company();
 		company.setId(readId());
 		c.setCompany(company);
-		return c;
+	}
+	
+	public Long readNotNullId() {
+		System.out.print("Enter ID of wanted computer : ");
 
+		while (! scanner.hasNextLong()) {
+			scanner.next();
+			System.out.println("Please enter a valid ID.");
+		}
+		
+		Long id = scanner.nextLong();
+		return id;
 	}
 	
 	public Long readId() {
@@ -100,6 +123,7 @@ public class CommandLineInterface {
 		String readString;
 		boolean acceptable = false;
 		while (! acceptable) {
+			System.out.print("Enter new computer's company ID : ");
 			readString = scanner.nextLine().trim();
 			if (readString.isEmpty()) {
 				readId = null;
@@ -109,7 +133,7 @@ public class CommandLineInterface {
 					readId = Long.valueOf(readString);
 					acceptable = true;
 				} catch (NumberFormatException e) {
-					System.out.println("Incorrect company ID"); 
+					System.out.println("Incorrect ID"); 
 				}
 			}
 		}
@@ -142,12 +166,18 @@ public class CommandLineInterface {
 	public String readChoice() {
 		return scanner.nextLine();
 	}
+	
+	public void clearScanner() {
+		if (scanner.hasNextLine()) scanner.nextLine();
+	}
 
 	public void closeScanner() {
 		scanner.close();
 	}
 
 	public static void main(String[] arg) {
+		System.out.println("******** Computer Database ********\n");
+
 		CommandLineInterface cli = new CommandLineInterface();
 		String menuChoice = "";
 
@@ -164,15 +194,18 @@ public class CommandLineInterface {
 				cli.getComputerList();
 				break;
 			case "3":
-				cli.createComputer();
+				cli.getDetailsComputer();
 				break;
 			case "4":
-				cli.updateComputer();
+				cli.createComputer();
 				break;
 			case "5":
-				cli.deleteComputer();
+				cli.updateComputer();
 				break;
 			case "6":
+				cli.deleteComputer();
+				break;
+			case "7":
 				System.out.println("Closing Computer Database...");
 				cli.closeScanner();
 				System.exit(0);

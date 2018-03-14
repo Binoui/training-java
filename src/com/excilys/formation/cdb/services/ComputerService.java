@@ -25,6 +25,10 @@ public enum ComputerService {
 		return dao.getListComputersPageCount(pageSize);
 	}
 	
+	public Computer getComputer(Long id) {
+		return dao.getComputer(id);
+	}
+	
 	public void createComputer(Computer c) throws IncorrectValidationException {
 		validator.validateComputer(c);
 		dao.createComputer(c);

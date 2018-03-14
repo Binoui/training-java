@@ -19,7 +19,7 @@ public class Computer {
 		this.company = company;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
@@ -62,6 +62,6 @@ public class Computer {
 	@Override
 	public String toString() {
 		return new StringBuilder().append("Computer ").append(id).append(" : ").append(name).append(" (")
-				.append(introduced).append(" - ").append(discontinued).append(") from company ").append(company).toString();
+				.append(introduced).append(" - ").append(discontinued).append(") from ").append(company).toString();
 	}
 }

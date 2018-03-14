@@ -13,6 +13,7 @@ public enum CompanyMapper {
 
 		c.setId(rs.getLong("ca_id"));
 		String name = rs.getString("ca_name");
+		System.out.println("Mapper name : " + name);
 		c.setName(name);
 		
 		return c;
