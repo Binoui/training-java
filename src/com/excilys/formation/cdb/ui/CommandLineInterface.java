@@ -27,7 +27,7 @@ public class CommandLineInterface {
 	}
 	
 	public String getCompanyList() {
-		
+		return "";
 	}
 	
 	public String getComputerList() {

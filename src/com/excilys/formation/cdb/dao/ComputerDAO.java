@@ -24,7 +24,7 @@ public enum ComputerDAO implements IComputerDAO {
 
 		try (Connection conn = dbConn.getConnection();
 				Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery("select computer.id as computer_id, computer.name as computer_name, computer.introduced, computer.discontinued, company.id as company_id, company.name as company_name from computer left join company on computer.id = company.id")) {
+				ResultSet rs = st.executeQuery("select * from computer left join company on computer.ca_id = company.ca_id;")) {
 
 			while (rs.next()) {
 				computers.add(mapper.createComputer(rs));
@@ -42,7 +42,7 @@ public enum ComputerDAO implements IComputerDAO {
 		ResultSet rs = null;
 
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement("select computer.id as computer_id, computer.name as computer_name, computer.introduced, computer.discontinued, company.id as company_id, company.name as company_name from computer left join company on computer.id = company.id limit ? offset ?;");) {
+				PreparedStatement st = conn.prepareStatement("select * from computer left join company on computer.ca_id = company.ca_id limit ? offset ?;");) {
 
 			st.setInt(1, pageSize);
 			st.setInt(2, pageSize * pageNumber);
@@ -92,7 +92,7 @@ public enum ComputerDAO implements IComputerDAO {
 
 		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement(
-						"insert into computer (name, introduced, discontinued, company_id) values (?, ?, ?, ?);");) {
+						"insert into computer (cu_name, cu_introduced, cu_discontinued, ca_id) values (?, ?, ?, ?);");) {
 
 			populateStatementFromComputer(c, st);
 			st.executeUpdate();
@@ -107,7 +107,7 @@ public enum ComputerDAO implements IComputerDAO {
 
 		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement(
-						"update computer set name = ?, introduced = ?, discontinued = ?, company_id = ? where id = ?");) {
+						"update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?");) {
 
 			populateStatementFromComputer(c, st);
 			st.setLong(5, c.getId());
@@ -141,7 +141,7 @@ public enum ComputerDAO implements IComputerDAO {
 	public void deleteComputer(Computer c) {
 
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement("delete from computer where id = ?")) {
+				PreparedStatement st = conn.prepareStatement("delete from computer where cu_id = ?")) {
 
 			st.setLong(1, c.getId());
 			st.executeUpdate();

@@ -15,19 +15,19 @@ public enum ComputerMapper {
 	public Computer createComputer(ResultSet rs) throws SQLException {
 		Computer c = new Computer();
 
-		c.setId(rs.getLong("id"));
+		c.setId(rs.getLong("cu_id"));
 
-		String name = rs.getString("name");
+		String name = rs.getString("cu_name");
 		c.setName(name);
 		
 		Company company = companyMapper.createCompany(rs);
 		c.setCompany(company);
 
-		Date introduced = rs.getDate("introduced");
+		Date introduced = rs.getDate("cu_introduced");
 		if (introduced != null)
 			c.setIntroduced(introduced.toLocalDate());
 
-		Date discontinued = rs.getDate("discontinued");
+		Date discontinued = rs.getDate("cu_discontinued");
 		if (discontinued != null)
 			c.setDiscontinued(discontinued.toLocalDate());
 		

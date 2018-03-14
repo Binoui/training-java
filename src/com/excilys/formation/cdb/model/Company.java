@@ -5,6 +5,11 @@ public class Company {
 	private String name;
 	
 	public Company() {}
+	
+	public Company(Long id, String name) {
+		this.id = id;
+		this.name = name;
+	}
 
 	public long getId() {
 		return id;

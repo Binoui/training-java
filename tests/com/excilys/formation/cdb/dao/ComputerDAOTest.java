@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.dao.ComputerDAO;
 
@@ -54,7 +55,7 @@ class ComputerDAOTest {
 		c.setName("testName");
 		c.setIntroduced(LocalDate.of(0001, 01, 01));
 		c.setDiscontinued(LocalDate.of(0001, 01, 02));
-		c.setCompany((long) 14);
+		c.setCompany(new Company((long) 37, "ASUS"));
 
 		cDAO.createComputer(c);
 

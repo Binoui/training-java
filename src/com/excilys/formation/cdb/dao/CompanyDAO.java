@@ -24,7 +24,7 @@ public enum CompanyDAO implements ICompanyDAO {
 
 		try (Connection conn = dbConn.getConnection();
 				Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery("select id as company_id, name as company_name from company;")) {
+				ResultSet rs = st.executeQuery("select * from company;")) {
 
 			while (rs.next()) {
 				companies.add(mapper.createCompany(rs));
@@ -42,7 +42,7 @@ public enum CompanyDAO implements ICompanyDAO {
 		ResultSet rs = null;
 
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement("select id as company_id, name as company_name from company limit ? offset ?;");) {
+				PreparedStatement st = conn.prepareStatement("select * from company limit ? offset ?;");) {
 
 			st.setInt(1, pageSize);
 			st.setInt(2, pageSize * pageNumber);
@@ -92,7 +92,7 @@ public enum CompanyDAO implements ICompanyDAO {
 		Company c = null;
 		ResultSet rs = null;
 		try (Connection conn = dbConn.getConnection(); 
-				PreparedStatement st = conn.prepareStatement("select id as company_id, name as company_name from company where company_id = ?"); ) {
+				PreparedStatement st = conn.prepareStatement("select * from company where ca_id = ?"); ) {
 			
 			st.setLong(1, id);
 			rs = st.executeQuery();
