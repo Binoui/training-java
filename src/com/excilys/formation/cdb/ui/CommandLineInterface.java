@@ -10,9 +10,6 @@ import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
-import com.excilys.formation.cdb.validators.InvalidDatesException;
-import com.excilys.formation.cdb.validators.NullNameException;
-import com.excilys.formation.cdb.validators.UnknownCompanyIdException;
 import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
 public class CommandLineInterface {
@@ -28,7 +25,43 @@ public class CommandLineInterface {
 		scanner = new Scanner(System.in);
 	}
 
-	public void getMainMenu() {
+	public void menuLoop() {
+		String menuChoice;
+
+		getMainMenu();
+
+		menuChoice = readChoice();
+
+		switch (menuChoice) {
+		case "1":
+			getCompanyList();
+			break;
+		case "2":
+			getComputerList();
+			break;
+		case "3":
+			getDetailsComputer();
+			break;
+		case "4":
+			createComputer();
+			break;
+		case "5":
+			updateComputer();
+			break;
+		case "6":
+			deleteComputer();
+			break;
+		case "7":
+			System.out.println("Closing Computer Database...");
+			closeScanner();
+			System.out.println("Goodbye !");
+			System.exit(0);
+		default:
+			System.out.println("Incorrect Choice");
+		}
+	}
+
+	private void getMainMenu() {
 		StringBuilder menuBuilder = new StringBuilder();
 
 		menuBuilder.append("\n******** Main Menu ********\n");
@@ -39,7 +72,7 @@ public class CommandLineInterface {
 		System.out.print(menuBuilder.toString());
 	}
 
-	public void getCompanyList() {
+	private void getCompanyList() {
 		System.out.println("******** Companies List ********");
 
 		for (int i = 0; i < companyService.getListCompaniesPageCount(PAGE_SIZE); i++) {
@@ -48,7 +81,7 @@ public class CommandLineInterface {
 		}
 	}
 
-	public void getComputerList() {
+	private void getComputerList() {
 		System.out.println("******** Computer List ********");
 		for (int i = 0; i < computerService.getListComputersPageCount(PAGE_SIZE); i++) {
 			computerService.getListComputers(i, PAGE_SIZE).forEach(System.out::println);
@@ -56,7 +89,7 @@ public class CommandLineInterface {
 		}
 	}
 	
-	public void getDetailsComputer() {
+	private void getDetailsComputer() {
 		Long id = readNotNullId();
 		Computer c = computerService.getComputer(id);
 		if (c != null) {
@@ -66,7 +99,7 @@ public class CommandLineInterface {
 		}
 	}
 
-	public void createComputer() {
+	private void createComputer() {
 		Computer c = new Computer();
 		readComputer(c);
 
@@ -77,7 +110,7 @@ public class CommandLineInterface {
 		}
 	}
 
-	public void updateComputer() {
+	private void updateComputer() {
 		Computer c = new Computer();
 		c.setId(readNotNullId());
 		readComputer(c);
@@ -89,7 +122,7 @@ public class CommandLineInterface {
 		}
 	}
 
-	public void deleteComputer() {
+	private void deleteComputer() {
 		Long id = readNotNullId();
 		try {
 			computerService.deleteComputer(id);
@@ -98,7 +131,7 @@ public class CommandLineInterface {
 		}
 	}
 	
-	public void readComputer(Computer c) {
+	private void readComputer(Computer c) {
 		System.out.print("Enter new computer's name : ");
 		c.setName(scanner.nextLine().trim());
 		
@@ -113,7 +146,7 @@ public class CommandLineInterface {
 		c.setCompany(company);
 	}
 	
-	public Long readNotNullId() {
+	private Long readNotNullId() {
 		System.out.print("Enter ID of wanted computer : ");
 
 		while (! scanner.hasNextLong()) {
@@ -126,7 +159,7 @@ public class CommandLineInterface {
 		return id;
 	}
 	
-	public Long readId() {
+	private Long readId() {
 		Long readId = null;
 		String readString;
 		boolean acceptable = false;
@@ -149,7 +182,7 @@ public class CommandLineInterface {
 		return readId;
 	}
 
-	public LocalDate readDate() {
+	private LocalDate readDate() {
 		LocalDate readDate = null;
 		String readString;
 		boolean acceptable = false;
@@ -171,57 +204,19 @@ public class CommandLineInterface {
 		return readDate;
 	}
 
-	public String readChoice() {
+	private String readChoice() {
 		return scanner.nextLine();
 	}
 	
-	public void clearScanner() {
-		if (scanner.hasNextLine()) scanner.nextLine();
-	}
-
-	public void closeScanner() {
+	private void closeScanner() {
 		scanner.close();
 	}
 
 	public static void main(String[] arg) {
 		System.out.println("******** Computer Database ********\n");
-
 		CommandLineInterface cli = new CommandLineInterface();
-		String menuChoice = "";
-
 		while (true) {
-			cli.getMainMenu();
-
-			menuChoice = cli.readChoice();
-
-			switch (menuChoice) {
-			case "1":
-				cli.getCompanyList();
-				break;
-			case "2":
-				cli.getComputerList();
-				break;
-			case "3":
-				cli.getDetailsComputer();
-				break;
-			case "4":
-				cli.createComputer();
-				break;
-			case "5":
-				cli.updateComputer();
-				break;
-			case "6":
-				cli.deleteComputer();
-				break;
-			case "7":
-				System.out.println("Closing Computer Database...");
-				cli.closeScanner();
-				System.out.println("Goodbye !");
-				System.exit(0);
-			default:
-				System.out.println("Incorrect Choice");
-			}
+			cli.menuLoop();
 		}
-
 	}
 }
