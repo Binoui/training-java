@@ -16,15 +16,23 @@ import java.util.List;
 public enum ComputerDAO implements IComputerDAO {
 	INSTANCE;
 
+	private static final String SELECT_ALL_COMPUTERS = "select * from computer left join company on computer.ca_id = company.ca_id;";
+	private static final String SELECT_ALL_COMPUTERS_PAGE = "select * from computer left join company on computer.ca_id = company.ca_id order by cu_id limit ? offset ?;";
+	private static final String SELECT_COUNT_COMPUTERS = "select count(*) from computer;";
+	private static final String SELECT_COMPUTER = "select * from computer left join company on computer.ca_id = company.ca_id where cu_id = ?;";
+	private static final String INSERT_COMPUTER = "insert into computer (cu_name, cu_introduced, cu_discontinued, ca_id) values (?, ?, ?, ?);";
+	private static final String UPDATE_COMPUTER = "update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?;";
+	private static final String DELETE_COMPUTER = "delete from computer where cu_id = ?;";
+
 	private ComputerMapper mapper = ComputerMapper.INSTANCE;
 	private DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
-	
+
 	public List<Computer> getListComputers() {
 		ArrayList<Computer> computers = new ArrayList<>();
 
 		try (Connection conn = dbConn.getConnection();
 				Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery("select * from computer left join company on computer.ca_id = company.ca_id;")) {
+				ResultSet rs = st.executeQuery(SELECT_ALL_COMPUTERS)) {
 
 			while (rs.next()) {
 				computers.add(mapper.createComputer(rs));
@@ -39,31 +47,25 @@ public enum ComputerDAO implements IComputerDAO {
 
 	public List<Computer> getListComputers(int pageNumber, int pageSize) throws IndexOutOfBoundsException {
 		ArrayList<Computer> computers = new ArrayList<>();
-		ResultSet rs = null;
 
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement("select * from computer left join company on computer.ca_id = company.ca_id order by cu_id limit ? offset ?;");) {
+				PreparedStatement st = conn.prepareStatement(SELECT_ALL_COMPUTERS_PAGE);) {
 
 			st.setInt(1, pageSize);
 			st.setInt(2, pageSize * pageNumber);
-			rs = st.executeQuery();
 
-			while (rs.next()) {
-				computers.add(mapper.createComputer(rs));
+			try (ResultSet rs = st.executeQuery()) {
+
+				while (rs.next()) {
+					computers.add(mapper.createComputer(rs));
+				}
+
+				if (computers.isEmpty()) {
+					throw new IndexOutOfBoundsException("Given page number is greater than page count");
+				}
 			}
-
-			if (computers.isEmpty()) {
-				throw new IndexOutOfBoundsException("Given page number is greater than page count");
-			}
-
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				rs.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 
 		return computers;
@@ -73,7 +75,7 @@ public enum ComputerDAO implements IComputerDAO {
 		int pageCount = 0;
 
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement("select count(*) from computer;");
+				PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPUTERS);
 				ResultSet rs = st.executeQuery()) {
 
 			rs.next();
@@ -88,26 +90,21 @@ public enum ComputerDAO implements IComputerDAO {
 	}
 	
 	public Computer getComputer(Long id) {
-		ResultSet rs = null;
 		Computer c = null;
 
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement("select * from computer left join company on computer.ca_id = company.ca_id where cu_id = ?;");) {
+				PreparedStatement st = conn.prepareStatement(SELECT_COMPUTER);) {
 			
 			st.setLong(1, id);
-			rs = st.executeQuery();
-			if (rs.next()) {
-				c = mapper.createComputer(rs);
+			
+			try (ResultSet rs = st.executeQuery();) {
+				if (rs.next()) {
+					c = mapper.createComputer(rs);
+				}
 			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				rs.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
 		}
 		
 		return c;
@@ -116,8 +113,7 @@ public enum ComputerDAO implements IComputerDAO {
 	@Override
 	public void createComputer(Computer c){
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement(
-							"insert into computer (cu_name, cu_introduced, cu_discontinued, ca_id) values (?, ?, ?, ?);");) {
+				PreparedStatement st = conn.prepareStatement(INSERT_COMPUTER);) {
 
 			populateStatementFromComputer(c, st);
 			st.executeUpdate();
@@ -130,8 +126,7 @@ public enum ComputerDAO implements IComputerDAO {
 	@Override
 	public void updateComputer(Computer c) {
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement(
-						"update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?;");) {
+				PreparedStatement st = conn.prepareStatement(UPDATE_COMPUTER);) {
 
 			populateStatementFromComputer(c, st);
 			st.setLong(5, c.getId());
@@ -166,7 +161,7 @@ public enum ComputerDAO implements IComputerDAO {
 	public void deleteComputer(Computer c) {
 
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement("delete from computer where cu_id = ?;")) {
+				PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
 
 			st.setLong(1, c.getId());
 			st.executeUpdate();

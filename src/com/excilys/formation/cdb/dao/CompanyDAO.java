@@ -15,6 +15,11 @@ import com.excilys.formation.cdb.utils.DatabaseConnection;
 public enum CompanyDAO implements ICompanyDAO {
 	INSTANCE;
 
+	private static final String SELECT_COMPANIES = "select * from company;";
+	private static final String SELECT_COMPANIES_PAGE = "select * from company order by ca_id limit ? offset ? ;";
+	private static final String SELECT_COUNT_COMPANIES = "select count(*) from company;";
+	private static final String SELECT_COMPANY = "select * from company where ca_id = ?";
+
 	private CompanyMapper mapper = CompanyMapper.INSTANCE;
 	private DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
 	
@@ -24,7 +29,7 @@ public enum CompanyDAO implements ICompanyDAO {
 
 		try (Connection conn = dbConn.getConnection();
 				Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery("select * from company;")) {
+				ResultSet rs = st.executeQuery(SELECT_COMPANIES)) {
 
 			while (rs.next()) {
 				companies.add(mapper.createCompany(rs));
@@ -42,7 +47,7 @@ public enum CompanyDAO implements ICompanyDAO {
 		ResultSet rs = null;
 
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement("select * from company order by ca_id limit ? offset ? ;");) {
+				PreparedStatement st = conn.prepareStatement(SELECT_COMPANIES_PAGE);) {
 
 			st.setInt(1, pageSize);
 			st.setInt(2, pageSize * pageNumber);
@@ -73,7 +78,7 @@ public enum CompanyDAO implements ICompanyDAO {
 		int pageCount = 0;
 
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement("select count(*) from company;");
+				PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPANIES);
 				ResultSet rs = st.executeQuery()) {
 
 			rs.next();
@@ -92,7 +97,7 @@ public enum CompanyDAO implements ICompanyDAO {
 		Company c = null;
 		ResultSet rs = null;
 		try (Connection conn = dbConn.getConnection(); 
-				PreparedStatement st = conn.prepareStatement("select * from company where ca_id = ?"); ) {
+				PreparedStatement st = conn.prepareStatement(SELECT_COMPANY); ) {
 			
 			if (id != null)
 				st.setLong(1, id);
