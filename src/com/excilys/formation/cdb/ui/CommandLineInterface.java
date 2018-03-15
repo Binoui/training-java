@@ -104,7 +104,8 @@ public class CommandLineInterface {
 		readComputer(c);
 
 		try {
-			computerService.createComputer(c);
+			c.setId(computerService.createComputer(c));
+			System.out.println("Created new computer with ID " + c.getId());
 		} catch (IncorrectValidationException e) {
 			System.out.println(e.getMessage());
 		}

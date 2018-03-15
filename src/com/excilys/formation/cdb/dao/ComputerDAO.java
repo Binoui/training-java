@@ -111,16 +111,25 @@ public enum ComputerDAO implements IComputerDAO {
 	}
 
 	@Override
-	public void createComputer(Computer c){
+	public Long createComputer(Computer c){
+		Long key = null;
+		
 		try (Connection conn = dbConn.getConnection();
-				PreparedStatement st = conn.prepareStatement(INSERT_COMPUTER);) {
+				PreparedStatement st = conn.prepareStatement(INSERT_COMPUTER, Statement.RETURN_GENERATED_KEYS);) {
 
 			populateStatementFromComputer(c, st);
 			st.executeUpdate();
+			
+			try (ResultSet rs = st.getGeneratedKeys()) {
+				rs.next();
+				key = rs.getLong(1);
+			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		return key;
 	}
 
 	@Override

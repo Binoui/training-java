@@ -35,9 +35,9 @@ public enum ComputerService {
 		return dao.getComputer(id);
 	}
 	
-	public void createComputer(Computer c) throws IncorrectValidationException {
+	public Long createComputer(Computer c) throws IncorrectValidationException {
 		validator.validateComputer(c);
-		dao.createComputer(c);
+		return dao.createComputer(c);
 	}
 	
 	public void updateComputer(Computer c) throws IncorrectValidationException {
