@@ -1,5 +1,6 @@
 package com.excilys.formation.cdb.services;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.excilys.formation.cdb.dao.ComputerDAO;
@@ -20,6 +21,10 @@ public enum ComputerService {
 	
 	public List<Computer> getListComputers(int pageNumber, int pageSize) {
 		return dao.getListComputers(pageNumber, pageSize);
+	}
+
+	public List<Computer> getComputerPage(int pageNumber) {		
+		return new LinkedList<Computer>();
 	}
 	
 	public int getListComputersPageCount(int pageSize) {

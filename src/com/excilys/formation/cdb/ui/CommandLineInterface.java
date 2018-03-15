@@ -106,7 +106,7 @@ public class CommandLineInterface {
 		try {
 			computerService.createComputer(c);
 		} catch (IncorrectValidationException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 
