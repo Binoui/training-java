@@ -10,6 +10,10 @@ import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
+import com.excilys.formation.cdb.validators.InvalidDatesException;
+import com.excilys.formation.cdb.validators.NullNameException;
+import com.excilys.formation.cdb.validators.UnknownCompanyIdException;
+import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
 public class CommandLineInterface {
 
@@ -27,7 +31,7 @@ public class CommandLineInterface {
 	public void getMainMenu() {
 		StringBuilder menuBuilder = new StringBuilder();
 
-		menuBuilder.append("******** Main Menu ********\n");
+		menuBuilder.append("\n******** Main Menu ********\n");
 		menuBuilder.append("Possible features : \n");
 		Stream.of(MenuChoice.values()).forEach(choice -> menuBuilder.append(choice.getValue()));
 		menuBuilder.append("Your choice : ");
@@ -54,7 +58,12 @@ public class CommandLineInterface {
 	
 	public void getDetailsComputer() {
 		Long id = readNotNullId();
-		System.out.println(computerService.getComputer(id));
+		Computer c = computerService.getComputer(id);
+		if (c != null) {
+			System.out.println(c);
+		} else {
+			System.out.println("No computer found with id " + id);
+		}
 	}
 
 	public void createComputer() {
@@ -76,24 +85,22 @@ public class CommandLineInterface {
 		try {
 			computerService.updateComputer(c);
 		} catch (IncorrectValidationException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 
 	public void deleteComputer() {
-
+		Long id = readNotNullId();
+		try {
+			computerService.deleteComputer(id);
+		} catch (UnknownComputerIdException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public void readComputer(Computer c) {
-		clearScanner();
-		
-		String name = null;
-		while (name == null) {
-			System.out.print("Enter new computer's name : ");
-			name = scanner.nextLine().trim();
-		}
-		
-		c.setName(name);
+		System.out.print("Enter new computer's name : ");
+		c.setName(scanner.nextLine().trim());
 		
 		System.out.print("Enter new computer's introduction date (yyyy-mm-dd) : ");
 		c.setIntroduced(readDate());
@@ -111,10 +118,11 @@ public class CommandLineInterface {
 
 		while (! scanner.hasNextLong()) {
 			scanner.next();
-			System.out.println("Please enter a valid ID.");
+			System.out.println("Please enter a valid ID : ");
 		}
 		
 		Long id = scanner.nextLong();
+		scanner.nextLine();
 		return id;
 	}
 	
@@ -133,7 +141,7 @@ public class CommandLineInterface {
 					readId = Long.valueOf(readString);
 					acceptable = true;
 				} catch (NumberFormatException e) {
-					System.out.println("Incorrect ID"); 
+					System.out.println("Please enter a valid ID : "); 
 				}
 			}
 		}
@@ -208,6 +216,7 @@ public class CommandLineInterface {
 			case "7":
 				System.out.println("Closing Computer Database...");
 				cli.closeScanner();
+				System.out.println("Goodbye !");
 				System.exit(0);
 			default:
 				System.out.println("Incorrect Choice");

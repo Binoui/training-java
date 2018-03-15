@@ -156,7 +156,7 @@ public enum ComputerDAO implements IComputerDAO {
 		else
 			st.setNull(3, java.sql.Types.DATE);
 
-		if (c.getCompany() != null)
+		if (c.getCompany() != null && c.getCompany().getId() != null)
 			st.setLong(4, c.getCompany().getId());
 		else
 			st.setNull(4, java.sql.Types.BIGINT);

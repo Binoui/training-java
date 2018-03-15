@@ -6,6 +6,7 @@ import com.excilys.formation.cdb.dao.ComputerDAO;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.validators.ComputerValidator;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
+import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
 public enum ComputerService {
 	INSTANCE;
@@ -35,11 +36,13 @@ public enum ComputerService {
 	}
 	
 	public void updateComputer(Computer c) throws IncorrectValidationException {
+		validator.validateComputerId(c.getId());
 		validator.validateComputer(c);
 		dao.updateComputer(c);
 	}
 
-	public void deleteComputer(Long id) {
+	public void deleteComputer(Long id) throws UnknownComputerIdException {
+		validator.validateComputerId(id);
 		Computer c = new Computer();
 		c.setId(id);
 		dao.deleteComputer(c);
