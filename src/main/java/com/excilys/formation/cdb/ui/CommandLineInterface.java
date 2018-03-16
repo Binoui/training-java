@@ -2,10 +2,12 @@ package com.excilys.formation.cdb.ui;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
 import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ComputerService;
@@ -26,38 +28,36 @@ public class CommandLineInterface {
 	}
 
 	public void menuLoop() {
-		String menuChoice;
-
 		getMainMenu();
 
-		menuChoice = readChoice();
+		int menuChoice = readChoice();
 
-		switch (menuChoice) {
-		case "1":
-			getCompanyList();
-			break;
-		case "2":
-			getComputerList();
-			break;
-		case "3":
-			getDetailsComputer();
-			break;
-		case "4":
-			createComputer();
-			break;
-		case "5":
-			updateComputer();
-			break;
-		case "6":
-			deleteComputer();
-			break;
-		case "7":
-			System.out.println("Closing Computer Database...");
-			closeScanner();
-			System.out.println("Goodbye !");
-			System.exit(0);
-		default:
-			System.out.println("Incorrect Choice");
+		switch (MenuChoice.values()[menuChoice]) {
+			case LISTCOMPANIES :
+				getCompanyList();
+				break;
+			case LISTCOMPUTERS :
+				getComputerList();
+				break;
+			case GETCOMPUTERDETAILS :
+				getDetailsComputer();
+				break;
+			case CREATECOMPUTER :
+				createComputer();
+				break;
+			case UPDATECOMPUTER :
+				updateComputer();
+				break;
+			case DELETECOMPUTER :
+				deleteComputer();
+				break;
+			case QUIT :
+				System.out.println("Closing Computer Database...");
+				closeScanner();
+				System.out.println("Goodbye !");
+				System.exit(0);
+			default:
+				System.out.println("Incorrect Choice");
 		}
 	}
 
@@ -91,9 +91,9 @@ public class CommandLineInterface {
 	
 	private void getDetailsComputer() {
 		Long id = readNotNullId();
-		Computer c = computerService.getComputer(id);
-		if (c != null) {
-			System.out.println(c);
+		Optional<Computer> c = computerService.getComputer(id);
+		if (c.isPresent()) {
+			System.out.println(c.get());
 		} else {
 			System.out.println("No computer found with id " + id);
 		}
@@ -142,8 +142,7 @@ public class CommandLineInterface {
 		System.out.print("Enter new computer's discontinuation date (yyyy-mm-dd) : ");
 		c.setDiscontinued(readDate());
 
-		Company company = new Company();
-		company.setId(readId());
+		Company company = new CompanyBuilder().withId(readId()).build();
 		c.setCompany(company);
 	}
 	
@@ -205,8 +204,17 @@ public class CommandLineInterface {
 		return readDate;
 	}
 
-	private String readChoice() {
-		return scanner.nextLine();
+	private int readChoice() {
+		System.out.print("Enter choice : ");
+		
+		while (! scanner.hasNextInt()) {
+			scanner.next();
+			System.out.print("Please enter a valid choice (between 1 and " + MenuChoice.values().length + ") : ");
+		}
+		
+		int choice = scanner.nextInt() - 1;
+		scanner.nextLine();
+		return choice;
 	}
 	
 	private void closeScanner() {

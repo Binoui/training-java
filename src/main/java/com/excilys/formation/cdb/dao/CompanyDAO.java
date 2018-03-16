@@ -8,17 +8,21 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+
 import com.excilys.formation.cdb.mapper.CompanyMapper;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.utils.DatabaseConnection;
 
+import ch.qos.logback.classic.Logger;
+
 public enum CompanyDAO implements ICompanyDAO {
 	INSTANCE;
 
-	private static final String SELECT_COMPANIES = "select * from company;";
-	private static final String SELECT_COMPANIES_PAGE = "select * from company order by ca_id limit ? offset ? ;";
-	private static final String SELECT_COUNT_COMPANIES = "select count(*) from company;";
-	private static final String SELECT_COMPANY = "select * from company where ca_id = ?";
+	private static final String SELECT_COMPANIES = "select ca_id, ca_name from company;";
+	private static final String SELECT_COMPANIES_PAGE = "select ca_id, ca_name from company order by ca_id limit ? offset ? ;";
+	private static final String SELECT_COUNT_COMPANIES = "select count(ca_id) from company;";
+	private static final String SELECT_COMPANY = "select ca_id, ca_name from company where ca_id = ?";
 
 	private CompanyMapper mapper = CompanyMapper.INSTANCE;
 	private DatabaseConnection dbConn = DatabaseConnection.INSTANCE;

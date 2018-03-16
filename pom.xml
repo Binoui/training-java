@@ -20,15 +20,13 @@
 
         <!-- test -->
         <junit.version>4.12</junit.version>
+        <mojo.version>1.2.1</mojo.version>
 
         <!-- compile -->
         <!-- logs -->
-        <log4j.version>1.2.17</log4j.version>
-        <slf4j.version>1.7.19</slf4j.version>
-        <logback.version>1.1.6</logback.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <logback.version>1.2.3</logback.version>
 
-        <!-- runtime -->
-        <mysql.version>5.1.38</mysql.version>
         <myqsl-jdbc.version>8.0.8-dmr</myqsl-jdbc.version>
     </properties>
 
@@ -43,6 +41,21 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>${mojo.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>com.excilys.formation.cdb.ui.CommandLineInterface</mainClass>
+				</configuration>
+			</plugin>    
         </plugins>
     </build>
 
@@ -58,6 +71,27 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${myqsl-jdbc.version}</version>
+			<scope>compile</scope>
         </dependency>
+        
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-classic</artifactId>
+		    <version>${logback.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+			<scope>compile</scope>
+		</dependency>
     </dependencies>
 </project>

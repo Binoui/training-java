@@ -12,14 +12,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public enum ComputerDAO implements IComputerDAO {
 	INSTANCE;
 
-	private static final String SELECT_ALL_COMPUTERS = "select * from computer left join company on computer.ca_id = company.ca_id;";
-	private static final String SELECT_ALL_COMPUTERS_PAGE = "select * from computer left join company on computer.ca_id = company.ca_id order by cu_id limit ? offset ?;";
-	private static final String SELECT_COUNT_COMPUTERS = "select count(*) from computer;";
-	private static final String SELECT_COMPUTER = "select * from computer left join company on computer.ca_id = company.ca_id where cu_id = ?;";
+	private static final String SELECT_ALL_COMPUTERS = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id;";
+	private static final String SELECT_ALL_COMPUTERS_PAGE = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id order by cu_id limit ? offset ?;";
+	private static final String SELECT_COUNT_COMPUTERS = "select count(cu_id) from computer;";
+	private static final String SELECT_COMPUTER = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id where cu_id = ?;";
 	private static final String INSERT_COMPUTER = "insert into computer (cu_name, cu_introduced, cu_discontinued, ca_id) values (?, ?, ?, ?);";
 	private static final String UPDATE_COMPUTER = "update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?;";
 	private static final String DELETE_COMPUTER = "delete from computer where cu_id = ?;";
@@ -32,10 +33,10 @@ public enum ComputerDAO implements IComputerDAO {
 
 		try (Connection conn = dbConn.getConnection();
 				Statement st = conn.createStatement();
-				ResultSet rs = st.executeQuery(SELECT_ALL_COMPUTERS)) {
+				ResultSet computerList = st.executeQuery(SELECT_ALL_COMPUTERS)) {
 
-			while (rs.next()) {
-				computers.add(mapper.createComputer(rs));
+			while (computerList.next()) {
+				computers.add(mapper.createComputer(computerList));
 			}
 
 		} catch (SQLException e) {
@@ -89,7 +90,7 @@ public enum ComputerDAO implements IComputerDAO {
 		return pageCount;
 	}
 	
-	public Computer getComputer(Long id) {
+	public Optional<Computer> getComputer(Long id) {
 		Computer c = null;
 
 		try (Connection conn = dbConn.getConnection();
@@ -107,7 +108,7 @@ public enum ComputerDAO implements IComputerDAO {
 			e.printStackTrace();
 		}
 		
-		return c;
+		return Optional.ofNullable(c);
 	}
 
 	@Override

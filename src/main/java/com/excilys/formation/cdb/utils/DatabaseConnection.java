@@ -43,11 +43,6 @@ public enum DatabaseConnection {
 		}
 
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
 			conn = DriverManager.getConnection(url, user, pass);
 		} catch (SQLException e) {
 			e.printStackTrace();

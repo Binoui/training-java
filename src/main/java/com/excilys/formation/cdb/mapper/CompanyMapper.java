@@ -4,17 +4,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 
 public enum CompanyMapper {
 	INSTANCE;
 
 	public Company createCompany(ResultSet rs) throws SQLException {
-		Company c = new Company();
-
-		c.setId(rs.getLong("ca_id"));
+		Long id = rs.getLong("ca_id");
 		String name = rs.getString("ca_name");
-		c.setName(name);
-		
-		return c;
+		return new CompanyBuilder().withId(id).withName(name).build();
 	}
 }

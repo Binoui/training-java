@@ -2,9 +2,11 @@ package com.excilys.formation.cdb.services;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import com.excilys.formation.cdb.dao.ComputerDAO;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.validators.ComputerValidator;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 import com.excilys.formation.cdb.validators.UnknownComputerIdException;
@@ -31,7 +33,7 @@ public enum ComputerService {
 		return dao.getListComputersPageCount(pageSize);
 	}
 	
-	public Computer getComputer(Long id) {
+	public Optional<Computer> getComputer(Long id) {
 		return dao.getComputer(id);
 	}
 	
@@ -48,8 +50,7 @@ public enum ComputerService {
 
 	public void deleteComputer(Long id) throws UnknownComputerIdException {
 		validator.validateComputerId(id);
-		Computer c = new Computer();
-		c.setId(id);
+		Computer c = new ComputerBuilder().withId(id).build();
 		dao.deleteComputer(c);
 	}
 }

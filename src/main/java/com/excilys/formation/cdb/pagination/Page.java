@@ -14,4 +14,25 @@ public abstract class Page<T> {
 		this.pageNumber = pageNumber;
 		entities = new LinkedList<T>();
 	}
+	
+	public abstract void refresh();
+	public abstract int getLastPageNumber();
+
+	public List<T> previous() { 
+		if (pageNumber > 0) {
+			pageNumber++;
+			refresh();
+		}
+			
+		return entities;
+	}
+	
+	public List<T> next() { 
+		if (pageNumber < getLastPageNumber()) {
+			pageNumber++;
+			refresh();
+		}
+			
+		return entities;
+	}
 }
