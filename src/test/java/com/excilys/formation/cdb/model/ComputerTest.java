@@ -1,23 +1,26 @@
-package com.excilys.formation.cdb.model;
+package com.excilys.formation.cdb.model; 
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 import java.time.LocalDate;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
-class ComputerTest {
+import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.model.Computer;
+
+public class ComputerTest {
 
 	private Computer c;
 	
-	@BeforeEach
-	void setUp() {
+	@Before
+	public void setUp() {
 		c = new Computer();
 	}
 	
 	@Test
-	void testComputer() {
+	public void testComputer() {
 		assertNotNull(c);
 		
 		c.setId(1);
@@ -28,13 +31,13 @@ class ComputerTest {
 
 		assertEquals(c.getId(), new Long(1));
 		assertEquals(c.getName(), "comp1");
-		assertEquals(c.getDiscontinued(), LocalDate.of(0001, 01, 01));
-		assertEquals(c.getIntroduced(), LocalDate.of(0001, 01, 02));
+		assertEquals(c.getDiscontinued(), LocalDate.of(0001, 01, 02));
+		assertEquals(c.getIntroduced(), LocalDate.of(0001, 01, 01));
 		System.out.println(c);
 	}
 	
 	@Test
-	void testName() {
+	public void testName() {
 		c.setName("comp1");
 		assertEquals(c.getName(), "comp1");
 		c.setName("comp2");

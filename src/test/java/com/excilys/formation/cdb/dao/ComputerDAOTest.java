@@ -1,28 +1,28 @@
-package com.excilys.formation.cdb.dao;
+package com.excilys.formation.cdb.dao; 
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.dao.ComputerDAO;
 
-class ComputerDAOTest {
+public class ComputerDAOTest {
 
 	private ComputerDAO cDAO;
 	
-	@BeforeEach
-	void setUp() {
+	@Before
+	public void setUp() {
 		cDAO = ComputerDAO.INSTANCE; 
 	}
 	
 	@Test
-	void test() {
+	public void test() {
 		
 		List<Computer> computers = cDAO.getListComputers();
 		assertFalse(computers.isEmpty());
@@ -47,7 +47,7 @@ class ComputerDAOTest {
 	}
 	
 	@Test
-	void createUpdateDeleteTest() {
+	public void createUpdateDeleteTest() {
 		List<Computer> computers = cDAO.getListComputers();
 		int oldSize = computers.size();
 
