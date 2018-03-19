@@ -5,50 +5,50 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.Properties;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public enum DatabaseConnection {
-	INSTANCE;
+    INSTANCE;
 
-	private Connection conn;
+    private Connection conn;
 
-	public Connection getConnection() {
-		
-		String url = null;
-		String user = null;
-		String pass = null;	
+    public Connection getConnection() {
 
-		String propertiesPath = "connection.properties";
-		InputStream input = null;
-		Properties properties = new Properties();
+        String url = null;
+        String user = null;
+        String pass = null;
 
-		try {
-			input = new FileInputStream(propertiesPath);
-			properties.load(input);
-			
-			url = properties.getProperty("url");			
-			user = properties.getProperty("user");
-			pass = properties.getProperty("pass");
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (input != null) {
-				try {
-					input.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+        String propertiesPath = "connection.properties";
+        InputStream input = null;
+        Properties properties = new Properties();
 
-		try {
-			conn = DriverManager.getConnection(url, user, pass);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return conn;
-	}
+        try {
+            input = new FileInputStream(propertiesPath);
+            properties.load(input);
+
+            url = properties.getProperty("url");
+            user = properties.getProperty("user");
+            pass = properties.getProperty("pass");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        try {
+            conn = DriverManager.getConnection(url, user, pass);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return conn;
+    }
 
 }

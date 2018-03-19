@@ -4,25 +4,25 @@ import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.services.ComputerService;
 
 public class ComputerListPage extends Page<Computer> {
-	
-	private ComputerService service = ComputerService.INSTANCE;
-	
-	public ComputerListPage() {
-		super();
-	}
-	
-	public ComputerListPage(int pageNumber) {
-		super(pageNumber);
-	}
 
-	@Override
-	public void refresh() {
-		elements = ComputerService.INSTANCE.getListComputers(pageNumber, PAGE_SIZE);
-	}
+    private ComputerService service = ComputerService.INSTANCE;
 
-	@Override
-	public int getLastPageNumber() {
-		return service.getListComputersPageCount(PAGE_SIZE);
-	}
-	
+    public ComputerListPage() {
+        super();
+    }
+
+    public ComputerListPage(int pageNumber) {
+        super(pageNumber);
+    }
+
+    @Override
+    public void refresh() {
+        elements = ComputerService.INSTANCE.getListComputers(pageNumber, pageSize);
+    }
+
+    @Override
+    public int getLastPageNumber() {
+        return service.getListComputersPageCount(pageSize);
+    }
+
 }
