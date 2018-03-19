@@ -2,9 +2,15 @@ package com.excilys.formation.cdb.dao;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+
+import com.excilys.formation.cdb.utils.DatabaseConnection;
 
 public class ComputerDAOTest {
 
+    @Mock
+    private DatabaseConnection connection;
+    
     private ComputerDAO cDAO;
 
     @Before
