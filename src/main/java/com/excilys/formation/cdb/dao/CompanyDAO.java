@@ -8,13 +8,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.cdb.mapper.CompanyMapper;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.utils.DatabaseConnection;
-
-import ch.qos.logback.classic.Logger;
 
 public enum CompanyDAO implements ICompanyDAO {
 	INSTANCE;
@@ -24,11 +23,14 @@ public enum CompanyDAO implements ICompanyDAO {
 	private static final String SELECT_COUNT_COMPANIES = "select count(ca_id) from company;";
 	private static final String SELECT_COMPANY = "select ca_id, ca_name from company where ca_id = ?";
 
+	private static final Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
+
 	private CompanyMapper mapper = CompanyMapper.INSTANCE;
 	private DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
 	
 	@Override
 	public List<Company> getListCompanies() {
+		logger.debug("get list companies");
 		ArrayList<Company> companies = new ArrayList<>();
 
 		try (Connection conn = dbConn.getConnection();
@@ -40,13 +42,14 @@ public enum CompanyDAO implements ICompanyDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		return companies;
 	}
 
 	public List<Company> getListCompanies(int pageNumber, int pageSize) throws IndexOutOfBoundsException {
+		logger.debug("get list companies");
 		ArrayList<Company> companies = new ArrayList<>();
 		ResultSet rs = null;
 		try (Connection conn = dbConn.getConnection();
@@ -65,12 +68,12 @@ public enum CompanyDAO implements ICompanyDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		} finally {
 			try {
 				rs.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				logger.debug(e.getMessage());
 			}
 		}
 
@@ -78,6 +81,7 @@ public enum CompanyDAO implements ICompanyDAO {
 	}
 
 	public int getListCompaniesPageCount(int pageSize) {
+		logger.debug("get page count");
 		int pageCount = 0;
 
 		try (Connection conn = dbConn.getConnection();
@@ -89,14 +93,14 @@ public enum CompanyDAO implements ICompanyDAO {
 			pageCount = companyCount / pageSize;
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		return pageCount;
 	}
 	
 	public Company getCompany(Long id) {
-		
+		logger.debug("get company");
 		Company c = null;
 		ResultSet rs = null;
 		try (Connection conn = dbConn.getConnection(); 
@@ -113,7 +117,7 @@ public enum CompanyDAO implements ICompanyDAO {
 			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 		
 		return c;

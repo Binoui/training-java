@@ -13,17 +13,13 @@ import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.pagination.CompanyListPage;
 import com.excilys.formation.cdb.pagination.ComputerListPage;
 import com.excilys.formation.cdb.pagination.Page;
-import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
 public class CommandLineInterface {
 
-	private final static int PAGE_SIZE = 20;
-
 	private ComputerService computerService = ComputerService.INSTANCE;
-	private CompanyService companyService = CompanyService.INSTANCE;
 
 	private Scanner scanner;
 
@@ -31,7 +27,7 @@ public class CommandLineInterface {
 		scanner = new Scanner(System.in);
 	}
 
-	public void menuLoop() {
+	public boolean menuLoop() {
 		getMainMenu();
 
 		int menuChoice = readChoice();
@@ -59,10 +55,12 @@ public class CommandLineInterface {
 				System.out.println("Closing Computer Database...");
 				closeScanner();
 				System.out.println("Goodbye !");
-				System.exit(0);
+				return false;
 			default:
 				System.out.println("Incorrect Choice");
 		}
+		
+		return true;
 	}
 
 	private void getMainMenu() {
@@ -71,8 +69,6 @@ public class CommandLineInterface {
 		menuBuilder.append("\n******** Main Menu ********\n");
 		menuBuilder.append("Possible features : \n");
 		Stream.of(MenuChoice.values()).forEach(choice -> menuBuilder.append(choice.getValue()));
-		menuBuilder.append("Your choice : ");
-
 		System.out.print(menuBuilder.toString());
 	}
 
@@ -252,8 +248,6 @@ public class CommandLineInterface {
 	public static void main(String[] arg) {
 		System.out.println("******** Computer Database ********\n");
 		CommandLineInterface cli = new CommandLineInterface();
-		while (true) {
-			cli.menuLoop();
-		}
+		while (cli.menuLoop());
 	}
 }

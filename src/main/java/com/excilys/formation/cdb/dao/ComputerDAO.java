@@ -4,6 +4,7 @@ import com.excilys.formation.cdb.mapper.ComputerMapper;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.utils.DatabaseConnection;
 
+import org.slf4j.Logger;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -13,6 +14,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.slf4j.LoggerFactory;
 
 public enum ComputerDAO implements IComputerDAO {
 	INSTANCE;
@@ -25,10 +28,13 @@ public enum ComputerDAO implements IComputerDAO {
 	private static final String UPDATE_COMPUTER = "update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?;";
 	private static final String DELETE_COMPUTER = "delete from computer where cu_id = ?;";
 
+	private static final Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
+
 	private ComputerMapper mapper = ComputerMapper.INSTANCE;
 	private DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
 
 	public List<Computer> getListComputers() {
+		logger.debug("list computers");
 		ArrayList<Computer> computers = new ArrayList<>();
 
 		try (Connection conn = dbConn.getConnection();
@@ -40,13 +46,14 @@ public enum ComputerDAO implements IComputerDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		return computers;
 	}
 
 	public List<Computer> getListComputers(int pageNumber, int pageSize) throws IndexOutOfBoundsException {
+		logger.debug("list computers");
 		ArrayList<Computer> computers = new ArrayList<>();
 
 		try (Connection conn = dbConn.getConnection();
@@ -66,7 +73,7 @@ public enum ComputerDAO implements IComputerDAO {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		return computers;
@@ -84,7 +91,7 @@ public enum ComputerDAO implements IComputerDAO {
 			pageCount = computerCount / pageSize;
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 
 		return pageCount;
@@ -105,7 +112,7 @@ public enum ComputerDAO implements IComputerDAO {
 			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 		
 		return Optional.ofNullable(c);
@@ -113,6 +120,7 @@ public enum ComputerDAO implements IComputerDAO {
 
 	@Override
 	public Long createComputer(Computer c){
+		logger.debug("create computer");
 		Long key = null;
 		
 		try (Connection conn = dbConn.getConnection();
@@ -127,7 +135,7 @@ public enum ComputerDAO implements IComputerDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 		
 		return key;
@@ -135,6 +143,7 @@ public enum ComputerDAO implements IComputerDAO {
 
 	@Override
 	public void updateComputer(Computer c) {
+		logger.debug("update computer");
 		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement(UPDATE_COMPUTER);) {
 
@@ -143,7 +152,7 @@ public enum ComputerDAO implements IComputerDAO {
 			st.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 	}
 
@@ -169,7 +178,7 @@ public enum ComputerDAO implements IComputerDAO {
 
 	@Override
 	public void deleteComputer(Computer c) {
-
+		logger.debug("delete computer");
 		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
 
@@ -177,7 +186,7 @@ public enum ComputerDAO implements IComputerDAO {
 			st.executeUpdate();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 		}
 	}
 }
