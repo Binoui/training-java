@@ -7,20 +7,22 @@ public class CompanyListPage extends Page<Company> {
 	
 	private CompanyService service = CompanyService.INSTANCE;
 	
+	public CompanyListPage() {
+		super();
+	}
+	
 	public CompanyListPage(int pageNumber) {
 		super(pageNumber);
 	}
 
 	@Override
 	public void refresh() {
-		// TODO Auto-generated method stub
-		
+		elements = CompanyService.INSTANCE.getListCompanies(pageNumber, PAGE_SIZE);
 	}
 
 	@Override
 	public int getLastPageNumber() {
-		// TODO Auto-generated method stub
-		return 0;
+		return service.getListCompaniesPageCount(PAGE_SIZE);
 	}
 	
 }

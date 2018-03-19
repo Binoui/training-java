@@ -9,6 +9,10 @@ import java.util.stream.Stream;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
+import com.excilys.formation.cdb.pagination.CompanyListPage;
+import com.excilys.formation.cdb.pagination.ComputerListPage;
+import com.excilys.formation.cdb.pagination.Page;
 import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
@@ -74,18 +78,46 @@ public class CommandLineInterface {
 
 	private void getCompanyList() {
 		System.out.println("******** Companies List ********");
-
-		for (int i = 0; i < companyService.getListCompaniesPageCount(PAGE_SIZE); i++) {
-			companyService.getListCompanies(i, PAGE_SIZE).forEach(System.out::println);
-			scanner.nextLine();
-		}
+		readPages(new CompanyListPage());
 	}
 
 	private void getComputerList() {
 		System.out.println("******** Computer List ********");
-		for (int i = 0; i < computerService.getListComputersPageCount(PAGE_SIZE); i++) {
-			computerService.getListComputers(i, PAGE_SIZE).forEach(System.out::println);
-			scanner.nextLine();
+		readPages(new ComputerListPage());
+	}
+	
+	private <T extends Page<?>> void readPages(T page) {
+		String choice = "f";
+		
+		while (! choice.equals("q")) {
+			
+			
+			switch (choice) {
+				case "n" : 
+					page.next().forEach(System.out::println);
+					break;
+					
+				case "p" : 
+					page.previous().forEach(System.out::println);
+					break;
+				
+				case "f" : 
+					page.goToFirst().forEach(System.out::println);
+					break;
+				
+				case "l" : 
+					page.goToLast().forEach(System.out::println);
+					break;
+				
+				case "q" : 
+					System.out.println("closing");
+					break;
+					
+				default :
+			}
+			
+			System.out.println("Reading Pages. Possible choices : [n]ext, [p]revious, [f]irst, [l]ast, [q]uit");
+			choice = scanner.nextLine();
 		}
 	}
 	
@@ -125,8 +157,9 @@ public class CommandLineInterface {
 
 	private void deleteComputer() {
 		Long id = readNotNullId();
+		Computer c = new ComputerBuilder().withId(id).build();
 		try {
-			computerService.deleteComputer(id);
+			computerService.deleteComputer(c);
 		} catch (UnknownComputerIdException e) {
 			System.out.println(e.getMessage());
 		}

@@ -19,12 +19,7 @@ public enum CompanyService {
 	public List<Company> getListCompanies(int pageNumber, int pageSize) {
 		return companyDAO.getListCompanies(pageNumber, pageSize);
 	}
-	
-//	public List<Company> getListCompaniesPage(int pageNumber) {
-//		Page p = new CompanyListPage(pageNumber);
-//		
-//	}
-	
+
 	public int getListCompaniesPageCount(int pageSize) {
 		return companyDAO.getListCompaniesPageCount(pageSize);
 	}

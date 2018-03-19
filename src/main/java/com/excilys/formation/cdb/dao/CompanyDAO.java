@@ -49,7 +49,6 @@ public enum CompanyDAO implements ICompanyDAO {
 	public List<Company> getListCompanies(int pageNumber, int pageSize) throws IndexOutOfBoundsException {
 		ArrayList<Company> companies = new ArrayList<>();
 		ResultSet rs = null;
-
 		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement(SELECT_COMPANIES_PAGE);) {
 

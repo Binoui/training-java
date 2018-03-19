@@ -48,9 +48,8 @@ public enum ComputerService {
 		dao.updateComputer(c);
 	}
 
-	public void deleteComputer(Long id) throws UnknownComputerIdException {
-		validator.validateComputerId(id);
-		Computer c = new ComputerBuilder().withId(id).build();
+	public void deleteComputer(Computer c) throws UnknownComputerIdException {
+		validator.validateComputerId(c.getId());
 		dao.deleteComputer(c);
 	}
 }

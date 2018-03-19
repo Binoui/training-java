@@ -1,18 +1,22 @@
 package com.excilys.formation.cdb.pagination;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public abstract class Page<T> {
 	
-	public static int PAGE_SIZE = 20;
+	protected static int PAGE_SIZE = 20;
 	
-	private int pageNumber;
-	private List<T> entities;
+	protected int pageNumber;
+	protected List<T> elements;
+	
+	public Page() {
+		pageNumber = 0;
+		refresh();
+	}
 	
 	public Page(int pageNumber) {
 		this.pageNumber = pageNumber;
-		entities = new LinkedList<T>();
+		refresh();
 	}
 	
 	public abstract void refresh();
@@ -20,11 +24,11 @@ public abstract class Page<T> {
 
 	public List<T> previous() { 
 		if (pageNumber > 0) {
-			pageNumber++;
+			pageNumber--;
 			refresh();
 		}
 			
-		return entities;
+		return elements;
 	}
 	
 	public List<T> next() { 
@@ -33,6 +37,37 @@ public abstract class Page<T> {
 			refresh();
 		}
 			
-		return entities;
+		return elements;
+	}
+	
+	public List<T> getPage() {
+		return elements;
+	}
+	
+	public List<T> goToPage(int pageNumber) {
+		if (pageNumber < 0 || pageNumber >= getLastPageNumber()) return null;
+
+		this.pageNumber = pageNumber;
+		refresh();
+		
+		return elements;
+	}
+	
+	public List<T> goToFirst() {
+		pageNumber = 0;
+		refresh();
+		return elements;
+	}
+	
+	public List<T> goToLast() {
+		pageNumber = getLastPageNumber();
+		refresh();
+		return elements;
+	}
+	
+	public void setPageSize(int pageSize) {
+		if (pageSize > 0) {
+			PAGE_SIZE = pageSize;
+		}
 	}
 }
