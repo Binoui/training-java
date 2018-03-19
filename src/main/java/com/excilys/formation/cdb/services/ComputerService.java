@@ -33,8 +33,8 @@ public enum ComputerService {
 		return dao.getListComputersPageCount(pageSize);
 	}
 	
-	public Optional<Computer> getComputer(Long id) {
-		return dao.getComputer(id);
+	public Optional<Computer> getComputer(Computer computer) {
+		return dao.getComputer(computer);
 	}
 	
 	public Long createComputer(Computer c) throws IncorrectValidationException {

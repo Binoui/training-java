@@ -90,13 +90,13 @@ public enum ComputerDAO implements IComputerDAO {
 		return pageCount;
 	}
 	
-	public Optional<Computer> getComputer(Long id) {
+	public Optional<Computer> getComputer(Computer computer) {
 		Computer c = null;
 
 		try (Connection conn = dbConn.getConnection();
 				PreparedStatement st = conn.prepareStatement(SELECT_COMPUTER);) {
 			
-			st.setLong(1, id);
+			st.setLong(1, computer.getId());
 			
 			try (ResultSet rs = st.executeQuery();) {
 				if (rs.next()) {

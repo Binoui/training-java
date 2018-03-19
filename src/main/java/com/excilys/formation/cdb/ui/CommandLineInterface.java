@@ -91,29 +91,24 @@ public class CommandLineInterface {
 		
 		while (! choice.equals("q")) {
 			
-			
 			switch (choice) {
 				case "n" : 
 					page.next().forEach(System.out::println);
 					break;
-					
 				case "p" : 
 					page.previous().forEach(System.out::println);
 					break;
-				
 				case "f" : 
 					page.goToFirst().forEach(System.out::println);
 					break;
-				
 				case "l" : 
 					page.goToLast().forEach(System.out::println);
 					break;
-				
 				case "q" : 
-					System.out.println("closing");
+					System.out.println("Closing.");
 					break;
-					
 				default :
+					System.out.println("Wrong choice.");
 			}
 			
 			System.out.println("Reading Pages. Possible choices : [n]ext, [p]revious, [f]irst, [l]ast, [q]uit");
@@ -123,7 +118,7 @@ public class CommandLineInterface {
 	
 	private void getDetailsComputer() {
 		Long id = readNotNullId();
-		Optional<Computer> c = computerService.getComputer(id);
+		Optional<Computer> c = computerService.getComputer(new ComputerBuilder().withId(id).build());
 		if (c.isPresent()) {
 			System.out.println(c.get());
 		} else {
