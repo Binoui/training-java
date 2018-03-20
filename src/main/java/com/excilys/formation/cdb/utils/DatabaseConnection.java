@@ -1,14 +1,11 @@
 package com.excilys.formation.cdb.utils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-
-import org.slf4j.LoggerFactory;
 
 public enum DatabaseConnection {
     INSTANCE;
@@ -21,14 +18,13 @@ public enum DatabaseConnection {
         String user = null;
         String pass = null;
 
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        String propertiesPath = "/src/main/ressources/connection.properties";
+        String propertiesPath = "connection.properties";
         InputStream input = null;
         Properties properties = new Properties();
-
+        
         try {
-            input = classLoader.getResourceAsStream(propertiesPath);
-            
+            input = this.getClass().getClassLoader().getResourceAsStream(propertiesPath);
+
             properties.load(input);
 
             url = properties.getProperty("url");
@@ -47,6 +43,12 @@ public enum DatabaseConnection {
         }
 
         try {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } 
             conn = DriverManager.getConnection(url, user, pass);
         } catch (SQLException e) {
             e.printStackTrace();
