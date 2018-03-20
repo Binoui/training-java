@@ -20,6 +20,7 @@ public abstract class Page<T> {
     }
 
     public abstract void refresh();
+
     public abstract int getLastPageNumber();
 
     public List<T> previous() {

@@ -1,6 +1,10 @@
 package com.excilys.formation.cdb.dto;
 
-public class CompanyDTO {
+import java.io.Serializable;
+
+public class CompanyDTO implements Serializable {
+
+    private static final long serialVersionUID = 3748255250522905424L;
     private long id;
     private String name;
 

@@ -1,49 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.excilys.formation.cdb</groupId>
-    <artifactId>computer-database</artifactId>
-    <version>4.2.3-SNAPSHOT</version>
+	<groupId>com.excilys.formation.cdb</groupId>
+	<artifactId>computer-database</artifactId>
+	<version>4.2.3-SNAPSHOT</version>
 
-    <packaging>jar</packaging>
+	<packaging>jar</packaging>
 
-    <name>computer-database</name>
-    <url>https://github.com/Binoui/training-java</url>
+	<name>computer-database</name>
+	<url>https://github.com/Binoui/training-java</url>
 
-    <properties>
-        <!-- sets the projects encoding to UTF-8 -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
+	<properties>
+		<!-- sets the projects encoding to UTF-8 -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
 
-        <!-- test -->
-        <junit.version>4.12</junit.version>
-        <mojo.version>1.2.1</mojo.version>
-        <!-- compile -->
-        <!-- logs -->
-        <slf4j.version>1.7.25</slf4j.version>
-        <logback.version>1.2.3</logback.version>
+		<!-- test -->
+		<junit.version>4.12</junit.version>
+		<mojo.version>1.2.1</mojo.version>
+		<!-- compile -->
+		<!-- logs -->
+		<slf4j.version>1.7.25</slf4j.version>
+		<logback.version>1.2.3</logback.version>
 		<checkstyle.version>3.0.0</checkstyle.version>
-        <mockito.version>2.16.0</mockito.version>
+		<mockito.version>2.16.0</mockito.version>
 
-        <myqsl-jdbc.version>8.0.8-dmr</myqsl-jdbc.version>
-        <jstl.version>1.2</jstl.version>
-        
-    </properties>
+		<myqsl-jdbc.version>8.0.8-dmr</myqsl-jdbc.version>
+		
+		<!-- server -->
+		<jstl.version>1.2</jstl.version>
+		<javax.servlet.version>3.1.0</javax.servlet.version>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -53,50 +55,50 @@
 						<goals>
 							<goal>java</goal>
 						</goals>
-					</execution>
+				<!--  -->	</execution>
 				</executions>
 				<configuration>
 					<mainClass>com.excilys.formation.cdb.ui.CommandLineInterface</mainClass>
 				</configuration>
-			</plugin>    
-			<plugin>
-			  <groupId>org.apache.maven.plugins</groupId>
-			  <artifactId>maven-checkstyle-plugin</artifactId>
-			  <version>${checkstyle.version}</version>
-			  <configuration>
-			  	<configLocation>checkstyle.xml</configLocation>
-			  	<supressionsLocation>supressions.xml</supressionsLocation>
-			  </configuration>
 			</plugin>
-        </plugins>
-    </build>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>${checkstyle.version}</version>
+				<configuration>
+					<configLocation>checkstyle.xml</configLocation>
+					<supressionsLocation>supressions.xml</supressionsLocation>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${myqsl-jdbc.version}</version>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${myqsl-jdbc.version}</version>
 			<scope>compile</scope>
-        </dependency>
-        
+		</dependency>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>ch.qos.logback</groupId>
-		    <artifactId>logback-classic</artifactId>
-		    <version>${logback.version}</version>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -112,30 +114,22 @@
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-		<groupId>javax.servlet</groupId>
-		<artifactId>javax.servlet-api</artifactId>
-		<version>3.1.0</version>
-		<scope>provided</scope>
-	</dependency>
-
 
 		<dependency>
-    <groupId>javax.servlet</groupId>
-    <artifactId>jstl</artifactId>
-    <version>1.2</version>
-</dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${jstl.version}</version>
+		</dependency>
 
 		<dependency>
-		<groupId>javax.servlet</groupId>
-		<artifactId>javax.servlet-api</artifactId>
-		<version>3.1.0</version>
-		<scope>provided</scope>
-	</dependency>
-    </dependencies>
-	 <reporting>
-		  <plugins>
-
-		  </plugins>
-		</reporting>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax.servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<reporting>
+		<plugins>
+		</plugins>
+	</reporting>
 </project>

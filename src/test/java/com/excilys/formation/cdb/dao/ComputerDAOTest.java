@@ -10,7 +10,7 @@ public class ComputerDAOTest {
 
     @Mock
     private DatabaseConnection connection;
-    
+
     private ComputerDAO cDAO;
 
     @Before

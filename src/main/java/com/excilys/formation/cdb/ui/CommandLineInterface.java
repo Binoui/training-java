@@ -248,6 +248,8 @@ public class CommandLineInterface {
     public static void main(String[] arg) {
         System.out.println("******** Computer Database ********\n");
         CommandLineInterface cli = new CommandLineInterface();
-        while (cli.menuLoop());
+        while (cli.menuLoop()) {
+            ;
+        }
     }
 }

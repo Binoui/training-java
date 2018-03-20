@@ -10,12 +10,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
-<link href="<c:url value="css/bootstrap.min.css" />" rel="stylesheet" media="screen">
-<link href="${pageContext.request.contextPath}/css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="${pageContext.request.contextPath}/main.css" rel="stylesheet" media="screen">
-<link href="${pageContext.request.contextPath}/WEB-INF/css/main.css" rel="stylesheet" media="screen">
-<link href="../css/main.css" rel="stylesheet" media="screen">
-<link href="${pageContext.request.contextPath}/css/main.css" rel="stylesheet" media="screen">
+<link href="<c:url value="static/css/bootstrap.min.css"/>" rel="stylesheet" media="screen">
+<link href="<c:url value="static/css/font-awesome.css"/>" rel="stylesheet" media="screen">
+<link href="<c:url value="static/css/main.css"/>" rel="stylesheet" media="screen">
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
@@ -52,7 +49,9 @@
         <div class="container" style="margin-top: 10px;">
             <table class="table table-striped table-bordered">
                 <thead>
-                    <tr>
+                    <tr><link href="${pageContext.request.contextPath}/WEB-INF/css/main.css" rel="stylesheet" media="screen">
+<link href="../css/main.css" rel="stylesheet" media="screen">
+                    
                         <!-- Variable declarations for passing labels as parameters -->
                         <!-- Table header for Computer Name -->
 
