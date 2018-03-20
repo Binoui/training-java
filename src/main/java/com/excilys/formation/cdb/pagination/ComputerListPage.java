@@ -5,7 +5,7 @@ import com.excilys.formation.cdb.services.ComputerService;
 
 public class ComputerListPage extends Page<Computer> {
 
-    private ComputerService service = ComputerService.INSTANCE;
+    private static ComputerService service = ComputerService.INSTANCE;
 
     public ComputerListPage() {
         super();
@@ -17,7 +17,7 @@ public class ComputerListPage extends Page<Computer> {
 
     @Override
     public void refresh() {
-        elements = ComputerService.INSTANCE.getListComputers(pageNumber, pageSize);
+        elements = service.getListComputers(pageNumber, pageSize);
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.excilys.formation.cdb.services.CompanyService;
 
 public class CompanyListPage extends Page<Company> {
 
-    private CompanyService service = CompanyService.INSTANCE;
+    private static CompanyService service = CompanyService.INSTANCE;
 
     public CompanyListPage() {
         super();
@@ -17,7 +17,7 @@ public class CompanyListPage extends Page<Company> {
 
     @Override
     public void refresh() {
-        elements = CompanyService.INSTANCE.getListCompanies(pageNumber, pageSize);
+        elements = service.getListCompanies(pageNumber, pageSize);
     }
 
     @Override
