@@ -30,8 +30,8 @@ public enum ComputerDAO implements IComputerDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
 
-    private ComputerMapper mapper = ComputerMapper.INSTANCE;
-    private DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
+    private static ComputerMapper mapper = ComputerMapper.INSTANCE;
+    private static DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
 
     @Override
     public List<Computer> getListComputers() {
@@ -58,6 +58,8 @@ public enum ComputerDAO implements IComputerDAO {
         LOGGER.debug("list computers");
         ArrayList<Computer> computers = new ArrayList<>();
 
+        LOGGER.debug(new String("conn : " + (dbConn == null)));
+        
         try (Connection conn = dbConn.getConnection();
                 PreparedStatement st = conn.prepareStatement(SELECT_ALL_COMPUTERS_PAGE);) {
 

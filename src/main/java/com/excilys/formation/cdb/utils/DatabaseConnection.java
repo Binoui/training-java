@@ -8,6 +8,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.slf4j.LoggerFactory;
+
 public enum DatabaseConnection {
     INSTANCE;
 
@@ -19,12 +21,14 @@ public enum DatabaseConnection {
         String user = null;
         String pass = null;
 
-        String propertiesPath = "connection.properties";
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        String propertiesPath = "/src/main/ressources/connection.properties";
         InputStream input = null;
         Properties properties = new Properties();
 
         try {
-            input = new FileInputStream(propertiesPath);
+            input = classLoader.getResourceAsStream(propertiesPath);
+            
             properties.load(input);
 
             url = properties.getProperty("url");

@@ -28,7 +28,7 @@
 		<mockito.version>2.16.0</mockito.version>
 
 		<myqsl-jdbc.version>8.0.8-dmr</myqsl-jdbc.version>
-		
+
 		<!-- server -->
 		<jstl.version>1.2</jstl.version>
 		<javax.servlet.version>3.1.0</javax.servlet.version>
@@ -55,7 +55,8 @@
 						<goals>
 							<goal>java</goal>
 						</goals>
-				<!--  -->	</execution>
+						<!-- -->
+					</execution>
 				</executions>
 				<configuration>
 					<mainClass>com.excilys.formation.cdb.ui.CommandLineInterface</mainClass>
@@ -69,6 +70,11 @@
 					<configLocation>checkstyle.xml</configLocation>
 					<supressionsLocation>supressions.xml</supressionsLocation>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.0</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -127,6 +133,7 @@
 			<version>${javax.servlet.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
 	</dependencies>
 	<reporting>
 		<plugins>

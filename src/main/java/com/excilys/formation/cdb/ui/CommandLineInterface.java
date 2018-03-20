@@ -19,7 +19,7 @@ import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
 public class CommandLineInterface {
 
-    private ComputerService computerService = ComputerService.INSTANCE;
+    private static ComputerService computerService = ComputerService.INSTANCE;
 
     private Scanner scanner;
 

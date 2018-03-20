@@ -25,6 +25,9 @@
     <appender-ref ref="FILE" />
   </logger>
   
-  <logger name="com.excilys.formation.cdb" level="debug"></logger>
+  <logger name="com.excilys.formation.cdb" level="debug">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="FILE" />
+  </logger>
 
 </configuration>

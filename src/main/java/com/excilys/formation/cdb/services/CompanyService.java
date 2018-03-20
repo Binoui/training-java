@@ -8,7 +8,7 @@ import com.excilys.formation.cdb.model.Company;
 public enum CompanyService {
     INSTANCE;
 
-    private CompanyDAO companyDAO = CompanyDAO.INSTANCE;
+    private static CompanyDAO companyDAO = CompanyDAO.INSTANCE;
 
     public List<Company> getListCompanies() {
         return companyDAO.getListCompanies();

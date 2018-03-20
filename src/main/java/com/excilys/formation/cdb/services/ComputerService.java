@@ -13,8 +13,8 @@ import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 public enum ComputerService {
     INSTANCE;
 
-    private ComputerDAO dao = ComputerDAO.INSTANCE;
-    private ComputerValidator validator = ComputerValidator.INSTANCE;
+    private static ComputerDAO dao = ComputerDAO.INSTANCE;
+    private static ComputerValidator validator = ComputerValidator.INSTANCE;
 
     public List<Computer> getListComputers() {
         return dao.getListComputers();

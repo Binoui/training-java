@@ -25,8 +25,8 @@ public enum CompanyDAO implements ICompanyDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
 
-    private CompanyMapper mapper = CompanyMapper.INSTANCE;
-    private DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
+    private static CompanyMapper mapper = CompanyMapper.INSTANCE;
+    private static DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
 
     @Override
     public List<Company> getListCompanies() {
