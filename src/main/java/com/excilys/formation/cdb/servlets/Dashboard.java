@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.formation.cdb.dto.ComputerDTO;
 import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
+import com.excilys.formation.cdb.pagination.ComputerListPage;
 import com.excilys.formation.cdb.services.ComputerService;
 
 /**
@@ -19,9 +20,8 @@ import com.excilys.formation.cdb.services.ComputerService;
  */
 @WebServlet(name = "Dashboard", urlPatterns = "/Dashboard")
 public class Dashboard extends HttpServlet {
+    
     private static final long serialVersionUID = 1L;
-
-    private static ComputerService computerService = ComputerService.INSTANCE;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -38,10 +38,16 @@ public class Dashboard extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        ComputerListPage page = new ComputerListPage();
+        
+        String pageNumber = request.getParameter("pageNumber");
+        if (pageNumber != null) {
+            page.goToPage(Integer.parseInt(pageNumber));
+        }
+        
         ComputerDTOMapper mapper = ComputerDTOMapper.INSTANCE;
         List<ComputerDTO> listComputers = new LinkedList<>();
-        computerService.getListComputers(0, 10)
-                .forEach(computer -> listComputers.add(mapper.createComputerDTO(computer)));
+        page.getPage().forEach(computer -> listComputers.add(mapper.createComputerDTO(computer)));
 
         request.setAttribute("computers", listComputers);
 

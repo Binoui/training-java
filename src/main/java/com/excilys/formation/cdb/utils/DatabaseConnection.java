@@ -43,14 +43,12 @@ public enum DatabaseConnection {
         }
 
         try {
-            try {
-                Class.forName("com.mysql.jdbc.Driver");
-            } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(url, user, pass);
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
