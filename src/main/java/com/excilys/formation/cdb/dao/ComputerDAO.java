@@ -59,7 +59,7 @@ public enum ComputerDAO implements IComputerDAO {
         ArrayList<Computer> computers = new ArrayList<>();
 
         LOGGER.debug(new String("conn : " + (dbConn == null)));
-        
+
         try (Connection conn = dbConn.getConnection();
                 PreparedStatement st = conn.prepareStatement(SELECT_ALL_COMPUTERS_PAGE);) {
 

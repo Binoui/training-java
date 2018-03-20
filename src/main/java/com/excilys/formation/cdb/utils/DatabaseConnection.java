@@ -21,7 +21,7 @@ public enum DatabaseConnection {
         String propertiesPath = "connection.properties";
         InputStream input = null;
         Properties properties = new Properties();
-        
+
         try {
             input = this.getClass().getClassLoader().getResourceAsStream(propertiesPath);
 
@@ -48,7 +48,7 @@ public enum DatabaseConnection {
             } catch (ClassNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            } 
+            }
             conn = DriverManager.getConnection(url, user, pass);
         } catch (SQLException e) {
             e.printStackTrace();

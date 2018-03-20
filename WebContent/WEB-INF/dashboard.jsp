@@ -29,13 +29,7 @@
 	<div class="container">
 		<h1 id="homeTitle">121 Computers found</h1>
 
-		<c:forEach items="${computers}" var="computer" varStatus="status">
-			<p>
-				<c:out value="${status.count}" />
-				AAAAAAAAAAAAAAAA
-				<c:out value="${computer}"></c:out>
-			</p>
-		</c:forEach>
+
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
 				<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -83,117 +77,27 @@
 			</thead>
 			<!-- Browse attribute computers -->
 			<tbody id="results">
+			<c:forEach items="${computers}" var="computer" varStatus="status">
 				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">MacBook Pro</a></td>
-					<td>2006-01-10</td>
-					<td></td>
-					<td>Apple Inc.</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Connection
-							Machine</a></td>
-					<td>1987-01-01</td>
-					<td></td>
-					<td>Thinking Machines</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">PowerBook</a></td>
-					<td>1991-01-01</td>
-					<td>2006-01-01</td>
-					<td>Apple Inc.</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Commodore 64</a></td>
-					<td>1982-08-01</td>
-					<td>1994-01-01</td>
-					<td>Commodore International</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Altair 8800</a></td>
-					<td>1974-12-19</td>
-					<td></td>
-					<td>Micro Instrumentation and Telemetry Systems</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Canon Cat</a></td>
-					<td>1987-01-01</td>
-					<td></td>
-					<td>Canon</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Nokia 770</a></td>
-					<td></td>
-					<td></td>
-					<td>Nokia</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>computer
-					<td><a href="editComputer.html" onclick="">NeXTcube</a></td>
-					<td>1988-01-01</td>
-					<td>1993-01-01</td>
-					<td>NeXT</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">IBM 650</a></td>
-					<td>1953-01-01</td>
-					<td>1962-01-01</td>
-					<td>IBM</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">PlayStation 2</a></td>
-					<td>2000-03-24</td>
-					<td></td>
-					<td>Sony</td>
-
-				</tr>
-				<tr>
-					<td class="editMode"><input type="checkbox" name="cb"
-						class="cb" value="0"></td>
-					<td><a href="editComputer.html" onclick="">Archos 101</a></td>
-					<td></td>
-					<td></td>
-					<td></td>
-
-				</tr>
-				<tr>
-					<td class="editMode">computer <input type="checkbox" name="cb"
-						class="cb" value="0">
+					<td class="editMode">
+						<input type="checkbox" name="cb" class="cb" value="0">
 					</td>
-					<td><a href="editComputer.html" onclick="">Nintendo 3DS</a></td>
-					<td>2010-03-23</td>
-					<td></td>
-					<td>Nintendo</td>
-
+					<td>
+						<a href="editComputer.html" onclick="">
+							<c:out value="${computer.name}"/>
+						</a>
+					</td>
+					<td>
+						<c:out value="${computer.introduced}"/>
+					</td>
+					<td>
+						<c:out value="${computer.discontinued}"/>
+					</td>
+					<td>
+						<c:out value="${computer.companyName}" />
+					</td>
 				</tr>
-
+			</c:forEach>
 			</tbody>
 		</table>
 	</div>
