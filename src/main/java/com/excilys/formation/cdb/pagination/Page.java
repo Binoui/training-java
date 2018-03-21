@@ -19,41 +19,14 @@ public abstract class Page<T> {
         refresh();
     }
 
-    public abstract void refresh();
-
     public abstract int getLastPageNumber();
-
-    public List<T> previous() {
-        if (pageNumber > 0) {
-            pageNumber--;
-            refresh();
-        }
-
-        return elements;
-    }
-
-    public List<T> next() {
-        if (pageNumber < getLastPageNumber()) {
-            pageNumber++;
-            refresh();
-        }
-
-        return elements;
-    }
 
     public List<T> getPage() {
         return elements;
     }
 
-    public List<T> goToPage(int pageNumber) {
-        if ((pageNumber < 0) || (pageNumber >= getLastPageNumber())) {
-            return null;
-        }
-
-        this.pageNumber = pageNumber;
-        refresh();
-
-        return elements;
+    public int getPageNumber() {
+        return pageNumber;
     }
 
     public List<T> goToFirst() {
@@ -68,11 +41,46 @@ public abstract class Page<T> {
         return elements;
     }
 
+    public List<T> goToPage(int pageNumber) {
+        if ((pageNumber < 0) || (pageNumber >= getLastPageNumber())) {
+            return null;
+        }
+
+        this.pageNumber = pageNumber;
+        refresh();
+
+        return elements;
+    }
+
+    public List<T> next() {
+        if (pageNumber < getLastPageNumber()) {
+            pageNumber++;
+            refresh();
+        }
+
+        return elements;
+    }
+
+    public List<T> previous() {
+        if (pageNumber > 0) {
+            pageNumber--;
+            refresh();
+        }
+
+        return elements;
+    }
+
+    public abstract void refresh();
+
     public void setPageSize(int pageSize) {
         if (pageSize > 0) {
             Page.pageSize = pageSize;
         }
 
         refresh();
+    }
+    
+    public int getPageSize() {
+        return pageSize;
     }
 }

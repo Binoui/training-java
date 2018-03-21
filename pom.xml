@@ -122,7 +122,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.servlet</groupId>
+			<groupId>javax.servletjar</groupId>
 			<artifactId>jstl</artifactId>
 			<version>${jstl.version}</version>
 		</dependency>

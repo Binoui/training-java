@@ -14,15 +14,21 @@ public enum ComputerValidator {
     private CompanyDAO companyDAO = CompanyDAO.INSTANCE;
     private ComputerDAO computerDAO = ComputerDAO.INSTANCE;
 
+    private void validateCompany(Company company) throws UnknownCompanyIdException {
+        if ((company != null) && (company.getId() != null) && (companyDAO.getCompany(company) == null)) {
+            throw new UnknownCompanyIdException("Cannot find given company.");
+        }
+    }
+
     public void validateComputer(Computer c) throws IncorrectValidationException {
         validateName(c.getName());
         validateDates(c.getIntroduced(), c.getDiscontinued());
         validateCompany(c.getCompany());
     }
 
-    private void validateName(String name) throws NullNameException {
-        if ((name == null) || name.isEmpty()) {
-            throw new NullNameException("Computer name cannot be null.");
+    public void validateComputerId(Long id) throws UnknownComputerIdException {
+        if ((id != null) && (computerDAO.getComputer(new ComputerBuilder().withId(id).build()) == null)) {
+            throw new UnknownComputerIdException("Cannot find given computer.");
         }
     }
 
@@ -32,15 +38,9 @@ public enum ComputerValidator {
         }
     }
 
-    private void validateCompany(Company company) throws UnknownCompanyIdException {
-        if ((company != null) && (company.getId() != null) && (companyDAO.getCompany(company) == null)) {
-            throw new UnknownCompanyIdException("Cannot find given company.");
-        }
-    }
-
-    public void validateComputerId(Long id) throws UnknownComputerIdException {
-        if ((id != null) && (computerDAO.getComputer(new ComputerBuilder().withId(id).build()) == null)) {
-            throw new UnknownComputerIdException("Cannot find given computer.");
+    private void validateName(String name) throws NullNameException {
+        if ((name == null) || name.isEmpty()) {
+            throw new NullNameException("Computer name cannot be null.");
         }
     }
 }

@@ -16,13 +16,13 @@ public class ComputerListPage extends Page<Computer> {
     }
 
     @Override
-    public void refresh() {
-        elements = service.getListComputers(pageNumber, pageSize);
+    public int getLastPageNumber() {
+        return service.getListComputersPageCount(pageSize);
     }
 
     @Override
-    public int getLastPageNumber() {
-        return service.getListComputersPageCount(pageSize);
+    public void refresh() {
+        elements = service.getListComputers(pageNumber, pageSize);
     }
 
 }

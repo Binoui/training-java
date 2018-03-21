@@ -28,6 +28,34 @@ public enum CompanyDAO implements ICompanyDAO {
     private static CompanyMapper mapper = CompanyMapper.INSTANCE;
     private static DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
 
+    public Company getCompany(Company c) {
+        return getCompany(c.getId());
+    }
+
+    public Company getCompany(Long id) {
+        LOGGER.debug("get company");
+        Company c = null;
+        ResultSet rs = null;
+        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPANY);) {
+
+            if (id != null) {
+                st.setLong(1, id);
+            } else {
+                st.setNull(1, java.sql.Types.BIGINT);
+            }
+
+            rs = st.executeQuery();
+            if (rs.next()) {
+                c = mapper.createCompany(rs);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.debug(e.getMessage());
+        }
+
+        return c;
+    }
+
     @Override
     public List<Company> getListCompanies() {
         LOGGER.debug("get list companies");
@@ -98,34 +126,6 @@ public enum CompanyDAO implements ICompanyDAO {
         }
 
         return pageCount;
-    }
-
-    public Company getCompany(Long id) {
-        LOGGER.debug("get company");
-        Company c = null;
-        ResultSet rs = null;
-        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPANY);) {
-
-            if (id != null) {
-                st.setLong(1, id);
-            } else {
-                st.setNull(1, java.sql.Types.BIGINT);
-            }
-
-            rs = st.executeQuery();
-            if (rs.next()) {
-                c = mapper.createCompany(rs);
-            }
-
-        } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
-        }
-
-        return c;
-    }
-
-    public Company getCompany(Company c) {
-        return getCompany(c.getId());
     }
 
 }

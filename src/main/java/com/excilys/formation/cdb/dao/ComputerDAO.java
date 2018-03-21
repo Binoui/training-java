@@ -34,6 +34,62 @@ public enum ComputerDAO implements IComputerDAO {
     private static DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
 
     @Override
+    public Long createComputer(Computer c) {
+        LOGGER.debug("create computer");
+        Long key = null;
+
+        try (Connection conn = dbConn.getConnection();
+                PreparedStatement st = conn.prepareStatement(INSERT_COMPUTER, Statement.RETURN_GENERATED_KEYS);) {
+
+            populateStatementFromComputer(c, st);
+            st.executeUpdate();
+
+            try (ResultSet rs = st.getGeneratedKeys()) {
+                rs.next();
+                key = rs.getLong(1);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.debug(e.getMessage());
+        }
+
+        return key;
+    }
+
+    @Override
+    public void deleteComputer(Computer c) {
+        LOGGER.debug("delete computer");
+        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
+
+            st.setLong(1, c.getId());
+            st.executeUpdate();
+
+        } catch (SQLException e) {
+            LOGGER.debug(e.getMessage());
+        }
+    }
+
+    public Optional<Computer> getComputer(Computer computer) {
+        Computer c = null;
+
+        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPUTER);) {
+
+            st.setLong(1, computer.getId());
+
+            try (ResultSet rs = st.executeQuery();) {
+                if (rs.next()) {
+                    c = mapper.createComputer(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            LOGGER.debug(e.getMessage());
+        }
+
+        return Optional.ofNullable(c);
+    }
+
+    @Override
     public List<Computer> getListComputers() {
         LOGGER.debug("list computers");
         ArrayList<Computer> computers = new ArrayList<>();
@@ -82,80 +138,31 @@ public enum ComputerDAO implements IComputerDAO {
 
         return computers;
     }
-
-    public int getListComputersPageCount(int pageSize) {
-        int pageCount = 0;
-
+    
+    public int getComputerCount() {
+        int computerCount = 0;
+        
         try (Connection conn = dbConn.getConnection();
                 PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPUTERS);
                 ResultSet rs = st.executeQuery()) {
 
             rs.next();
-            int computerCount = rs.getInt(1);
-            pageCount = computerCount / pageSize;
+            computerCount = rs.getInt(1);
 
         } catch (SQLException e) {
             LOGGER.debug(e.getMessage());
         }
+        
+        return computerCount;
+    }
+
+    public int getListComputersPageCount(int pageSize) {
+        int pageCount = 0;
+
+        int computerCount = getComputerCount();
+        pageCount = (computerCount + pageSize - 1) / pageSize;
 
         return pageCount;
-    }
-
-    public Optional<Computer> getComputer(Computer computer) {
-        Computer c = null;
-
-        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPUTER);) {
-
-            st.setLong(1, computer.getId());
-
-            try (ResultSet rs = st.executeQuery();) {
-                if (rs.next()) {
-                    c = mapper.createComputer(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
-        }
-
-        return Optional.ofNullable(c);
-    }
-
-    @Override
-    public Long createComputer(Computer c) {
-        LOGGER.debug("create computer");
-        Long key = null;
-
-        try (Connection conn = dbConn.getConnection();
-                PreparedStatement st = conn.prepareStatement(INSERT_COMPUTER, Statement.RETURN_GENERATED_KEYS);) {
-
-            populateStatementFromComputer(c, st);
-            st.executeUpdate();
-
-            try (ResultSet rs = st.getGeneratedKeys()) {
-                rs.next();
-                key = rs.getLong(1);
-            }
-
-        } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
-        }
-
-        return key;
-    }
-
-    @Override
-    public void updateComputer(Computer c) {
-        LOGGER.debug("update computer");
-        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(UPDATE_COMPUTER);) {
-
-            populateStatementFromComputer(c, st);
-            st.setLong(5, c.getId());
-            st.executeUpdate();
-
-        } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
-        }
     }
 
     private void populateStatementFromComputer(Computer c, PreparedStatement st) throws SQLException {
@@ -182,11 +189,12 @@ public enum ComputerDAO implements IComputerDAO {
     }
 
     @Override
-    public void deleteComputer(Computer c) {
-        LOGGER.debug("delete computer");
-        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
+    public void updateComputer(Computer c) {
+        LOGGER.debug("update computer");
+        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(UPDATE_COMPUTER);) {
 
-            st.setLong(1, c.getId());
+            populateStatementFromComputer(c, st);
+            st.setLong(5, c.getId());
             st.executeUpdate();
 
         } catch (SQLException e) {

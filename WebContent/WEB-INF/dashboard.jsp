@@ -1,4 +1,5 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
@@ -27,7 +28,7 @@
 
 	<section id="main">
 	<div class="container">
-		<h1 id="homeTitle">121 Computers found</h1>
+		<h1 id="homeTitle"><c:out value="${computerCount}"/> computers found</h1>
 
 
 		<div id="actions" class="form-horizontal">
@@ -77,59 +78,42 @@
 			</thead>
 			<!-- Browse attribute computers -->
 			<tbody id="results">
-			<c:forEach items="${computers}" var="computer" varStatus="status">
-				<tr>
-					<td class="editMode">
-						<input type="checkbox" name="cb" class="cb" value="0">
-					</td>
-					<td>
-						<a href="editComputer.html" onclick="">
-							<c:out value="${computer.name}"/>
-						</a>
-					</td>
-					<td>
-						<c:out value="${computer.introduced}"/>
-					</td>
-					<td>
-						<c:out value="${computer.discontinued}"/>
-					</td>
-					<td>
-						<c:out value="${computer.companyName}" />
-					</td>
-				</tr>
-			</c:forEach>
+				<c:forEach items="${computers}" var="computer" varStatus="status">
+					<tr>
+						<td class="editMode"><input type="checkbox" name="cb"
+							class="cb" value="0"></td>
+						<td><a href="editComputer.html" onclick=""> <c:out
+									value="${computer.name}" />
+						</a></td>
+						<td><c:out value="${computer.introduced}" /></td>
+						<td><c:out value="${computer.discontinued}" /></td>
+						<td><c:out value="${computer.companyName}" /></td>
+					</tr>
+				</c:forEach>
 			</tbody>
 		</table>
 	</div>
 	</section>
-	
-	<c:set var="pageNumber" value="0"/>
-	<c:if test="${not empty param.pageNumber}">	
-		<c:set var="pageNumber" value="${param.pageNumber}"/>
+
+	<c:set var="pageNumber" value="0" />
+	<c:if test="${not empty param.pageNumber}">
+		<c:set var="pageNumber" value="${param.pageNumber}" />
 	</c:if>
-	
-	
+
 	<footer class="navbar-fixed-bottom">
 	<div class="container text-center">
 		<ul class="pagination">
-			<li><a href="#" aria-label="Previous"> <span
-					aria-hidden="true">&laquo;</span>
-			</a></li> 
-			<li><a href="#">1</a></li>
-			<li><a href="#">2</a></li>
-			<li><a href="#">3</a></li>
-			<li><a href="#">4</a></li>
-			<li><a href="#">5</a></li>
-			<li><a href="<c:url value="/Dashboard?action=n"/>" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-			</a></li>
+			<tags:pagination/>
 		</ul>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
-		<c:forEach var="itemsPerPage" items="10,50,100" varStatus="status">
-			<a href="<c:url value="/Dashboard?itemsPerPage"/>=<c:out value="${itemsPerPage}"/>">
-				<button type="button" class="btn btn-default"><c:out value="${itemsPerPage}"/></button>
-			</a> 
-		</c:forEach>
+			<c:forEach var="itemsPerPage" items="10,50,100" varStatus="status">
+				<a href="<tags:links target="dashboard" pageNumber="${pageNumber}" itemsPerPage="${itemsPerPage}"/>">
+					<button type="button" class="btn btn-default">
+						<c:out value="${itemsPerPage}" />
+					</button>
+				</a>
+			</c:forEach>
 		</div>
 	</footer>
 	<script src="<c:url value="static/js/jquery.min.js"/>"></script>

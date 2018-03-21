@@ -21,10 +21,73 @@ public class CommandLineInterface {
 
     private static ComputerService computerService = ComputerService.INSTANCE;
 
+    public static void main(String[] arg) {
+        System.out.println("******** Computer Database ********\n");
+        CommandLineInterface cli = new CommandLineInterface();
+        while (cli.menuLoop()) {
+            ;
+        }
+    }
+
     private Scanner scanner;
 
     public CommandLineInterface() {
         scanner = new Scanner(System.in);
+    }
+
+    private void closeScanner() {
+        scanner.close();
+    }
+
+    private void createComputer() {
+        Computer c = new Computer();
+        readComputer(c);
+
+        try {
+            c.setId(computerService.createComputer(c));
+            System.out.println("Created new computer with ID " + c.getId());
+        } catch (IncorrectValidationException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void deleteComputer() {
+        Long id = readNotNullId();
+        Computer c = new ComputerBuilder().withId(id).build();
+        try {
+            computerService.deleteComputer(c);
+        } catch (UnknownComputerIdException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void getCompanyList() {
+        System.out.println("******** Companies List ********");
+        readPages(new CompanyListPage());
+    }
+
+    private void getComputerList() {
+        System.out.println("******** Computer List ********");
+        readPages(new ComputerListPage());
+    }
+
+    private void getDetailsComputer() {
+        Long id = readNotNullId();
+        Optional<Computer> c = computerService.getComputer(new ComputerBuilder().withId(id).build());
+        if (c.isPresent()) {
+            System.out.println(c.get());
+        } else {
+            System.out.println("No computer found with id " + id);
+        }
+    }
+
+    private void getMainMenu() {
+        StringBuilder menuBuilder = new StringBuilder();
+
+        menuBuilder.append("\n******** Main Menu ********\n");
+        menuBuilder.append("Possible features : \n");
+        Stream.of(MenuChoice.values()).forEach(choice -> menuBuilder.append(choice.getValue()));
+        System.out.print(menuBuilder.toString());
     }
 
     public boolean menuLoop() {
@@ -63,23 +126,89 @@ public class CommandLineInterface {
         return true;
     }
 
-    private void getMainMenu() {
-        StringBuilder menuBuilder = new StringBuilder();
+    private int readChoice() {
+        System.out.print("Enter choice : ");
 
-        menuBuilder.append("\n******** Main Menu ********\n");
-        menuBuilder.append("Possible features : \n");
-        Stream.of(MenuChoice.values()).forEach(choice -> menuBuilder.append(choice.getValue()));
-        System.out.print(menuBuilder.toString());
+        while (!scanner.hasNextInt()) {
+            scanner.next();
+            System.out.print("Please enter a valid choice (between 1 and " + MenuChoice.values().length + ") : ");
+        }
+
+        int choice = scanner.nextInt() - 1;
+        scanner.nextLine();
+        return choice;
     }
 
-    private void getCompanyList() {
-        System.out.println("******** Companies List ********");
-        readPages(new CompanyListPage());
+    private void readComputer(Computer c) {
+        System.out.print("Enter new computer's name : ");
+        c.setName(scanner.nextLine().trim());
+
+        System.out.print("Enter new computer's introduction date (yyyy-mm-dd) : ");
+        c.setIntroduced(readDate());
+
+        System.out.print("Enter new computer's discontinuation date (yyyy-mm-dd) : ");
+        c.setDiscontinued(readDate());
+
+        Company company = new CompanyBuilder().withId(readId()).build();
+        c.setCompany(company);
     }
 
-    private void getComputerList() {
-        System.out.println("******** Computer List ********");
-        readPages(new ComputerListPage());
+    private LocalDate readDate() {
+        LocalDate readDate = null;
+        String readString;
+        boolean acceptable = false;
+        while (!acceptable) {
+            readString = scanner.nextLine().trim();
+            if (readString.isEmpty()) {
+                readDate = null;
+                acceptable = true;
+            } else {
+                try {
+                    readDate = LocalDate.parse(readString);
+                    acceptable = true;
+                } catch (DateTimeParseException e) {
+                    System.out.println("Incorrect date format (please use yyyy-mm-dd)");
+                }
+            }
+        }
+
+        return readDate;
+    }
+
+    private Long readId() {
+        Long readId = null;
+        String readString;
+        boolean acceptable = false;
+        while (!acceptable) {
+            System.out.print("Enter new computer's company ID : ");
+            readString = scanner.nextLine().trim();
+            if (readString.isEmpty()) {
+                readId = null;
+                acceptable = true;
+            } else {
+                try {
+                    readId = Long.valueOf(readString);
+                    acceptable = true;
+                } catch (NumberFormatException e) {
+                    System.out.println("Please enter a valid ID : ");
+                }
+            }
+        }
+
+        return readId;
+    }
+
+    private Long readNotNullId() {
+        System.out.print("Enter ID of wanted computer : ");
+
+        while (!scanner.hasNextLong()) {
+            scanner.next();
+            System.out.println("Please enter a valid ID : ");
+        }
+
+        Long id = scanner.nextLong();
+        scanner.nextLine();
+        return id;
     }
 
     private <T extends Page<?>> void readPages(T page) {
@@ -112,28 +241,6 @@ public class CommandLineInterface {
         }
     }
 
-    private void getDetailsComputer() {
-        Long id = readNotNullId();
-        Optional<Computer> c = computerService.getComputer(new ComputerBuilder().withId(id).build());
-        if (c.isPresent()) {
-            System.out.println(c.get());
-        } else {
-            System.out.println("No computer found with id " + id);
-        }
-    }
-
-    private void createComputer() {
-        Computer c = new Computer();
-        readComputer(c);
-
-        try {
-            c.setId(computerService.createComputer(c));
-            System.out.println("Created new computer with ID " + c.getId());
-        } catch (IncorrectValidationException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
     private void updateComputer() {
         Computer c = new Computer();
         c.setId(readNotNullId());
@@ -143,113 +250,6 @@ public class CommandLineInterface {
             computerService.updateComputer(c);
         } catch (IncorrectValidationException e) {
             System.out.println(e.getMessage());
-        }
-    }
-
-    private void deleteComputer() {
-        Long id = readNotNullId();
-        Computer c = new ComputerBuilder().withId(id).build();
-        try {
-            computerService.deleteComputer(c);
-        } catch (UnknownComputerIdException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private void readComputer(Computer c) {
-        System.out.print("Enter new computer's name : ");
-        c.setName(scanner.nextLine().trim());
-
-        System.out.print("Enter new computer's introduction date (yyyy-mm-dd) : ");
-        c.setIntroduced(readDate());
-
-        System.out.print("Enter new computer's discontinuation date (yyyy-mm-dd) : ");
-        c.setDiscontinued(readDate());
-
-        Company company = new CompanyBuilder().withId(readId()).build();
-        c.setCompany(company);
-    }
-
-    private Long readNotNullId() {
-        System.out.print("Enter ID of wanted computer : ");
-
-        while (!scanner.hasNextLong()) {
-            scanner.next();
-            System.out.println("Please enter a valid ID : ");
-        }
-
-        Long id = scanner.nextLong();
-        scanner.nextLine();
-        return id;
-    }
-
-    private Long readId() {
-        Long readId = null;
-        String readString;
-        boolean acceptable = false;
-        while (!acceptable) {
-            System.out.print("Enter new computer's company ID : ");
-            readString = scanner.nextLine().trim();
-            if (readString.isEmpty()) {
-                readId = null;
-                acceptable = true;
-            } else {
-                try {
-                    readId = Long.valueOf(readString);
-                    acceptable = true;
-                } catch (NumberFormatException e) {
-                    System.out.println("Please enter a valid ID : ");
-                }
-            }
-        }
-
-        return readId;
-    }
-
-    private LocalDate readDate() {
-        LocalDate readDate = null;
-        String readString;
-        boolean acceptable = false;
-        while (!acceptable) {
-            readString = scanner.nextLine().trim();
-            if (readString.isEmpty()) {
-                readDate = null;
-                acceptable = true;
-            } else {
-                try {
-                    readDate = LocalDate.parse(readString);
-                    acceptable = true;
-                } catch (DateTimeParseException e) {
-                    System.out.println("Incorrect date format (please use yyyy-mm-dd)");
-                }
-            }
-        }
-
-        return readDate;
-    }
-
-    private int readChoice() {
-        System.out.print("Enter choice : ");
-
-        while (!scanner.hasNextInt()) {
-            scanner.next();
-            System.out.print("Please enter a valid choice (between 1 and " + MenuChoice.values().length + ") : ");
-        }
-
-        int choice = scanner.nextInt() - 1;
-        scanner.nextLine();
-        return choice;
-    }
-
-    private void closeScanner() {
-        scanner.close();
-    }
-
-    public static void main(String[] arg) {
-        System.out.println("******** Computer Database ********\n");
-        CommandLineInterface cli = new CommandLineInterface();
-        while (cli.menuLoop()) {
-            ;
         }
     }
 }

@@ -16,13 +16,13 @@ public class CompanyListPage extends Page<Company> {
     }
 
     @Override
-    public void refresh() {
-        elements = service.getListCompanies(pageNumber, pageSize);
+    public int getLastPageNumber() {
+        return service.getListCompaniesPageCount(pageSize);
     }
 
     @Override
-    public int getLastPageNumber() {
-        return service.getListCompaniesPageCount(pageSize);
+    public void refresh() {
+        elements = service.getListCompanies(pageNumber, pageSize);
     }
 
 }

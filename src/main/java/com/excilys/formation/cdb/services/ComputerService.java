@@ -16,6 +16,24 @@ public enum ComputerService {
     private static ComputerDAO dao = ComputerDAO.INSTANCE;
     private static ComputerValidator validator = ComputerValidator.INSTANCE;
 
+    public Long createComputer(Computer c) throws IncorrectValidationException {
+        validator.validateComputer(c);
+        return dao.createComputer(c);
+    }
+
+    public void deleteComputer(Computer c) throws UnknownComputerIdException {
+        validator.validateComputerId(c.getId());
+        dao.deleteComputer(c);
+    }
+
+    public Optional<Computer> getComputer(Computer computer) {
+        return dao.getComputer(computer);
+    }
+
+    public List<Computer> getComputerPage(int pageNumber) {
+        return new LinkedList<Computer>();
+    }
+
     public List<Computer> getListComputers() {
         return dao.getListComputers();
     }
@@ -23,32 +41,18 @@ public enum ComputerService {
     public List<Computer> getListComputers(int pageNumber, int pageSize) {
         return dao.getListComputers(pageNumber, pageSize);
     }
-
-    public List<Computer> getComputerPage(int pageNumber) {
-        return new LinkedList<Computer>();
+    
+    public int getComputerCount() {
+        return dao.getComputerCount();
     }
 
     public int getListComputersPageCount(int pageSize) {
         return dao.getListComputersPageCount(pageSize);
     }
 
-    public Optional<Computer> getComputer(Computer computer) {
-        return dao.getComputer(computer);
-    }
-
-    public Long createComputer(Computer c) throws IncorrectValidationException {
-        validator.validateComputer(c);
-        return dao.createComputer(c);
-    }
-
     public void updateComputer(Computer c) throws IncorrectValidationException {
         validator.validateComputerId(c.getId());
         validator.validateComputer(c);
         dao.updateComputer(c);
-    }
-
-    public void deleteComputer(Computer c) throws UnknownComputerIdException {
-        validator.validateComputerId(c.getId());
-        dao.deleteComputer(c);
     }
 }
