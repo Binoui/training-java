@@ -45,6 +45,11 @@ public class Dashboard extends HttpServlet {
             page.goToPage(Integer.parseInt(pageNumber));
         }
         
+        String itemsPerPage = request.getParameter("itemsPerPage");
+        if (itemsPerPage != null) {
+            page.setPageSize(Integer.parseInt(itemsPerPage));
+        }
+        
         ComputerDTOMapper mapper = ComputerDTOMapper.INSTANCE;
         List<ComputerDTO> listComputers = new LinkedList<>();
         page.getPage().forEach(computer -> listComputers.add(mapper.createComputerDTO(computer)));

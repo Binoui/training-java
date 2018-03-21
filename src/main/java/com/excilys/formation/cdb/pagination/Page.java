@@ -4,7 +4,7 @@ import java.util.List;
 
 public abstract class Page<T> {
 
-    protected static int pageSize = 20;
+    protected static int pageSize = 10;
 
     protected int pageNumber;
     protected List<T> elements;
@@ -72,5 +72,7 @@ public abstract class Page<T> {
         if (pageSize > 0) {
             Page.pageSize = pageSize;
         }
+
+        refresh();
     }
 }

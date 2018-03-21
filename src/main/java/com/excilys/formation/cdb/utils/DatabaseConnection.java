@@ -17,6 +17,7 @@ public enum DatabaseConnection {
         String url = null;
         String user = null;
         String pass = null;
+        String driver = null;
 
         String propertiesPath = "connection.properties";
         InputStream input = null;
@@ -30,6 +31,7 @@ public enum DatabaseConnection {
             url = properties.getProperty("url");
             user = properties.getProperty("user");
             pass = properties.getProperty("pass");
+            driver = properties.getProperty("driver");
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
@@ -43,7 +45,7 @@ public enum DatabaseConnection {
         }
 
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName(driver);
             conn = DriverManager.getConnection(url, user, pass);
         } catch (SQLException e) {
             e.printStackTrace();

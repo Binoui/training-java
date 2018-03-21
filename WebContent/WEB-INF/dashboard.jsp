@@ -102,7 +102,13 @@
 		</table>
 	</div>
 	</section>
-
+	
+	<c:set var="pageNumber" value="0"/>
+	<c:if test="${not empty param.pageNumber}">	
+		<c:set var="pageNumber" value="${param.pageNumber}"/>
+	</c:if>
+	
+	
 	<footer class="navbar-fixed-bottom">
 	<div class="container text-center">
 		<ul class="pagination">
@@ -119,9 +125,11 @@
 		</ul>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
-			<button type="button" class="btn btn-default">10</button>
-			<button type="button" class="btn btn-default">50</button>
-			<button type="button" class="btn btn-default">100</button>
+		<c:forEach var="itemsPerPage" items="10,50,100" varStatus="status">
+			<a href="<c:url value="/Dashboard?itemsPerPage"/>=<c:out value="${itemsPerPage}"/>">
+				<button type="button" class="btn btn-default"><c:out value="${itemsPerPage}"/></button>
+			</a> 
+		</c:forEach>
 		</div>
 	</footer>
 	<script src="<c:url value="static/js/jquery.min.js"/>"></script>
