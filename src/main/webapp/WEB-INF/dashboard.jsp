@@ -1,5 +1,5 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib tagdir="/WEB-INF/tags" prefix="tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="tags"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
@@ -28,7 +28,10 @@
 
 	<section id="main">
 	<div class="container">
-		<h1 id="homeTitle"><c:out value="${computerCount}"/> computers found</h1>
+		<h1 id="homeTitle">
+			<c:out value="${computerCount}" />
+			computers found
+		</h1>
 
 
 		<div id="actions" class="form-horizontal">
@@ -42,9 +45,10 @@
 				</form>
 			</div>
 			<div class="pull-right">
-				<a class="btn btn-success" id="addComputer" href="addComputer.html">Add
-					Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-					onclick="$.fn.toggleEditMode();">Edit</a>
+				<a class="btn btn-success" id="addComputer"
+					href="<tags:links target="addComputer" itemsPerPage="${itemsPerPage}"/>">
+					Add Computer </a> <a class="btn btn-default" id="editComputer" href="#"
+					onclick="$.fn.toggleEditMode();"> Edit </a>
 			</div>
 		</div>
 	</div>
@@ -100,15 +104,17 @@
 		<c:set var="pageNumber" value="${param.pageNumber}" />
 	</c:if>
 
-	<footer class="navbar-fixed-bottom">
+	<footer class="navbar-fix
+					<ed-bottom">
 	<div class="container text-center">
 		<ul class="pagination">
-			<tags:pagination/>
+			<tags:pagination />
 		</ul>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
 			<c:forEach var="itemsPerPage" items="10,50,100" varStatus="status">
-				<a href="<tags:links target="dashboard" pageNumber="0" itemsPerPage="${itemsPerPage}"/>">
+				<a
+					href="<tags:links target="dashboard" pageIndex="0" itemsPerPage="${itemsPerPage}"/>">
 					<button type="button" class="btn btn-default">
 						<c:out value="${itemsPerPage}" />
 					</button>

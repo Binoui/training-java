@@ -22,8 +22,9 @@ import com.excilys.formation.cdb.services.ComputerService;
 public class Dashboard extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static ComputerDTOMapper computerMapper = ComputerDTOMapper.INSTANCE;
-    private static ComputerService computerService = ComputerService.INSTANCE;
+    private static final ComputerDTOMapper computerMapper = ComputerDTOMapper.INSTANCE;
+    private static final ComputerService computerService = ComputerService.INSTANCE;
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -40,6 +41,7 @@ public class Dashboard extends HttpServlet {
             throws ServletException, IOException {
 
         ComputerListPage page = new ComputerListPage();
+        System.out.println("mrddd");
         handleRequest(request, page);
         getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
     }
@@ -58,15 +60,15 @@ public class Dashboard extends HttpServlet {
         String pageNumber = request.getParameter("pageNumber");
         try {
             if (pageNumber != null) {
-                page.goToPage(Integer.parseInt(pageNumber));
+                page.goToPage(getIntParam(pageNumber, 0));
             }
 
             String itemsPerPage = request.getParameter("itemsPerPage");
             if (itemsPerPage != null) {
-                page.setPageSize(Integer.parseInt(itemsPerPage));
+                page.setPageSize(getIntParam(itemsPerPage, 10));
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            
         }
 
         List<ComputerDTO> listComputers = new LinkedList<>();
@@ -75,6 +77,14 @@ public class Dashboard extends HttpServlet {
         request.setAttribute("pageNumber", page.getPageNumber());
         request.setAttribute("computerCount", computerService.getComputerCount());
         request.setAttribute("pageCount", computerService.getListComputersPageCount(page.getPageSize()));
+    }
+    
+    private int getIntParam(String param, int defaultValue) {
+        try {
+            return Integer.parseInt(param);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 
 }

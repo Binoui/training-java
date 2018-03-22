@@ -21,17 +21,17 @@
 <c:set var="stop" scope="page" value="${stop < 0 ? 0 : stop }" />
 
 <li>
-	<a href="<tags:links target="dashboard" pageNumber="${pageNumber - 1 < 0 ? 0 : pageNumber - 1}" itemsPerPage="${itemsPerPage}"/>"
+	<a href="<tags:links target="dashboard" pageIndex="${pageNumber - 1 < 0 ? 0 : pageNumber - 1}" itemsPerPage="${itemsPerPage}"/>"
 	aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
 </li>
 
 <c:forEach var="i" begin="${start}" end="${stop}" step="1">
 	<li>
-		<a href="<tags:links target="dashboard" pageNumber="${i}" itemsPerPage="${itemsPerPage}"/>"><c:out value="${i + 1}"/></a> 
+		<a href="<tags:links target="dashboard" pageIndex="${i}" itemsPerPage="${itemsPerPage}"/>"><c:out value="${i + 1}"/></a> 
 	</li>
 </c:forEach> 
 
 <li>
-	<a href="<tags:links target="dashboard" pageNumber="${pageNumber > pageCount ? pageCount - 1 : pageNumber + 1}" itemsPerPage="${itemsPerPage}"/>"
+	<a href="<tags:links target="dashboard" pageIndex="${pageNumber > pageCount ? pageCount - 1 : pageNumber + 1}" itemsPerPage="${itemsPerPage}"/>"
 	aria-label="Next"> <span aria-hidden="true">&raquo;</span></a>
 </li>
