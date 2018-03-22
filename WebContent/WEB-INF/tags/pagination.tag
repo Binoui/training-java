@@ -21,7 +21,7 @@
 <c:set var="stop" scope="page" value="${stop < 0 ? 0 : stop }" />
 
 <li>
-	<a href="<tags:links target="dashboard" pageNumber="${pageNumber - 1 > 0 ? 0 : pageNumber - 1}" itemsPerPage="${itemsPerPage}"/>"
+	<a href="<tags:links target="dashboard" pageNumber="${pageNumber - 1 < 0 ? 0 : pageNumber - 1}" itemsPerPage="${itemsPerPage}"/>"
 	aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
 </li>
 
