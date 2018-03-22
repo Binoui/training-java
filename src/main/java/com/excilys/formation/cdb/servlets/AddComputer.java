@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.cdb.dto.CompanyDTO;
 import com.excilys.formation.cdb.mapper.CompanyDTOMapper;
-import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ComputerService;
@@ -58,43 +58,37 @@ public class AddComputer extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    
 	    String name = request.getParameter("computerName").trim();
-	    
+        String introducedString = request.getParameter("introduced").trim();
+        String discontinuedString = request.getParameter("discontinued").trim();
+        String companyIdString = request.getParameter("companyId");
+
 	    if (! name.isEmpty() ) {
             ComputerBuilder computerBuilder = new ComputerBuilder().withName(name);
             
-            String introducedString = request.getParameter("introduced").trim();
             if (introducedString != null && !introducedString.isEmpty()) {
                 computerBuilder.withIntroduced(LocalDate.parse(introducedString));
             }
      
-            String discontinuedString = request.getParameter("discontinued").trim();
             if (discontinuedString != null && !discontinuedString.isEmpty()) {
                 computerBuilder.withDiscontinued(LocalDate.parse(discontinuedString));
             }
             
-            String companyIdString = request.getParameter("companyId");
-            
             if (companyIdString != null && !companyIdString.isEmpty()) {
-                
-                computerBuilder.withCompany(new CompanyBuilder().withId());
+                Long companyId = Long.parseLong(companyIdString);
+                computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
             }
             
-            try {
+    	    try {
                 computerService.createComputer(computerBuilder.build());
             } catch (IncorrectValidationException e) {
+                e.printStackTrace();
             }
-
-            System.out.println(computerBuilder.build());
-            
-    //	    try {
-    //            computerService.createComputer(computerBuilder.build());
-    //        } catch (IncorrectValidationException e) {
-    //            e.printStackTrace();
-    //        }
         } else {
             LoggerFactory.getLogger(AddComputer.class).debug("Couldn't add computer, name was empty");
 	    }
 
         getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
 	}
+	
+	
 }

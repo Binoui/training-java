@@ -2,9 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %> 
 
-<c:set var="range" scope="page"
-	value="${pageCount < 5 ? pageCount : 5}" />
-
 <c:set var="half" scope="page" value="${range / 2}" />
 <c:set var="half" scope="page" value="${half - (half % 1)}" />
 
@@ -32,6 +29,6 @@
 </c:forEach> 
 
 <li>
-	<a href="<tags:links target="dashboard" pageIndex="${pageNumber > pageCount ? pageCount - 1 : pageNumber + 1}" itemsPerPage="${itemsPerPage}"/>"
+	<a href="<tags:links target="dashboard" pageIndex="${pageNumber + 1 == pageCount ? pageCount - 1 : pageNumber + 1}" itemsPerPage="${itemsPerPage}"/>"
 	aria-label="Next"> <span aria-hidden="true">&raquo;</span></a>
 </li>
