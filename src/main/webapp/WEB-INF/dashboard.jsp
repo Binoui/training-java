@@ -108,7 +108,7 @@
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
 			<c:forEach var="itemsPerPage" items="10,50,100" varStatus="status">
-				<a href="<tags:links target="dashboard" pageNumber="${pageNumber}" itemsPerPage="${itemsPerPage}"/>">
+				<a href="<tags:links target="dashboard" pageNumber="0" itemsPerPage="${itemsPerPage}"/>">
 					<button type="button" class="btn btn-default">
 						<c:out value="${itemsPerPage}" />
 					</button>
