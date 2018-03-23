@@ -2,6 +2,7 @@ package com.excilys.formation.cdb.servlets;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,10 +62,10 @@ public class AddComputer extends HttpServlet {
         String introducedString = request.getParameter("introduced").trim();
         String discontinuedString = request.getParameter("discontinued").trim();
         String companyIdString = request.getParameter("companyId");
-
-	    if (! name.isEmpty() ) {
-            ComputerBuilder computerBuilder = new ComputerBuilder().withName(name);
+        
+        ComputerBuilder computerBuilder = new ComputerBuilder().withName(name);
             
+        try {
             if (introducedString != null && !introducedString.isEmpty()) {
                 computerBuilder.withIntroduced(LocalDate.parse(introducedString));
             }
@@ -72,21 +73,21 @@ public class AddComputer extends HttpServlet {
             if (discontinuedString != null && !discontinuedString.isEmpty()) {
                 computerBuilder.withDiscontinued(LocalDate.parse(discontinuedString));
             }
-            
-            if (companyIdString != null && !companyIdString.isEmpty()) {
-                Long companyId = Long.parseLong(companyIdString);
-                computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
-            }
-            
-    	    try {
-                computerService.createComputer(computerBuilder.build());
-            } catch (IncorrectValidationException e) {
-                e.printStackTrace();
-            }
-        } else {
-            LoggerFactory.getLogger(AddComputer.class).debug("Couldn't add computer, name was empty");
-	    }
-
+        } catch (DateTimeParseException e) {
+            request.setAttribute("error", "Wrong date format");
+        }
+        
+        if (companyIdString != null && !companyIdString.isEmpty()) {
+            Long companyId = Long.parseLong(companyIdString);
+            computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
+        }
+        
+        try {
+            computerService.createComputer(computerBuilder.build());
+        } catch (IncorrectValidationException e) {
+            request.setAttribute("error", e.getMessage());
+        }
+        
         getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
 	}
 	

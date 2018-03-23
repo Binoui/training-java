@@ -26,6 +26,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
+                	<tags:addErrors/>
                     <h1>Add Computer</h1>
                     <form action="<tags:links target="addComputer" itemsPerPage="${itemsPerPage}"/>" method="POST">
                         <fieldset>
