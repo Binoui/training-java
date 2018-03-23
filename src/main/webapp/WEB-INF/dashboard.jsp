@@ -30,7 +30,7 @@
 	<div class="container">
 		<h1 id="homeTitle">
 			<c:out value="${computerCount}" />
-			computers found
+			Computers found
 		</h1>
 
 
@@ -98,11 +98,6 @@
 		</table>
 	</div>
 	</section>
-
-	<c:set var="pageNumber" value="0" />
-	<c:if test="${not empty param.pageNumber}">
-		<c:set var="pageNumber" value="${param.pageNumber}" />
-	</c:if>
 
 	<footer class="navbar-fix
 					<ed-bottom">

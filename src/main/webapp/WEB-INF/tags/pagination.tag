@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %> 
 
-<c:set var="half" scope="page" value="${range / 2}" />
+<c:set var="half" scope="page" value="${5 / 2}" />
 <c:set var="half" scope="page" value="${half - (half % 1)}" />
 
 <c:set var="start" scope="page" value="${pageNumber - half}" />
