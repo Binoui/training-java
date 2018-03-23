@@ -1,6 +1,5 @@
 <jsp:directive.tag pageEncoding="UTF-8" body-content="empty" />
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%@attribute name="target" required="true"%>
 <%@attribute name="pageIndex" required="false"%>

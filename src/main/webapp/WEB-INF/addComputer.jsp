@@ -18,7 +18,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="<tags:links target="addComputer"/>"> Application - Computer Database </a>
+            <a class="navbar-brand" href="<tags:links target="dashboard" itemsPerPage="${itemsPerPage}"/>"> Application - Computer Database </a>
         </div>
     </header>
 
@@ -55,7 +55,7 @@
                         <div class="actions pull-right">
                             <input type="submit" value="Add" class="btn btn-primary">
                             or
-                            <a href="dashboard.html" class="btn btn-default">Cancel</a>
+                            <a href="<tags:links target="dashboard" itemsPerPage="${itemsPerPage}"/>" class="btn btn-default">Cancel</a>
                         </div>
                     </form>
                 </div>

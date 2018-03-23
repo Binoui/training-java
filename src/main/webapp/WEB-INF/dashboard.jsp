@@ -21,7 +21,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
-		<a class="navbar-brand" href="dashboard.html"> Application -
+		<a class="navbar-brand" href='<tags:links target="dashboard"></tags:links>'> Application -
 			Computer Database </a>
 	</div>
 	</header>
@@ -76,7 +76,7 @@
 					<!-- Table header for Discontinued Date -->
 					<th>Discontinued date</th>
 					<!-- Table header for Company -->
-					<th>Company</th>
+					<th>Company</tforEachh>
 
 				</tr>
 			</thead>
