@@ -60,7 +60,6 @@ public class ComputerDAOTest {
     @Before
     public void setUp() throws SQLException {
         cDAO = ComputerDAO.INSTANCE;
-        HSQLDatabase.initDatabase();
     }
 
     @Test

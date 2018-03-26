@@ -19,7 +19,6 @@ public class CompanyDAOTest {
     @Before
     public void setUp() throws SQLException {
         cDAO = CompanyDAO.INSTANCE;
-        HSQLDatabase.initDatabase();
     }
     
     @Test
