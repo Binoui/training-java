@@ -16,6 +16,7 @@
 
 		<!-- test -->
 		<junit.version>4.12</junit.version>
+		<hsqldb.version>2.4.0</hsqldb.version>
 		<mojo.version>1.2.1</mojo.version>
 		<!-- compile -->
 		<!-- logs -->
@@ -29,6 +30,8 @@
 		<!-- server -->
 		<jstl.version>1.2</jstl.version>
 		<javax.servlet.version>3.1.0</javax.servlet.version>
+		<tomcat7.version>2.2</tomcat7.version>
+		<maven-war.version>2.4</maven-war.version>
 
 	</properties>
 
@@ -72,7 +75,7 @@
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
-				<version>2.2</version>
+				<version>${tomcat7.version}</version>
 				<configuration>
 					<url>http://localhost:8080/manager/text</url>
 					<server>TomcatServer</server>
@@ -84,7 +87,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.4</version>
+				<version>${maven-war.version}</version>
 			</plugin>
 		</plugins>
 	</build>
@@ -142,6 +145,13 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<version>${javax.servlet.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>${hsqldb.version}</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

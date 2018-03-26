@@ -9,7 +9,7 @@ import com.excilys.formation.cdb.utils.DatabaseConnection;
 public class ComputerDAOTest {
 
     @Mock
-    private DatabaseConnection connection;
+    private HSQLConnection connection;
 
     private ComputerDAO cDAO;
 

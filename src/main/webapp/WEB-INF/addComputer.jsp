@@ -14,6 +14,7 @@
 	rel="stylesheet" media="screen">
 <link href="<c:url value="static/css/main.css"/>" rel="stylesheet"
 	media="screen">
+
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
@@ -63,5 +64,8 @@
             </div>
         </div>
     </section>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 </body>
 </html>
