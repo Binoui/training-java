@@ -89,6 +89,23 @@ public enum ComputerDAO implements IComputerDAO {
         return Optional.ofNullable(c);
     }
 
+    public int getComputerCount() {
+        int computerCount = 0;
+
+        try (Connection conn = dbConn.getConnection();
+                PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPUTERS);
+                ResultSet rs = st.executeQuery()) {
+
+            rs.next();
+            computerCount = rs.getInt(1);
+
+        } catch (SQLException e) {
+            LOGGER.debug(e.getMessage());
+        }
+
+        return computerCount;
+    }
+
     @Override
     public List<Computer> getListComputers() {
         LOGGER.debug("list computers");
@@ -138,29 +155,12 @@ public enum ComputerDAO implements IComputerDAO {
 
         return computers;
     }
-    
-    public int getComputerCount() {
-        int computerCount = 0;
-        
-        try (Connection conn = dbConn.getConnection();
-                PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPUTERS);
-                ResultSet rs = st.executeQuery()) {
-
-            rs.next();
-            computerCount = rs.getInt(1);
-
-        } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
-        }
-        
-        return computerCount;
-    }
 
     public int getListComputersPageCount(int pageSize) {
         int pageCount = 0;
 
         int computerCount = getComputerCount();
-        pageCount = (computerCount + pageSize - 1) / pageSize;
+        pageCount = ((computerCount + pageSize) - 1) / pageSize;
 
         return pageCount;
     }

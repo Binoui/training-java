@@ -56,6 +56,14 @@ public class Dashboard extends HttpServlet {
         doGet(request, response);
     }
 
+    private int getIntParam(String param, int defaultValue) {
+        try {
+            return Integer.parseInt(param);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
     private void handleRequest(HttpServletRequest request, ComputerListPage page) {
         String pageNumber = request.getParameter("pageNumber");
         try {
@@ -68,7 +76,7 @@ public class Dashboard extends HttpServlet {
                 page.setPageSize(getIntParam(itemsPerPage, 10));
             }
         } catch (NumberFormatException e) {
-            
+
         }
 
         List<ComputerDTO> listComputers = new LinkedList<>();
@@ -77,14 +85,6 @@ public class Dashboard extends HttpServlet {
         request.setAttribute("pageNumber", page.getPageNumber());
         request.setAttribute("computerCount", computerService.getComputerCount());
         request.setAttribute("pageCount", computerService.getListComputersPageCount(page.getPageSize()));
-    }
-    
-    private int getIntParam(String param, int defaultValue) {
-        try {
-            return Integer.parseInt(param);
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
     }
 
 }

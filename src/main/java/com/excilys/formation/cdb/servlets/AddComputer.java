@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.LoggerFactory;
-
 import com.excilys.formation.cdb.dto.CompanyDTO;
 import com.excilys.formation.cdb.mapper.CompanyDTOMapper;
 import com.excilys.formation.cdb.model.Company.CompanyBuilder;
@@ -27,11 +25,11 @@ import com.excilys.formation.cdb.validators.IncorrectValidationException;
  */
 @WebServlet("/AddComputer")
 public class AddComputer extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private static final CompanyDTOMapper companyMapper = CompanyDTOMapper.INSTANCE;
-	private static final CompanyService companyService = CompanyService.INSTANCE;
-	private static final ComputerService computerService = ComputerService.INSTANCE;
-       
+    private static final long serialVersionUID = 1L;
+    private static final CompanyDTOMapper companyMapper = CompanyDTOMapper.INSTANCE;
+    private static final CompanyService companyService = CompanyService.INSTANCE;
+    private static final ComputerService computerService = ComputerService.INSTANCE;
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -40,56 +38,62 @@ public class AddComputer extends HttpServlet {
         // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	    
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+
         List<CompanyDTO> listCompanies = new LinkedList<>();
-        companyService.getListCompanies().forEach(company -> listCompanies.add(companyMapper.createCompanyDTO(company)));
+        companyService.getListCompanies()
+                .forEach(company -> listCompanies.add(companyMapper.createCompanyDTO(company)));
         request.setAttribute("companies", listCompanies);
 
         getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
-	}
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    
-	    String name = request.getParameter("computerName").trim();
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String name = request.getParameter("computerName").trim();
         String introducedString = request.getParameter("introduced").trim();
         String discontinuedString = request.getParameter("discontinued").trim();
         String companyIdString = request.getParameter("companyId");
-        
+
         ComputerBuilder computerBuilder = new ComputerBuilder().withName(name);
-            
+
         try {
-            if (introducedString != null && !introducedString.isEmpty()) {
+            if ((introducedString != null) && !introducedString.isEmpty()) {
                 computerBuilder.withIntroduced(LocalDate.parse(introducedString));
             }
-     
-            if (discontinuedString != null && !discontinuedString.isEmpty()) {
+
+            if ((discontinuedString != null) && !discontinuedString.isEmpty()) {
                 computerBuilder.withDiscontinued(LocalDate.parse(discontinuedString));
             }
         } catch (DateTimeParseException e) {
             request.setAttribute("error", "Wrong date format");
         }
-        
-        if (companyIdString != null && !companyIdString.isEmpty()) {
+
+        if ((companyIdString != null) && !companyIdString.isEmpty()) {
             Long companyId = Long.parseLong(companyIdString);
             computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
         }
-        
+
         try {
             computerService.createComputer(computerBuilder.build());
         } catch (IncorrectValidationException e) {
             request.setAttribute("error", e.getMessage());
         }
-        
+
         getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
-	}
-	
-	
+    }
+
 }
