@@ -2,9 +2,11 @@ package com.excilys.formation.cdb.dao;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,8 +19,14 @@ public class CompanyDAOTest {
     private CompanyDAO cDAO;
 
     @Before
-    public void setUp() throws SQLException {
+    public void setUp() throws SQLException, IOException {
         cDAO = CompanyDAO.INSTANCE;
+        HSQLDatabase.initDatabase();
+    }
+    
+    @After
+    public void cleanUp() throws SQLException {
+        HSQLDatabase.destroy();
     }
     
     @Test

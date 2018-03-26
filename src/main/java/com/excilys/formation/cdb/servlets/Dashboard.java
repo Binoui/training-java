@@ -41,7 +41,6 @@ public class Dashboard extends HttpServlet {
             throws ServletException, IOException {
 
         ComputerListPage page = new ComputerListPage();
-        System.out.println("mrddd");
         handleRequest(request, page);
         getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
     }

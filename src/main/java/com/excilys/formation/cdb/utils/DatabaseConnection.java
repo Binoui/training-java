@@ -47,8 +47,6 @@ public enum DatabaseConnection {
         }
 
         try {
-            org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DatabaseConnection.class);
-            LOGGER.debug("url : " + url);
             Class.forName(driver);
             conn = DriverManager.getConnection(url, user, pass);
         } catch (SQLException e) {

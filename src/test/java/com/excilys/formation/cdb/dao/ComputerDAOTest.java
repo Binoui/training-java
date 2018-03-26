@@ -1,89 +1,79 @@
 package com.excilys.formation.cdb.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.utils.HSQLDatabase;
 
 public class ComputerDAOTest {
 
-    private static ComputerDAO cDAO;
+    private static final ComputerDAO cDao = ComputerDAO.INSTANCE;
     
-    @Test
-    public void createUpdateDeleteTest() {
-        List<Computer> computers = cDAO.getListComputers();
-        int oldSize = computers.size();
-
-        Computer c = new Computer();
-        c.setName("testName");
-        c.setIntroduced(LocalDate.of(0001, 01, 01));
-        c.setDiscontinued(LocalDate.of(0001, 01, 02));
-        c.setCompany(new Company((long) 37, "ASUS"));
-
-        cDAO.createComputer(c);
-
-        computers = cDAO.getListComputers();
-        assertEquals(oldSize + 1, computers.size());
-
-        Computer newC = computers.get(oldSize);
-        assertEquals(newC.getName(), c.getName());
-
-        String newName = "newName";
-        newC.setName(newName);
-        cDAO.updateComputer(newC);
-
-        newC = cDAO.getListComputers().get(oldSize);
-        assertNotEquals(newC.getName(), c.getName());
-
-        if (newC.getName().equals(newName)) {
-            cDAO.deleteComputer(newC);
-            computers = cDAO.getListComputers();
-            assertEquals(oldSize, computers.size());
-        } else {
-            // couldn't delete
-            assertTrue(false);
-        }
-
-    }
-
     @Before
-    public void setUp() throws SQLException {
-        cDAO = ComputerDAO.INSTANCE;
+    public void setUp() throws SQLException, IOException {
+        HSQLDatabase.initDatabase();
+    }
+    
+    @After
+    public void cleanUp() throws SQLException {
+        HSQLDatabase.destroy();
     }
 
     @Test
-    public void test() {
-
-        List<Computer> computers = cDAO.getListComputers();
-        assertFalse(computers.isEmpty());
-        assertEquals(computers.size(), 3);
-
-        int pageSize = 10;
-        int pageCount = cDAO.getListComputersPageCount(pageSize);
-        assertEquals(pageCount, computers.size() / pageSize);
-
-        computers = cDAO.getListComputers(0, pageSize);
-        assertEquals(computers.size(), 10);
-
-        computers = cDAO.getListComputers(1, pageSize);
-        assertEquals(computers.get(0).getId(), new Long(11));
-
-        try {
-            computers = cDAO.getListComputers(60, pageSize);
-            assertTrue(false);
-        } catch (IndexOutOfBoundsException i) {
-            assertTrue(true);
-        }
+    public void testCreateComputer() {
+        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null).withDiscontinued(LocalDate.parse("0002/02/02")).build();
+        cDao.createComputer(c);
+        assertNotNull(cDao.getComputer(c));
+        cDao.deleteComputer(c);
     }
+
+    @Test
+    public void testDeleteComputer() {
+        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null).withDiscontinued(LocalDate.parse("0002/02/02")).build();
+        cDao.createComputer(c);
+        cDao.deleteComputer(c);
+        assertTrue(cDao.getComputer(c).isPresent());
+    }
+
+    @Test
+    public void testGetComputer() {
+        assertTrue(cDao.getComputer(new ComputerBuilder().withId((long) 1).build()).isPresent());
+    }
+
+    @Test
+    public void testGetComputerCount() {
+        assertEquals(cDao.getComputerCount(), 3);
+    }
+
+    @Test
+    public void testGetListComputers() {
+        assertEquals((long) cDao.getListComputers().get(1).getId(), (long) 2);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testGetListComputersIntInt() {
+        cDao.getListComputers(99999, 10);
+    }
+
+    @Test
+    public void testGetListComputersPageCount() {
+        assertEquals(cDao.getListComputersPageCount(10), 1);
+    }
+
+    @Test
+    public void testUpdateComputer() {
+        Computer c = new ComputerBuilder().withId((long) 2).withIntroduced(LocalDate.parse("0001/01/01")).build();
+        cDao.updateComputer(c);
+        assertEquals(cDao.getComputer(c).get().getIntroduced(), LocalDate.parse("0001/01/01")); 
+    }
+
 }
