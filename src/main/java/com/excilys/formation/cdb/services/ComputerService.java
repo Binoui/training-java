@@ -30,6 +30,10 @@ public enum ComputerService {
         return dao.getComputer(computer);
     }
 
+    public int getComputerCount() {
+        return dao.getComputerCount();
+    }
+
     public List<Computer> getComputerPage(int pageNumber) {
         return new LinkedList<Computer>();
     }
@@ -40,10 +44,6 @@ public enum ComputerService {
 
     public List<Computer> getListComputers(int pageNumber, int pageSize) {
         return dao.getListComputers(pageNumber, pageSize);
-    }
-    
-    public int getComputerCount() {
-        return dao.getComputerCount();
     }
 
     public int getListComputersPageCount(int pageSize) {

@@ -32,15 +32,17 @@
 		<javax.servlet.version>3.1.0</javax.servlet.version>
 		<tomcat7.version>2.2</tomcat7.version>
 		<maven-war.version>2.4</maven-war.version>
+		<maven-compiler.version>3.1</maven-compiler.version>
 
 	</properties>
 
 	<build>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>${maven-compiler.version}</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -126,13 +128,6 @@
 			<version>${logback.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>${mockito.version}</version>
-			<scope>test</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>jstl</groupId>
@@ -146,7 +141,7 @@
 			<version>${javax.servlet.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>

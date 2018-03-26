@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,6 @@ public enum DatabaseConnection {
 
             properties.load(input);
 
-            
             url = properties.getProperty("url");
             user = properties.getProperty("user");
             pass = properties.getProperty("pass");

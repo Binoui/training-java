@@ -29,6 +29,10 @@ public abstract class Page<T> {
         return pageNumber;
     }
 
+    public int getPageSize() {
+        return pageSize;
+    }
+
     public List<T> goToFirst() {
         pageNumber = 0;
         refresh();
@@ -78,9 +82,5 @@ public abstract class Page<T> {
         }
 
         refresh();
-    }
-    
-    public int getPageSize() {
-        return pageSize;
     }
 }
