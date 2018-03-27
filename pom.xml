@@ -26,6 +26,7 @@
 		<logback.version>1.2.3</logback.version>
 		<checkstyle.version>3.0.0</checkstyle.version>
 		<mockito.version>2.16.0</mockito.version>
+		<hikaricp.version>2.7.8</hikaricp.version>
 
 		<myqsl-jdbc.version>8.0.8-dmr</myqsl-jdbc.version>
 
@@ -156,6 +157,13 @@
 			<artifactId>sqltool</artifactId>
 			<version>${sqltool.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>${hikaricp.version}</version>
+			<scope>compile</scope>
 		</dependency>
 
 	</dependencies>

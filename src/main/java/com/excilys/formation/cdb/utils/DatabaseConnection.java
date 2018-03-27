@@ -10,23 +10,24 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zaxxer.hikari.HikariDataSource;
+
 public enum DatabaseConnection {
     INSTANCE;
 
     private static final Logger Logger = LoggerFactory.getLogger(DatabaseConnection.class);
-    private Connection conn;
+    private static final String propertiesPath = "connection.properties";
 
-    public Connection getConnection() {
+    private String driver;
+    private HikariDataSource hikariDataSource;
 
+    DatabaseConnection() {
+        InputStream input = null;
+        Properties properties = new Properties();
 
         String url = null;
         String user = null;
         String pass = null;
-        String driver = null;
-
-        String propertiesPath = "connection.properties";
-        InputStream input = null;
-        Properties properties = new Properties();
 
         try {
             input = this.getClass().getClassLoader().getResourceAsStream(propertiesPath);
@@ -49,9 +50,19 @@ public enum DatabaseConnection {
             }
         }
 
+        hikariDataSource = new HikariDataSource();
+        hikariDataSource.setJdbcUrl(url);
+        hikariDataSource.setUsername(user);
+        hikariDataSource.setPassword(pass);
+    }
+
+    public Connection getConnection() {
+
+        Connection conn = null;
+
         try {
             Class.forName(driver);
-            conn = DriverManager.getConnection(url, user, pass);
+            conn = hikariDataSource.getConnection();
         } catch (SQLException | ClassNotFoundException e) {
             Logger.error("cannot connect to database [}", e);
         }

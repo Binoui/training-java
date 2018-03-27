@@ -13,7 +13,8 @@ create table computer (
     cu_introduced                datetime NULL,
     cu_discontinued              datetime NULL,
     ca_id                bigint default NULL,
-    constraint pk_computer primary key (cu_id))
+    constraint pk_computer primary key (cu_id),
+    constraint fk_company foreign key (ca_id) references company(ca_id))
 ;
 
 insert into company (ca_id,ca_name) values (1,'Company 1');
