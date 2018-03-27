@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.formation.cdb.dto.CompanyDTO;
 import com.excilys.formation.cdb.mapper.CompanyDTOMapper;
 import com.excilys.formation.cdb.model.Company.CompanyBuilder;
@@ -30,6 +33,7 @@ public class AddComputer extends HttpServlet {
     private static final CompanyDTOMapper companyMapper = CompanyDTOMapper.INSTANCE;
     private static final CompanyService companyService = CompanyService.INSTANCE;
     private static final ComputerService computerService = ComputerService.INSTANCE;
+    private static final Logger Logger = LoggerFactory.getLogger(AddComputer.class);
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -86,25 +90,26 @@ public class AddComputer extends HttpServlet {
             }
         } catch (DateTimeParseException e) {
             request.setAttribute("error", "Wrong date format");
+            Logger.error("Cannot create computer, wrong date format {}", e);
+            doGet(request, response);
+            return;
         }
 
         if ((companyIdString != null) && !companyIdString.isEmpty()) {
             Long companyId = Long.parseLong(companyIdString);
-            computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
+            if (companyId != 0) {
+                computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
+            }
         }
 
         try {
-            try {
-                computerService.createComputer(computerBuilder.build());
-            } catch (ServiceException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        } catch (IncorrectValidationException e) {
+            computerService.createComputer(computerBuilder.build());
+        } catch (ServiceException | IncorrectValidationException e) {
+            Logger.debug("Cannot create computer {}", e);
             request.setAttribute("error", e.getMessage());
         }
 
-        getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
+        doGet(request, response);
     }
 
 }

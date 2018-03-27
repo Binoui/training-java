@@ -35,7 +35,7 @@ public enum ComputerDAO implements IComputerDAO {
 
     @Override
     public Long createComputer(Computer c) throws DAOException {
-        LOGGER.debug("create computer");
+        LOGGER.info("create computer");
         Long key = null;
 
         try (Connection conn = dbConn.getConnection();
@@ -59,7 +59,7 @@ public enum ComputerDAO implements IComputerDAO {
 
     @Override
     public void deleteComputer(Computer c) throws DAOException {
-        LOGGER.debug("delete computer");
+        LOGGER.info("delete computer");
         try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
 
             st.setLong(1, c.getId());
@@ -116,7 +116,7 @@ public enum ComputerDAO implements IComputerDAO {
 
     @Override
     public List<Computer> getListComputers() throws DAOException {
-        LOGGER.debug("list computers");
+        LOGGER.info("list computers");
         ArrayList<Computer> computers = new ArrayList<>();
 
         try (Connection conn = dbConn.getConnection();
@@ -137,10 +137,8 @@ public enum ComputerDAO implements IComputerDAO {
 
     @Override
     public List<Computer> getListComputers(int pageNumber, int pageSize) throws DAOException, IndexOutOfBoundsException {
-        LOGGER.debug("list computers");
+        LOGGER.info("list computers");
         ArrayList<Computer> computers = new ArrayList<>();
-
-        LOGGER.debug(new String("conn : " + (dbConn == null)));
 
         try (Connection conn = dbConn.getConnection();
                 PreparedStatement st = conn.prepareStatement(SELECT_ALL_COMPUTERS_PAGE);) {
@@ -200,7 +198,7 @@ public enum ComputerDAO implements IComputerDAO {
 
     @Override
     public void updateComputer(Computer c) throws DAOException {
-        LOGGER.debug("update computer");
+        LOGGER.info("update computer");
         try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(UPDATE_COMPUTER);) {
 
             populateStatementFromComputer(c, st);

@@ -7,14 +7,17 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public enum DatabaseConnection {
     INSTANCE;
 
+    private static final Logger Logger = LoggerFactory.getLogger(DatabaseConnection.class);
     private Connection conn;
 
     public Connection getConnection() {
+
 
         String url = null;
         String user = null;
@@ -49,11 +52,8 @@ public enum DatabaseConnection {
         try {
             Class.forName(driver);
             conn = DriverManager.getConnection(url, user, pass);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.error("cannot connect to database [}", e);
         }
 
         return conn;

@@ -34,7 +34,7 @@ public enum CompanyDAO implements ICompanyDAO {
     }
 
     public Optional<Company> getCompany(Long id) throws DAOException {
-        LOGGER.debug("get company");
+        LOGGER.info("get company");
         Company c = null;
         ResultSet rs = null;
         try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPANY);) {
@@ -60,7 +60,7 @@ public enum CompanyDAO implements ICompanyDAO {
 
     @Override
     public List<Company> getListCompanies() throws DAOException {
-        LOGGER.debug("get list companies");
+        LOGGER.info("get list companies");
         ArrayList<Company> companies = new ArrayList<>();
 
         try (Connection conn = dbConn.getConnection();
@@ -81,7 +81,7 @@ public enum CompanyDAO implements ICompanyDAO {
 
     @Override
     public List<Company> getListCompanies(final int pageNumber, final int pageSize) throws DAOException, IndexOutOfBoundsException {
-        LOGGER.debug("get list companies");
+        LOGGER.info("get list companies");
         ArrayList<Company> companies = new ArrayList<>();
         ResultSet rs = null;
         try (Connection conn = dbConn.getConnection();
@@ -114,7 +114,7 @@ public enum CompanyDAO implements ICompanyDAO {
     }
 
     public int getListCompaniesPageCount(int pageSize) throws DAOException {
-        LOGGER.debug("get page count");
+        LOGGER.info("get page count");
         int pageCount = 0;
 
         try (Connection conn = dbConn.getConnection();
