@@ -18,6 +18,7 @@ import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ComputerService;
+import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 
 /**
@@ -47,8 +48,14 @@ public class AddComputer extends HttpServlet {
         // TODO Auto-generated method stub
 
         List<CompanyDTO> listCompanies = new LinkedList<>();
-        companyService.getListCompanies()
-                .forEach(company -> listCompanies.add(companyMapper.createCompanyDTO(company)));
+        
+        try {
+            companyService.getListCompanies()
+                    .forEach(company -> listCompanies.add(companyMapper.createCompanyDTO(company)));
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+        
         request.setAttribute("companies", listCompanies);
 
         getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
@@ -87,7 +94,12 @@ public class AddComputer extends HttpServlet {
         }
 
         try {
-            computerService.createComputer(computerBuilder.build());
+            try {
+                computerService.createComputer(computerBuilder.build());
+            } catch (ServiceException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         } catch (IncorrectValidationException e) {
             request.setAttribute("error", e.getMessage());
         }

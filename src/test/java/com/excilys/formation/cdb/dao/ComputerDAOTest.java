@@ -29,51 +29,56 @@ public class ComputerDAOTest {
     }
 
     @Test
-    public void testCreateComputer() {
-        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null).withDiscontinued(LocalDate.parse("0002/02/02")).build();
-        cDao.createComputer(c);
-        assertNotNull(cDao.getComputer(c));
-        cDao.deleteComputer(c);
-    }
-
-    @Test
-    public void testDeleteComputer() {
-        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null).withDiscontinued(LocalDate.parse("0002/02/02")).build();
-        cDao.createComputer(c);
-        cDao.deleteComputer(c);
+    public void testCreateComputer() throws DAOException {
+        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null).withDiscontinued(LocalDate.parse("0002-02-02")).build();
+        c.setId(cDao.createComputer(c));
         assertTrue(cDao.getComputer(c).isPresent());
+        cDao.deleteComputer(c);
     }
 
     @Test
-    public void testGetComputer() {
+    public void testDeleteComputer() throws DAOException {
+        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null).withDiscontinued(LocalDate.parse("0002-02-02")).build();
+        c.setId(cDao.createComputer(c));
+        cDao.deleteComputer(c);
+        assertFalse(cDao.getComputer(c).isPresent());
+    }
+
+    @Test
+    public void testGetComputer() throws DAOException {
         assertTrue(cDao.getComputer(new ComputerBuilder().withId((long) 1).build()).isPresent());
     }
 
     @Test
-    public void testGetComputerCount() {
+    public void testGetComputerCount() throws DAOException {
         assertEquals(cDao.getComputerCount(), 3);
     }
 
     @Test
-    public void testGetListComputers() {
+    public void testGetListComputers() throws DAOException {
         assertEquals((long) cDao.getListComputers().get(1).getId(), (long) 2);
+    }
+    
+    @Test
+    public void testGetCompanyWithIdNull() throws DAOException {
+        cDao.getComputer(new ComputerBuilder().build());
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
-    public void testGetListComputersIntInt() {
+    public void testGetListComputersIntInt() throws IndexOutOfBoundsException, DAOException {
         cDao.getListComputers(99999, 10);
     }
 
     @Test
-    public void testGetListComputersPageCount() {
+    public void testGetListComputersPageCount() throws DAOException {
         assertEquals(cDao.getListComputersPageCount(10), 1);
     }
 
     @Test
-    public void testUpdateComputer() {
-        Computer c = new ComputerBuilder().withId((long) 2).withIntroduced(LocalDate.parse("0001/01/01")).build();
+    public void testUpdateComputer() throws DAOException {
+        Computer c = new ComputerBuilder().withId((long) 2).withIntroduced(LocalDate.parse("0001-01-01")).build();
         cDao.updateComputer(c);
-        assertEquals(cDao.getComputer(c).get().getIntroduced(), LocalDate.parse("0001/01/01")); 
+        assertEquals(cDao.getComputer(c).get().getIntroduced(), LocalDate.parse("0001-01-01")); 
     }
 
 }

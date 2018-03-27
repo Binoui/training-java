@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +29,11 @@ public enum CompanyDAO implements ICompanyDAO {
     private static CompanyMapper mapper = CompanyMapper.INSTANCE;
     private static DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
 
-    public Company getCompany(Company c) {
+    public Optional<Company> getCompany(Company c) throws DAOException {
         return getCompany(c.getId());
     }
 
-    public Company getCompany(Long id) {
+    public Optional<Company> getCompany(Long id) throws DAOException {
         LOGGER.debug("get company");
         Company c = null;
         ResultSet rs = null;
@@ -51,13 +52,14 @@ public enum CompanyDAO implements ICompanyDAO {
 
         } catch (SQLException e) {
             LOGGER.debug(e.getMessage());
+            throw new DAOException("Couldn't find company with ID : " + c.getId());
         }
 
-        return c;
+        return Optional.ofNullable(c);
     }
 
     @Override
-    public List<Company> getListCompanies() {
+    public List<Company> getListCompanies() throws DAOException {
         LOGGER.debug("get list companies");
         ArrayList<Company> companies = new ArrayList<>();
 
@@ -71,13 +73,14 @@ public enum CompanyDAO implements ICompanyDAO {
 
         } catch (SQLException e) {
             LOGGER.debug(e.getMessage());
+            throw new DAOException("Couldn't fetch companies list"); 
         }
 
         return companies;
     }
 
     @Override
-    public List<Company> getListCompanies(final int pageNumber, final int pageSize) throws IndexOutOfBoundsException {
+    public List<Company> getListCompanies(final int pageNumber, final int pageSize) throws DAOException, IndexOutOfBoundsException {
         LOGGER.debug("get list companies");
         ArrayList<Company> companies = new ArrayList<>();
         ResultSet rs = null;
@@ -98,6 +101,7 @@ public enum CompanyDAO implements ICompanyDAO {
 
         } catch (SQLException e) {
             LOGGER.debug(e.getMessage());
+            throw new DAOException("Couldn't fetch companies list");
         } finally {
             try {
                 rs.close();
@@ -109,7 +113,7 @@ public enum CompanyDAO implements ICompanyDAO {
         return companies;
     }
 
-    public int getListCompaniesPageCount(int pageSize) {
+    public int getListCompaniesPageCount(int pageSize) throws DAOException {
         LOGGER.debug("get page count");
         int pageCount = 0;
 
@@ -123,6 +127,7 @@ public enum CompanyDAO implements ICompanyDAO {
 
         } catch (SQLException e) {
             LOGGER.debug(e.getMessage());
+            throw new DAOException("Couldn't get companies page count");
         }
 
         return pageCount;

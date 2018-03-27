@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
+import org.slf4j.LoggerFactory;
+
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer;
@@ -14,12 +16,14 @@ import com.excilys.formation.cdb.pagination.CompanyListPage;
 import com.excilys.formation.cdb.pagination.ComputerListPage;
 import com.excilys.formation.cdb.pagination.Page;
 import com.excilys.formation.cdb.services.ComputerService;
+import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
 public class CommandLineInterface {
 
     private static ComputerService computerService = ComputerService.INSTANCE;
+    private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(CommandLineInterface.class);
 
     public static void main(String[] arg) {
         System.out.println("******** Computer Database ********\n");
@@ -46,7 +50,7 @@ public class CommandLineInterface {
         try {
             c.setId(computerService.createComputer(c));
             System.out.println("Created new computer with ID " + c.getId());
-        } catch (IncorrectValidationException e) {
+        } catch (ServiceException | IncorrectValidationException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -56,24 +60,39 @@ public class CommandLineInterface {
         Computer c = new ComputerBuilder().withId(id).build();
         try {
             computerService.deleteComputer(c);
-        } catch (UnknownComputerIdException e) {
+        } catch (ServiceException | UnknownComputerIdException e) {
             System.out.println(e.getMessage());
         }
     }
 
     private void getCompanyList() {
         System.out.println("******** Companies List ********");
-        readPages(new CompanyListPage());
+
+        try {
+            readPages(new CompanyListPage());
+        } catch (ServiceException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void getComputerList() {
         System.out.println("******** Computer List ********");
-        readPages(new ComputerListPage());
+
+        try {
+            readPages(new ComputerListPage());
+        } catch (ServiceException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void getDetailsComputer() {
         Long id = readNotNullId();
-        Optional<Computer> c = computerService.getComputer(new ComputerBuilder().withId(id).build());
+        Optional<Computer> c = null;
+        try {
+            c = computerService.getComputer(new ComputerBuilder().withId(id).build());
+        } catch (ServiceException e) {
+            
+        }
         if (c.isPresent()) {
             System.out.println(c.get());
         } else {
@@ -199,7 +218,7 @@ public class CommandLineInterface {
     }
 
     private Long readNotNullId() {
-        System.out.print("Enter ID of wanted computer : ");
+        System.out.print("Enter ID of wanted computeServiceExceptionr : ");
 
         while (!scanner.hasNextLong()) {
             scanner.next();
@@ -216,24 +235,29 @@ public class CommandLineInterface {
 
         while (!choice.equals("q")) {
 
-            switch (choice) {
-            case "n":
-                page.next().forEach(System.out::println);
-                break;
-            case "p":
-                page.previous().forEach(System.out::println);
-                break;
-            case "f":
-                page.goToFirst().forEach(System.out::println);
-                break;
-            case "l":
-                page.goToLast().forEach(System.out::println);
-                break;
-            case "q":
-                System.out.println("Closing.");
-                break;
-            default:
-                System.out.println("Wrong choice.");
+            try {
+                switch (choice) {
+                case "n":
+                    page.next().forEach(System.out::println);
+                    break;
+                case "p":
+                    page.previous().forEach(System.out::println);
+                    break;
+                case "f":
+                    page.goToFirst().forEach(System.out::println);
+                    break;
+                case "l":
+                    page.goToLast().forEach(System.out::println);
+                    break;
+                case "q":
+                    System.out.println("Closing.");
+                    break;
+                default:
+                    System.out.println("Wrong choice.");
+                }
+            } catch (ServiceException e) {
+                Logger.error("Error while accessing pages {}", e);
+                System.out.println("Error while accessing pages");
             }
 
             System.out.println("Reading Pages. Possible choices : [n]ext, [p]revious, [f]irst, [l]ast, [q]uit");
@@ -248,7 +272,7 @@ public class CommandLineInterface {
 
         try {
             computerService.updateComputer(c);
-        } catch (IncorrectValidationException e) {
+        } catch (IncorrectValidationException | ServiceException e) {
             System.out.println(e.getMessage());
         }
     }

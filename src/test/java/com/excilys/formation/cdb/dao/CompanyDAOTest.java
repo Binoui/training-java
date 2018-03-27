@@ -30,17 +30,22 @@ public class CompanyDAOTest {
     }
     
     @Test
-    public void testGetCompanyCompany() {
+    public void testGetCompanyCompany() throws DAOException {
         assertNotNull(cDAO.getCompany(new CompanyBuilder().withId((long) 1).build()));
     }
 
     @Test
-    public void testGetCompanyLong() {
+    public void testGetCompanyLong() throws DAOException {
         assertNotNull(cDAO.getCompany((long) 1));
+    }
+    
+    @Test
+    public void testGetCompanyWithIdNull() throws DAOException {
+        cDAO.getCompany(new CompanyBuilder().build());
     }
 
     @Test
-    public void testGetListCompanies() {
+    public void testGetListCompanies() throws DAOException {
         List<Company> companies = cDAO.getListCompanies();
         assertNotNull(companies);
         assertEquals(companies.size(), 3);
@@ -48,7 +53,7 @@ public class CompanyDAOTest {
     }
 
     @Test
-    public void testGetListCompaniesPageOutOfBounds() {
+    public void testGetListCompaniesPageOutOfBounds() throws DAOException {
         try {
             cDAO.getListCompanies(999999, 10);
             fail("should throw exception");
