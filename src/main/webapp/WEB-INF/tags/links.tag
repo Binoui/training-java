@@ -4,6 +4,7 @@
 <%@attribute name="target" required="true"%>
 <%@attribute name="pageIndex" required="false"%>
 <%@attribute name="itemsPerPage" required="false"%>
+<%@attribute name="computerId" required="false"%>
 
 <c:set var="path" value="/ComputerDatabase/"/>
 
@@ -16,6 +17,14 @@
 			
 			<c:when test="${target.equals('addComputer')}">
 				<c:set var="path" value="${path.concat('AddComputer?')}"/>
+			</c:when>
+			
+			<c:when test="${target.equals('editComputer')}">
+				<c:set var="path" value="${path.concat('EditComputer?')}"/>
+				
+				<c:if test="${(computerId != null) && computerId.matches('[0-9]+')}">
+					<c:set var="path" value="${path.concat('&computerId=').concat(computerId)}"/>
+				</c:if>
 			</c:when>
 		</c:choose>
 	</c:when>

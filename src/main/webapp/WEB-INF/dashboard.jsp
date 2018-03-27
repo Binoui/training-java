@@ -21,7 +21,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
-		<a class="navbar-brand" href='<tags:links target="dashboard"></tags:links>'> Application -
+		<a class="navbar-brand" href='<tags:links target="dashboard" ></tags:links>'> Application -
 			Computer Database </a>
 	</div>
 	</header>
@@ -76,7 +76,7 @@
 					<!-- Table header for Discontinued Date -->
 					<th>Discontinued date</th>
 					<!-- Table header for Company -->
-					<th>Company</tforEachh>
+					<th>Company</th>
 
 				</tr>
 			</thead>
@@ -86,7 +86,7 @@
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
 							class="cb" value="0"></td>
-						<td><a href="editComputer.html" onclick=""> <c:out
+						<td><a href="<tags:links target="editComputer" computerId="${computer.id}" itemsPerPage="${itemsPerPage}"/>" onclick=""> <c:out
 									value="${computer.name}" />
 						</a></td>
 						<td><c:out value="${computer.introduced}" /></td>

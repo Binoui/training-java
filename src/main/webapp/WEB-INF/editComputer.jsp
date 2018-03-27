@@ -14,7 +14,6 @@
 	rel="stylesheet" media="screen">
 <link href="<c:url value="static/css/main.css"/>" rel="stylesheet"
 	media="screen">
-
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
@@ -24,29 +23,31 @@
 				Application - Computer Database </a>
 		</div>
 	</header>
-
 	<section id="main">
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<tags:addErrors />
-					<h1>Add Computer</h1>
-					<form
-						action="<tags:links target="addComputer" itemsPerPage="${itemsPerPage}"/>"
-						method="POST" id="createComputerForm">
+					<div class="label label-default pull-right">
+						id:
+						<c:out value="${computer.id}" />
+					</div>
+					<h1>Edit Computer</h1>
+
+					<form action="<tags:links target="editComputer" pageIndex="${pageIndex}" itemsPerPage="${itemsPerPage}"/>" method="POST">
+						<input type="hidden" value="${computer.id}" id="computerId" />
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" name="computerName"
-									id="computerName" placeholder="Computer name"
+									id="computerName" value="${computer.name}"
 									pattern="^[\wÀ-ÿ]+[\wÀ-ÿ_\-'\+\* ]+$" required="required">
 							</div>
 							<div class="form-group">
-								<label for="introduced">Introduced date</label> <input
+								<label for="discontinued">Introduced date</label> <input
 									type="date" class="form-control" name="introduced"
 									data-validation-option="true" data-validation="date"
 									data-validation-format="yyyy-mm-dd" id="introduced"
-									placeholder="Introduced date">
+									value="${computer.introduced}">
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
@@ -54,23 +55,27 @@
 									id="discontinued" data-validation="date"
 									data-validation-option="true"
 									data-validation-format="yyyy-mm-dd"
-									placeholder="Discontinued date">
+									value="${computer.discontinued}">
 							</div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select
 									class="form-control" name="companyId" id="companyId">
-									<option value="0" selected>None</option>
+									<option value="0">None</option>
 									<c:forEach var="company" items="${companies}">
-										<option value="<c:out value="${company.id}"/>">
+										<option value="<c:out value="${company.id}"/>"
+											<c:if test="${company.name == computer.companyName}">
+												selected
+											</c:if>>
 											<c:out value="${company.name}" />
+										</option>
 									</c:forEach>
 								</select>
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Add" class="btn btn-primary">
+							<input type="submit" value="Edit" class="btn btn-primary">
 							or <a
-								href="<tags:links target="dashboard" itemsPerPage="${itemsPerPage}"/>"
+								href="<tags:links target="dashboard" pageIndex="${pageNumber}" itemsPerPage="${itemsPerPage}"/>"
 								class="btn btn-default">Cancel</a>
 						</div>
 					</form>
@@ -83,7 +88,7 @@
 	<script
 		src="http://cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
 	<script>
-		$('#createComputerForm').validate({
+		$('#editComputerForm').validate({
 			lang : 'en',
 			modules : 'html5'
 		})
