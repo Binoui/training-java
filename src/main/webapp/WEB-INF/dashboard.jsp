@@ -55,7 +55,7 @@
 
 	<tags:addErrors/>
 
-	<form id="deleteForm" action="#" method="POST">
+	<form id="deleteForm" action="<tags:links target="delete" pageIndex="${pageNumber}" itemsPerPage="${itemsPerPage}" />" method="POST">
 		<input type="hidden" name="selection" value="">
 	</form>
 
@@ -75,7 +75,8 @@
 					</span></th>
 					<th>Computer name</th>
 					<th>Introduced date</th>
-					<!-- Table header for Discontinued Date -->
+					<!-- Table heade￼
+					r for Discontinued Date -->
 					<th>Discontinued date</th>
 					<!-- Table header for Company -->
 					<th>Company</th>
@@ -87,13 +88,13 @@
 				<c:forEach items="${computers}" var="computer" varStatus="status">
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
-							class="cb" value="0"></td>
+							class="cb" value="${computer.id}"></td>
 						<td><a href="<tags:links target="editComputer" computerId="${computer.id}" itemsPerPage="${itemsPerPage}"/>" onclick=""> <c:out
 									value="${computer.name}" />
 						</a></td>
 						<td><c:out value="${computer.introduced}" /></td>
 						<td><c:out value="${computer.discontinued}" /></td>
-						<td><c:out value="${computer.companyName}" /></td>
+						<td><c:out value="${computer.company.name}" /></td>
 					</tr>
 				</c:forEach>
 			</tbody>

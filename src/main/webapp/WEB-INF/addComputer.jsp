@@ -33,7 +33,7 @@
 					<h1>Add Computer</h1>
 					<form
 						action="<tags:links target="addComputer" itemsPerPage="${itemsPerPage}"/>"
-						method="POST" id="createComputerForm">
+						method="POST" id="createComputerForm" name="createComputerForm">
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input

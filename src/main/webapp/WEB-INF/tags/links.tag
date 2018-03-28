@@ -26,6 +26,10 @@
 					<c:set var="path" value="${path.concat('&computerId=').concat(computerId)}"/>
 				</c:if>
 			</c:when>
+			
+			<c:when test="${target.equals('delete')}">
+				<c:set var="path" value="${path.concat('DeleteComputer?')}"/>
+			</c:when>
 		</c:choose>
 	</c:when>
 	<c:otherwise>

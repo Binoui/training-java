@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.formation.cdb.dto.CompanyDTO;
 import com.excilys.formation.cdb.mapper.CompanyDTOMapper;
 import com.excilys.formation.cdb.model.Company.CompanyBuilder;
+import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ComputerService;
@@ -78,6 +79,26 @@ public class AddComputer extends HttpServlet {
         String discontinuedString = request.getParameter("discontinued").trim();
         String companyIdString = request.getParameter("companyId");
 
+        Computer newComputer = createComputerFromParameters(request, response, name, introducedString,
+                discontinuedString, companyIdString);
+
+        if (newComputer == null) {
+            return;
+        }
+        
+        try {
+            computerService.createComputer(newComputer);
+        } catch (ServiceException | IncorrectValidationException e) {
+            Logger.debug("Cannot create computer {}", e);
+            request.setAttribute("error", e.getMessage());
+        }
+
+        getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
+    }
+
+    private Computer createComputerFromParameters(HttpServletRequest request, HttpServletResponse response, String name,
+            String introducedString, String discontinuedString, String companyIdString)
+            throws ServletException, IOException {
         ComputerBuilder computerBuilder = new ComputerBuilder().withName(name);
 
         try {
@@ -92,7 +113,7 @@ public class AddComputer extends HttpServlet {
             request.setAttribute("error", "Wrong date format");
             Logger.error("Cannot create computer, wrong date format {}", e);
             doGet(request, response);
-            return;
+            return null;
         }
 
         if ((companyIdString != null) && !companyIdString.isEmpty()) {
@@ -101,15 +122,8 @@ public class AddComputer extends HttpServlet {
                 computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
             }
         }
-
-        try {
-            computerService.createComputer(computerBuilder.build());
-        } catch (ServiceException | IncorrectValidationException e) {
-            Logger.debug("Cannot create computer {}", e);
-            request.setAttribute("error", e.getMessage());
-        }
-
-        doGet(request, response);
+        
+        return computerBuilder.build();
     }
 
 }

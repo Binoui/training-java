@@ -34,7 +34,7 @@
 					<tags:addErrors/>
 					<h1>Edit Computer</h1>
 
-					<form action="<tags:links target="editComputer" pageIndex="${pageIndex}" itemsPerPage="${itemsPerPage}"/>" method="POST">
+					<form action="<tags:links target="editComputer" pageIndex="${pageIndex}" itemsPerPage="${itemsPerPage}"/>" name="editComputerForm" method="POST">
 						<input type="hidden" value="${computer.id}" name="computerId" id="computerId" />
 						<fieldset>
 							<div class="form-group">
@@ -64,7 +64,7 @@
 									<option value="0">None</option>
 									<c:forEach var="company" items="${companies}">
 										<option value="<c:out value="${company.id}"/>"
-											<c:if test="${company.name == computer.companyName}">
+											<c:if test="${company.id == computer.company.id}">
 												selected
 											</c:if>>
 											<c:out value="${company.name}" />

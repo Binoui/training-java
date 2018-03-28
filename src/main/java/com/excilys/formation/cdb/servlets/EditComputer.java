@@ -102,6 +102,26 @@ public class EditComputer extends HttpServlet {
         String discontinuedString = request.getParameter("discontinued").trim();
         String companyIdString = request.getParameter("companyId").trim();
 
+        Computer computer = createComputerFromParameters(request, response, name, computerIdString, introducedString,
+                discontinuedString, companyIdString);
+        
+        if (computer == null) {
+            return;
+        }
+        
+        try {
+            computerService.updateComputer(computer);
+        } catch (ServiceException | IncorrectValidationException e) {
+            Logger.debug("Cannot edit computer {}", e);
+            request.setAttribute("error", e.getMessage());
+        }
+
+        getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
+    }
+
+    private Computer createComputerFromParameters(HttpServletRequest request, HttpServletResponse response, String name,
+            String computerIdString, String introducedString, String discontinuedString, String companyIdString)
+            throws ServletException, IOException {
         ComputerBuilder computerBuilder = new ComputerBuilder().withName(name);
 
         try {
@@ -116,7 +136,7 @@ public class EditComputer extends HttpServlet {
             request.setAttribute("error", "Wrong date format");
             Logger.error("Cannot edit computer, wrong date format {}", e);
             doGet(request, response);
-            return;
+            return null;
         }
 
         Long computerId = convertStringIdToLong(computerIdString);
@@ -129,14 +149,8 @@ public class EditComputer extends HttpServlet {
             computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
         }
 
-        try {
-            computerService.updateComputer(computerBuilder.build());
-        } catch (ServiceException | IncorrectValidationException e) {
-            Logger.debug("Cannot edit computer {}", e);
-            request.setAttribute("error", e.getMessage());
-        }
-
-        getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
+        Computer computer = computerBuilder.build();
+        return computer;
     }
 
     private Long convertStringIdToLong(String idString) {

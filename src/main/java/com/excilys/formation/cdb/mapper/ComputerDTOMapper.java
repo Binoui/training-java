@@ -27,7 +27,7 @@ public enum ComputerDTOMapper {
         }
 
         if (computer.getCompany() != null) {
-            caDto.setCompanyName(computer.getCompany().getName());
+            caDto.setCompany(CompanyDTOMapper.INSTANCE.createCompanyDTO(computer.getCompany()));
         }
 
         return caDto;
