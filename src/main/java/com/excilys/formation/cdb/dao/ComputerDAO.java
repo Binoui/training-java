@@ -22,7 +22,9 @@ public enum ComputerDAO implements IComputerDAO {
 
     private static final String SELECT_ALL_COMPUTERS = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id;";
     private static final String SELECT_ALL_COMPUTERS_PAGE = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id order by cu_id limit ? offset ?;";
+    private static final String SELECT_ALL_COMPUTERS_PAGE_WITH_SEARCH = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id where cu_name like ? or ca_name like ? order by ca_id limit ? offset ?;";
     private static final String SELECT_COUNT_COMPUTERS = "select count(cu_id) from computer;";
+    private static final String SELECT_COUNT_COMPUTERS_WITH_SEARCH = "select count(cu_id) from computer left join company on computer.ca_id = company.ca_id where ca_name LIKE ? or cu_name LIKE ?;";
     private static final String SELECT_COMPUTER = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id where cu_id = ?;";
     private static final String INSERT_COMPUTER = "insert into computer (cu_name, cu_introduced, cu_discontinued, ca_id) values (?, ?, ?, ?);";
     private static final String UPDATE_COMPUTER = "update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?;";
@@ -82,7 +84,7 @@ public enum ComputerDAO implements IComputerDAO {
                     st.setLong(1, id);
                     st.executeUpdate();
                 }
-                
+
                 conn.commit();
             } catch (SQLException e) {
                 Logger.error("Error while deleting, rolling back");
@@ -110,7 +112,7 @@ public enum ComputerDAO implements IComputerDAO {
                 if (rs.next()) {
                     c = mapper.createComputer(rs);
                 }
-            }
+            };
 
         } catch (SQLException e) {
             Logger.debug(e.getMessage());
@@ -126,7 +128,6 @@ public enum ComputerDAO implements IComputerDAO {
         try (Connection conn = dbConn.getConnection();
                 PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPUTERS);
                 ResultSet rs = st.executeQuery()) {
-
             rs.next();
             computerCount = rs.getInt(1);
 
@@ -135,6 +136,30 @@ public enum ComputerDAO implements IComputerDAO {
             throw new DAOException("Couldn't get computer count");
         }
 
+        return computerCount;
+    }
+    
+    public int getComputerCount(String searchWord) throws DAOException {
+        Logger.info("getComputerCount with searchWord : " + searchWord);
+        int computerCount = 0;
+
+        try (Connection conn = dbConn.getConnection();
+                PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPUTERS_WITH_SEARCH)) {
+
+            searchWord = '%' + searchWord + '%';
+            st.setString(1, searchWord);
+            st.setString(2, searchWord);
+            
+            try (ResultSet rs = st.executeQuery()) {
+                rs.next();
+                computerCount = rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            Logger.debug(e.getMessage());
+            throw new DAOException("Couldn't get computer count");
+        }
+        
         return computerCount;
     }
 
@@ -182,7 +207,45 @@ public enum ComputerDAO implements IComputerDAO {
                 }
             }
         } catch (SQLException e) {
-            Logger.debug(e.getMessage());
+            Logger.debug("error when trying to get computer list {}", e);
+            throw new DAOException("Couldn't get computer list");
+        }
+
+        return computers;
+    }
+
+    public List<Computer> getListComputers(int pageNumber, int pageSize, String searchWord)
+            throws DAOException, IndexOutOfBoundsException {
+        Logger.info("list computers");
+        
+        if (searchWord == null) {
+            Logger.info("search word was null, using regular list computer");
+            return getListComputers(pageNumber, pageSize);
+        }
+        
+        ArrayList<Computer> computers = new ArrayList<>();
+
+        try (Connection conn = dbConn.getConnection();
+                PreparedStatement st = conn.prepareStatement(SELECT_ALL_COMPUTERS_PAGE_WITH_SEARCH);) {
+
+            searchWord = '%' + searchWord + '%';
+            st.setString(1, searchWord);
+            st.setString(2, searchWord);
+            st.setInt(3, pageSize);
+            st.setInt(4, pageSize * pageNumber);
+
+            try (ResultSet rs = st.executeQuery()) {
+
+                while (rs.next()) {
+                    computers.add(mapper.createComputer(rs));
+                }
+
+                if (computers.isEmpty()) {
+                    throw new IndexOutOfBoundsException("Given page number is greater than page count");
+                }
+            }
+        } catch (SQLException e) {
+            Logger.debug("error when trying to get computer list {}", e);
             throw new DAOException("Couldn't get computer list");
         }
 
@@ -193,6 +256,15 @@ public enum ComputerDAO implements IComputerDAO {
         int pageCount = 0;
 
         int computerCount = getComputerCount();
+        pageCount = ((computerCount + pageSize) - 1) / pageSize;
+
+        return pageCount;
+    }
+
+    public int getListComputersPageCount(int pageSize, String searchWord) throws DAOException {
+        int pageCount = 0;
+
+        int computerCount = getComputerCount(searchWord);
         pageCount = ((computerCount + pageSize) - 1) / pageSize;
 
         return pageCount;

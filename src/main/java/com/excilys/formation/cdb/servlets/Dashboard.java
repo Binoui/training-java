@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.formation.cdb.dto.ComputerDTO;
 import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
 import com.excilys.formation.cdb.pagination.ComputerListPage;
+import com.excilys.formation.cdb.pagination.ComputerListPageSearch;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 
@@ -46,8 +47,14 @@ public class Dashboard extends HttpServlet {
             throws ServletException, IOException {
 
         ComputerListPage page;
+        String searchWord = request.getParameter("search");
+        
         try {
-            page = new ComputerListPage();
+            if (searchWord != null && ! searchWord.trim().isEmpty()) {
+                page = new ComputerListPageSearch(searchWord.trim()); 
+            } else {
+                page = new ComputerListPage();
+            }
             handleRequest(request, page);
         } catch (ServiceException e) {
             Logger.error("Error creating page{}", e);
@@ -76,6 +83,8 @@ public class Dashboard extends HttpServlet {
 
     private void handleRequest(HttpServletRequest request, ComputerListPage page) {
         String pageNumber = request.getParameter("pageNumber");
+
+        List<ComputerDTO> listComputers = new LinkedList<>();
         try {
             if (pageNumber != null) {
                 page.goToPage(getIntParam(pageNumber, 0));
@@ -85,19 +94,20 @@ public class Dashboard extends HttpServlet {
             if (itemsPerPage != null) {
                 page.setPageSize(getIntParam(itemsPerPage, 10));
             }
+            
+            
+            page.getPage().forEach(computer -> listComputers.add(computerMapper.createComputerDTO(computer)));
+            
         } catch (ServiceException e) {
             Logger.error("Error creating page{}", e);
             return;
         }
 
-        List<ComputerDTO> listComputers = new LinkedList<>();
-        page.getPage().forEach(computer -> listComputers.add(computerMapper.createComputerDTO(computer)));
         request.setAttribute("computers", listComputers);
         request.setAttribute("pageNumber", page.getPageNumber());
-
         try {
-            request.setAttribute("pageCount", computerService.getListComputersPageCount(page.getPageSize()));
-            request.setAttribute("computerCount", computerService.getComputerCount());
+            request.setAttribute("pageCount", page.getListComputersPageCount(page.getPageSize()));
+            request.setAttribute("computerCount", page.getComputerCount());
         } catch (ServiceException e) {
             Logger.error("Error accessing service {}", e);
             return;

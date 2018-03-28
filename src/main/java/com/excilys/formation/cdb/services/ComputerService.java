@@ -59,6 +59,14 @@ public enum ComputerService {
             throw new ServiceException(e.getMessage());
         }
     }
+    
+    public int getComputerCount(String searchWord) throws ServiceException {
+        try {
+            return dao.getComputerCount(searchWord);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage());
+        }
+    }
 
     public List<Computer> getComputerPage(int pageNumber) {
         return new LinkedList<Computer>();
@@ -95,6 +103,22 @@ public enum ComputerService {
             dao.updateComputer(c);
         } catch (DAOException e) {
             throw new ServiceException("Couldn't update computer " + c.getName());
+        }
+    }
+
+    public int getListComputersPageCount(int pageSize, String searchWord) throws ServiceException {
+        try {
+            return dao.getListComputersPageCount(pageSize, searchWord);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
+    public List<Computer> getListComputers(int pageNumber, int pageSize, String searchWord) throws ServiceException {
+        try {
+            return dao.getListComputers(pageNumber, pageSize, searchWord);
+        } catch (IndexOutOfBoundsException | DAOException e) {
+            throw new ServiceException(e.getMessage());
         }
     }
 }

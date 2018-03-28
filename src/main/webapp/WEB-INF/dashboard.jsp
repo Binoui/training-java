@@ -32,7 +32,6 @@
 
 		<tags:addErrors />
 
-
 		<h1 id="homeTitle">
 			<c:out value="${computerCount}" />
 			Computers found
@@ -41,8 +40,7 @@
 
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
-				<form id="searchForm" action="#" method="GET" class="form-inline">
-
+				<form id="searchForm" action="<tags:links target="dashboard" itemsPerPage="${itemsPerPage}" search="${search}" pageIndex="${pageNumber}"/>" method="GET" class="form-inline">
 					<input type="search" id="searchbox" name="search"
 						class="form-control" placeholder="Search name" /> <input
 						type="submit" id="searchsubmit" value="Filter by name"
@@ -59,7 +57,7 @@
 	</div>
 
 	<form id="deleteForm"
-		action="<tags:links target="delete" pageIndex="${pageNumber}" itemsPerPage="${itemsPerPage}" />"
+		action="<tags:links target="delete" pageIndex="${pageNumber}" search="${search}" itemsPerPage="${itemsPerPage}" />"
 		method="POST">
 		<input type="hidden" name="selection" value="">
 	</form>
@@ -95,7 +93,7 @@
 						<td class="editMode"><input type="checkbox" name="cb"
 							class="cb" value="${computer.id}"></td>
 						<td><a
-							href="<tags:links target="editComputer" computerId="${computer.id}" itemsPerPage="${itemsPerPage}"/>"
+							href="<tags:links target="editComputer" search="${search}" computerId="${computer.id}" itemsPerPage="${itemsPerPage}"/>"
 							onclick=""> <c:out value="${computer.name}" />
 						</a></td>
 						<td><c:out value="${computer.introduced}" /></td>
@@ -118,7 +116,7 @@
 		<div class="btn-group btn-group-sm pull-right" role="group">
 			<c:forEach var="itemsPerPage" items="10,50,100" varStatus="status">
 				<a
-					href="<tags:links target="dashboard" pageIndex="0" itemsPerPage="${itemsPerPage}"/>">
+					href="<tags:links target="dashboard" search="${search}" pageIndex="0" itemsPerPage="${itemsPerPage}"/>">
 					<button type="button" class="btn btn-default">
 						<c:out value="${itemsPerPage}" />
 					</button>

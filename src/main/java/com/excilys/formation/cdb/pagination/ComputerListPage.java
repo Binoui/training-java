@@ -26,4 +26,12 @@ public class ComputerListPage extends Page<Computer> {
         elements = service.getListComputers(pageNumber, pageSize);
     }
 
+    public int getListComputersPageCount(int pageSize) throws ServiceException {
+        return service.getListComputersPageCount(pageSize);
+    }
+
+    public int getComputerCount() throws ServiceException {
+        return service.getComputerCount();
+    }
+
 }

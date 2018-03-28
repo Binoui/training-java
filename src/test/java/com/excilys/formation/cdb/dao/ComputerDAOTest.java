@@ -84,5 +84,10 @@ public class ComputerDAOTest {
         cDao.updateComputer(c);
         assertEquals(cDao.getComputer(c).get().getIntroduced(), LocalDate.parse("0001-01-01"));
     }
+    
+    @Test
+    public void testSearch() throws IndexOutOfBoundsException, DAOException {
+        assertEquals(cDao.getListComputers(0, 10, "Computer").size(), 2);
+    }
 
 }

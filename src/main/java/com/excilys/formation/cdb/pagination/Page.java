@@ -23,7 +23,8 @@ public abstract class Page<T> {
 
     public abstract int getLastPageNumber() throws ServiceException;
 
-    public List<T> getPage() {
+    public List<T> getPage() throws ServiceException {
+        refresh();
         return elements;
     }
 
