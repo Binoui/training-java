@@ -73,7 +73,7 @@ public class EditComputer extends HttpServlet {
                 return;
             }
 
-//            request.setAttribute("computer", ComputerDTOMapper.INSTANCE.createComputerDTO(optionalComputer.get()));
+            request.setAttribute("computer", ComputerDTOMapper.INSTANCE.createComputerDTO(optionalComputer.get()));
 
             companyService.getListCompanies()
                     .forEach(company -> listCompanies.add(companyMapper.createCompanyDTO(company)));
@@ -94,8 +94,10 @@ public class EditComputer extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String computerIdString = request.getParameter("computerId").trim();
+        Logger.debug("entering doPost");
         String name = request.getParameter("computerName").trim();
+        Logger.debug("name : " + name);
+        String computerIdString = request.getParameter("computerId").trim();
         String introducedString = request.getParameter("introduced").trim();
         String discontinuedString = request.getParameter("discontinued").trim();
         String companyIdString = request.getParameter("companyId").trim();
@@ -127,15 +129,14 @@ public class EditComputer extends HttpServlet {
             computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
         }
 
-        System.out.println(computerBuilder.build());
-        // try {
-        // computerService.updateComputer(computerBuilder.build());
-        // } catch (ServiceException | IncorrectValidationException e) {
-        // Logger.debug("Cannot edit computer {}", e);
-        // request.setAttribute("error", e.getMessage());
-        // }
-        //
-        doGet(request, response);
+        try {
+            computerService.updateComputer(computerBuilder.build());
+        } catch (ServiceException | IncorrectValidationException e) {
+            Logger.debug("Cannot edit computer {}", e);
+            request.setAttribute("error", e.getMessage());
+        }
+
+        getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
     }
 
     private Long convertStringIdToLong(String idString) {
@@ -151,7 +152,7 @@ public class EditComputer extends HttpServlet {
             throws ServletException, IOException {
         Logger.error("error finding computer, redirecting to dashboard");
         request.setAttribute("error", error);
-        response.sendRedirect("/ComputerDatabase/Dashboard");
+        getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
     }
 
 }

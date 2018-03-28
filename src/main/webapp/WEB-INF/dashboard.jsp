@@ -53,6 +53,8 @@
 		</div>
 	</div>
 
+	<tags:addErrors/>
+
 	<form id="deleteForm" action="#" method="POST">
 		<input type="hidden" name="selection" value="">
 	</form>

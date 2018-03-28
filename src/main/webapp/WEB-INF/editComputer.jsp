@@ -31,10 +31,11 @@
 						id:
 						<c:out value="${computer.id}" />
 					</div>
+					<tags:addErrors/>
 					<h1>Edit Computer</h1>
 
 					<form action="<tags:links target="editComputer" pageIndex="${pageIndex}" itemsPerPage="${itemsPerPage}"/>" method="POST">
-						<input type="hidden" value="${computer.id}" id="computerId" />
+						<input type="hidden" value="${computer.id}" name="computerId" id="computerId" />
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
