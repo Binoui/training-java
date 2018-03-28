@@ -207,7 +207,7 @@ public enum ComputerDAO implements IComputerDAO {
 
         } catch (SQLException e) {
             LOGGER.debug(e.getMessage());
-            throw new DAOException("Couldn't update computer with id" + c.getId());
+            throw new DAOException("Couldn't update computer with id : " + c.getId());
         }
     }
 }

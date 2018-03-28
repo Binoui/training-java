@@ -86,7 +86,7 @@ public enum ComputerService {
         try {
             dao.updateComputer(c);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException("Couldn't update computer " + c.getName());
         }
     }
 }

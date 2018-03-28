@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.cdb.dto.ComputerDTO;
 import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
+import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.pagination.ComputerListPage;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
@@ -62,7 +64,16 @@ public class DeleteComputer extends HttpServlet {
             return;
         }
         
-        Arrays.asList(selectedIds.split(","));
+        List<Long> idsToDelete = new LinkedList<Long>();
+        
+        try {
+            Arrays.asList(selectedIds.split(",")).forEach(id -> idsToDelete.add(Long.parseLong(id)));
+        } catch (NumberFormatException e) {
+            request.setAttribute("error", "Cannot delete computers, wrong selection");
+            getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
+            return;
+        }        
+        
         
         
         doGet(request, response);

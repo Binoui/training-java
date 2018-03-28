@@ -28,6 +28,10 @@
 
 	<section id="main">
 	<div class="container">
+
+		<tags:addErrors/>
+
+
 		<h1 id="homeTitle">
 			<c:out value="${computerCount}" />
 			Computers found
@@ -52,8 +56,6 @@
 			</div>
 		</div>
 	</div>
-
-	<tags:addErrors/>
 
 	<form id="deleteForm" action="<tags:links target="delete" pageIndex="${pageNumber}" itemsPerPage="${itemsPerPage}" />" method="POST">
 		<input type="hidden" name="selection" value="">
