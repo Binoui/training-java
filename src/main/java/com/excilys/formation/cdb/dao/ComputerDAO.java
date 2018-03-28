@@ -28,14 +28,14 @@ public enum ComputerDAO implements IComputerDAO {
     private static final String UPDATE_COMPUTER = "update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?;";
     private static final String DELETE_COMPUTER = "delete from computer where cu_id = ?;";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
+    private static final Logger Logger = LoggerFactory.getLogger(ComputerDAO.class);
 
     private static ComputerMapper mapper = ComputerMapper.INSTANCE;
     private static DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
 
     @Override
     public Long createComputer(Computer c) throws DAOException {
-        LOGGER.info("create computer");
+        Logger.info("create computer");
         Long key = null;
 
         try (Connection conn = dbConn.getConnection();
@@ -50,7 +50,7 @@ public enum ComputerDAO implements IComputerDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            Logger.debug(e.getMessage());
             throw new DAOException("Couldn't create computer");
         }
 
@@ -59,21 +59,45 @@ public enum ComputerDAO implements IComputerDAO {
 
     @Override
     public void deleteComputer(Computer c) throws DAOException {
-        LOGGER.info("delete computer");
+        Logger.info("delete computer");
         try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
 
             st.setLong(1, c.getId());
             st.executeUpdate();
 
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            Logger.debug(e.getMessage());
             throw new DAOException("Couldn't delete computer with ID : " + c.getId());
         }
     }
 
+    public void deleteComputers(List<Long> idsToDelete) throws DAOException {
+        Logger.info("delete computers");
+        try (Connection conn = dbConn.getConnection()) {
+
+            conn.setAutoCommit(false);
+            try (PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
+
+                for (Long id : idsToDelete) {
+                    st.setLong(1, id);
+                    st.executeUpdate();
+                }
+                
+                conn.commit();
+            } catch (SQLException e) {
+                Logger.error("Error while deleting, rolling back");
+                conn.rollback();
+                throw new DAOException("Cannot delete computers");
+            }
+        } catch (SQLException e) {
+            Logger.error("error with database connection {}", e);
+        }
+
+    }
+
     public Optional<Computer> getComputer(Computer computer) throws DAOException {
         Computer c = null;
-        
+
         try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPUTER);) {
 
             if (computer.getId() != null) {
@@ -89,7 +113,7 @@ public enum ComputerDAO implements IComputerDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            Logger.debug(e.getMessage());
             throw new DAOException("Couldn't find computer with ID : " + computer.getId());
         }
 
@@ -107,7 +131,7 @@ public enum ComputerDAO implements IComputerDAO {
             computerCount = rs.getInt(1);
 
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            Logger.debug(e.getMessage());
             throw new DAOException("Couldn't get computer count");
         }
 
@@ -116,7 +140,7 @@ public enum ComputerDAO implements IComputerDAO {
 
     @Override
     public List<Computer> getListComputers() throws DAOException {
-        LOGGER.info("list computers");
+        Logger.info("list computers");
         ArrayList<Computer> computers = new ArrayList<>();
 
         try (Connection conn = dbConn.getConnection();
@@ -128,7 +152,7 @@ public enum ComputerDAO implements IComputerDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            Logger.debug(e.getMessage());
             throw new DAOException("Couldn't get computer list");
         }
 
@@ -136,8 +160,9 @@ public enum ComputerDAO implements IComputerDAO {
     }
 
     @Override
-    public List<Computer> getListComputers(int pageNumber, int pageSize) throws DAOException, IndexOutOfBoundsException {
-        LOGGER.info("list computers");
+    public List<Computer> getListComputers(int pageNumber, int pageSize)
+            throws DAOException, IndexOutOfBoundsException {
+        Logger.info("list computers");
         ArrayList<Computer> computers = new ArrayList<>();
 
         try (Connection conn = dbConn.getConnection();
@@ -157,7 +182,7 @@ public enum ComputerDAO implements IComputerDAO {
                 }
             }
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            Logger.debug(e.getMessage());
             throw new DAOException("Couldn't get computer list");
         }
 
@@ -198,7 +223,7 @@ public enum ComputerDAO implements IComputerDAO {
 
     @Override
     public void updateComputer(Computer c) throws DAOException {
-        LOGGER.info("update computer");
+        Logger.info("update computer");
         try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(UPDATE_COMPUTER);) {
 
             populateStatementFromComputer(c, st);
@@ -206,7 +231,7 @@ public enum ComputerDAO implements IComputerDAO {
             st.executeUpdate();
 
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            Logger.debug(e.getMessage());
             throw new DAOException("Couldn't update computer with id : " + c.getId());
         }
     }

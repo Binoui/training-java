@@ -1,6 +1,8 @@
 package com.excilys.formation.cdb.dao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -17,20 +19,21 @@ import com.excilys.formation.cdb.utils.HSQLDatabase;
 public class ComputerDAOTest {
 
     private static final ComputerDAO cDao = ComputerDAO.INSTANCE;
-    
-    @Before
-    public void setUp() throws SQLException, IOException {
-        HSQLDatabase.initDatabase();
-    }
-    
+
     @After
     public void cleanUp() throws SQLException {
         HSQLDatabase.destroy();
     }
 
+    @Before
+    public void setUp() throws SQLException, IOException {
+        HSQLDatabase.initDatabase();
+    }
+
     @Test
     public void testCreateComputer() throws DAOException {
-        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null).withDiscontinued(LocalDate.parse("0002-02-02")).build();
+        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null)
+                .withDiscontinued(LocalDate.parse("0002-02-02")).build();
         c.setId(cDao.createComputer(c));
         assertTrue(cDao.getComputer(c).isPresent());
         cDao.deleteComputer(c);
@@ -38,10 +41,16 @@ public class ComputerDAOTest {
 
     @Test
     public void testDeleteComputer() throws DAOException {
-        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null).withDiscontinued(LocalDate.parse("0002-02-02")).build();
+        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null)
+                .withDiscontinued(LocalDate.parse("0002-02-02")).build();
         c.setId(cDao.createComputer(c));
         cDao.deleteComputer(c);
         assertFalse(cDao.getComputer(c).isPresent());
+    }
+
+    @Test
+    public void testGetCompanyWithIdNull() throws DAOException {
+        cDao.getComputer(new ComputerBuilder().build());
     }
 
     @Test
@@ -58,11 +67,6 @@ public class ComputerDAOTest {
     public void testGetListComputers() throws DAOException {
         assertEquals((long) cDao.getListComputers().get(1).getId(), (long) 2);
     }
-    
-    @Test
-    public void testGetCompanyWithIdNull() throws DAOException {
-        cDao.getComputer(new ComputerBuilder().build());
-    }
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void testGetListComputersIntInt() throws IndexOutOfBoundsException, DAOException {
@@ -78,7 +82,7 @@ public class ComputerDAOTest {
     public void testUpdateComputer() throws DAOException {
         Computer c = new ComputerBuilder().withId((long) 2).withIntroduced(LocalDate.parse("0001-01-01")).build();
         cDao.updateComputer(c);
-        assertEquals(cDao.getComputer(c).get().getIntroduced(), LocalDate.parse("0001-01-01")); 
+        assertEquals(cDao.getComputer(c).get().getIntroduced(), LocalDate.parse("0001-01-01"));
     }
 
 }

@@ -73,14 +73,15 @@ public enum CompanyDAO implements ICompanyDAO {
 
         } catch (SQLException e) {
             LOGGER.debug(e.getMessage());
-            throw new DAOException("Couldn't fetch companies list"); 
+            throw new DAOException("Couldn't fetch companies list");
         }
 
         return companies;
     }
 
     @Override
-    public List<Company> getListCompanies(final int pageNumber, final int pageSize) throws DAOException, IndexOutOfBoundsException {
+    public List<Company> getListCompanies(final int pageNumber, final int pageSize)
+            throws DAOException, IndexOutOfBoundsException {
         LOGGER.info("get list companies");
         ArrayList<Company> companies = new ArrayList<>();
         ResultSet rs = null;

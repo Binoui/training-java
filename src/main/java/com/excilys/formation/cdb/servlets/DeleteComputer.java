@@ -14,11 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.formation.cdb.dto.ComputerDTO;
 import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
-import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
-import com.excilys.formation.cdb.pagination.ComputerListPage;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 
@@ -32,6 +28,7 @@ public class DeleteComputer extends HttpServlet {
     private static final ComputerDTOMapper computerMapper = ComputerDTOMapper.INSTANCE;
     private static final ComputerService computerService = ComputerService.INSTANCE;
     private static final Logger Logger = LoggerFactory.getLogger(DeleteComputer.class);
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -57,26 +54,37 @@ public class DeleteComputer extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String selectedIds = request.getParameter("selection").trim();
         if (selectedIds.isEmpty()) {
             getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
             return;
         }
-        
+
         List<Long> idsToDelete = new LinkedList<Long>();
-        
+
         try {
             Arrays.asList(selectedIds.split(",")).forEach(id -> idsToDelete.add(Long.parseLong(id)));
         } catch (NumberFormatException e) {
-            request.setAttribute("error", "Cannot delete computers, wrong selection");
-            getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
+            redirectToDashboardWithError(request, response, "Cannot delete computers, wrong selection");
             return;
-        }        
-        
-        
-        
+        }
+
+        try {
+            computerService.deleteComputers(idsToDelete);
+        } catch (ServiceException e) {
+            redirectToDashboardWithError(request, response, "cannot delete computers");
+            return;
+        }
+
         doGet(request, response);
+    }
+
+    private void redirectToDashboardWithError(HttpServletRequest request, HttpServletResponse response, String error)
+            throws ServletException, IOException {
+        Logger.error(error);
+        request.setAttribute("error", error);
+        getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
     }
 
 }

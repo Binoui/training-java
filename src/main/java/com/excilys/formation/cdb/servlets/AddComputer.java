@@ -43,59 +43,6 @@ public class AddComputer extends HttpServlet {
         super();
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // TODO Auto-generated method stub
-
-        List<CompanyDTO> listCompanies = new LinkedList<>();
-        
-        try {
-            companyService.getListCompanies()
-                    .forEach(company -> listCompanies.add(companyMapper.createCompanyDTO(company)));
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
-        
-        request.setAttribute("companies", listCompanies);
-
-        getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
-    }
-
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        String name = request.getParameter("computerName").trim();
-        String introducedString = request.getParameter("introduced").trim();
-        String discontinuedString = request.getParameter("discontinued").trim();
-        String companyIdString = request.getParameter("companyId");
-
-        Computer newComputer = createComputerFromParameters(request, response, name, introducedString,
-                discontinuedString, companyIdString);
-
-        if (newComputer == null) {
-            return;
-        }
-        
-        try {
-            computerService.createComputer(newComputer);
-        } catch (ServiceException | IncorrectValidationException e) {
-            Logger.debug("Cannot create computer {}", e);
-            request.setAttribute("error", e.getMessage());
-        }
-
-        getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
-    }
-
     private Computer createComputerFromParameters(HttpServletRequest request, HttpServletResponse response, String name,
             String introducedString, String discontinuedString, String companyIdString)
             throws ServletException, IOException {
@@ -122,8 +69,61 @@ public class AddComputer extends HttpServlet {
                 computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
             }
         }
-        
+
         return computerBuilder.build();
+    }
+
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // TODO Auto-generated method stub
+
+        List<CompanyDTO> listCompanies = new LinkedList<>();
+
+        try {
+            companyService.getListCompanies()
+                    .forEach(company -> listCompanies.add(companyMapper.createCompanyDTO(company)));
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+
+        request.setAttribute("companies", listCompanies);
+
+        getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
+    }
+
+    /**
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String name = request.getParameter("computerName").trim();
+        String introducedString = request.getParameter("introduced").trim();
+        String discontinuedString = request.getParameter("discontinued").trim();
+        String companyIdString = request.getParameter("companyId");
+
+        Computer newComputer = createComputerFromParameters(request, response, name, introducedString,
+                discontinuedString, companyIdString);
+
+        if (newComputer == null) {
+            return;
+        }
+
+        try {
+            computerService.createComputer(newComputer);
+        } catch (ServiceException | IncorrectValidationException e) {
+            Logger.debug("Cannot create computer {}", e);
+            request.setAttribute("error", e.getMessage());
+        }
+
+        getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
     }
 
 }

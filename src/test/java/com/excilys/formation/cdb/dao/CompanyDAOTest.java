@@ -1,6 +1,8 @@
 package com.excilys.formation.cdb.dao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,17 +20,17 @@ public class CompanyDAOTest {
 
     private CompanyDAO cDAO;
 
+    @After
+    public void cleanUp() throws SQLException {
+        HSQLDatabase.destroy();
+    }
+
     @Before
     public void setUp() throws SQLException, IOException {
         cDAO = CompanyDAO.INSTANCE;
         HSQLDatabase.initDatabase();
     }
-    
-    @After
-    public void cleanUp() throws SQLException {
-        HSQLDatabase.destroy();
-    }
-    
+
     @Test
     public void testGetCompanyCompany() throws DAOException {
         assertNotNull(cDAO.getCompany(new CompanyBuilder().withId((long) 1).build()));
@@ -38,7 +40,7 @@ public class CompanyDAOTest {
     public void testGetCompanyLong() throws DAOException {
         assertNotNull(cDAO.getCompany((long) 1));
     }
-    
+
     @Test
     public void testGetCompanyWithIdNull() throws DAOException {
         cDAO.getCompany(new CompanyBuilder().build());
@@ -53,16 +55,16 @@ public class CompanyDAOTest {
     }
 
     @Test
+    public void testGetListCompaniesPageCount() {
+    }
+
+    @Test
     public void testGetListCompaniesPageOutOfBounds() throws DAOException {
         try {
             cDAO.getListCompanies(999999, 10);
             fail("should throw exception");
         } catch (IndexOutOfBoundsException e) {
         }
-    }
-
-    @Test
-    public void testGetListCompaniesPageCount() {
     }
 
 }

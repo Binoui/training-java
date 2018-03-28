@@ -29,6 +29,7 @@ public class Dashboard extends HttpServlet {
     private static final ComputerDTOMapper computerMapper = ComputerDTOMapper.INSTANCE;
     private static final ComputerService computerService = ComputerService.INSTANCE;
     private static final Logger Logger = LoggerFactory.getLogger(Dashboard.class);
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -51,7 +52,7 @@ public class Dashboard extends HttpServlet {
         } catch (ServiceException e) {
             Logger.error("Error creating page{}", e);
         }
-        
+
         getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
     }
 

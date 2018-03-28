@@ -21,15 +21,16 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
-		<a class="navbar-brand" href='<tags:links target="dashboard" ></tags:links>'> Application -
-			Computer Database </a>
+		<a class="navbar-brand"
+			href='<tags:links target="dashboard" ></tags:links>'> Application
+			- Computer Database </a>
 	</div>
 	</header>
 
 	<section id="main">
 	<div class="container">
 
-		<tags:addErrors/>
+		<tags:addErrors />
 
 
 		<h1 id="homeTitle">
@@ -52,12 +53,14 @@
 				<a class="btn btn-success" id="addComputer"
 					href="<tags:links target="addComputer" itemsPerPage="${itemsPerPage}"/>">
 					Add Computer </a> <a class="btn btn-default" id="editComputer" href="#"
-					onclick="$.fn.toggleEditMode();"> Edit </a>
+					onclick="$.fn.toggleEditMode();"> Delete </a>
 			</div>
 		</div>
 	</div>
 
-	<form id="deleteForm" action="<tags:links target="delete" pageIndex="${pageNumber}" itemsPerPage="${itemsPerPage}" />" method="POST">
+	<form id="deleteForm"
+		action="<tags:links target="delete" pageIndex="${pageNumber}" itemsPerPage="${itemsPerPage}" />"
+		method="POST">
 		<input type="hidden" name="selection" value="">
 	</form>
 
@@ -91,8 +94,9 @@
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
 							class="cb" value="${computer.id}"></td>
-						<td><a href="<tags:links target="editComputer" computerId="${computer.id}" itemsPerPage="${itemsPerPage}"/>" onclick=""> <c:out
-									value="${computer.name}" />
+						<td><a
+							href="<tags:links target="editComputer" computerId="${computer.id}" itemsPerPage="${itemsPerPage}"/>"
+							onclick=""> <c:out value="${computer.name}" />
 						</a></td>
 						<td><c:out value="${computer.introduced}" /></td>
 						<td><c:out value="${computer.discontinued}" /></td>

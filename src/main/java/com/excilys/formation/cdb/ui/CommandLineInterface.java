@@ -91,7 +91,7 @@ public class CommandLineInterface {
         try {
             c = computerService.getComputer(new ComputerBuilder().withId(id).build());
         } catch (ServiceException e) {
-            
+
         }
         if (c.isPresent()) {
             System.out.println(c.get());

@@ -19,7 +19,7 @@ public enum ComputerService {
 
     public Long createComputer(Computer c) throws IncorrectValidationException, ServiceException {
         validator.validateComputer(c);
-        
+
         try {
             return dao.createComputer(c);
         } catch (DAOException e) {
@@ -31,6 +31,14 @@ public enum ComputerService {
         validator.validateComputerId(c.getId());
         try {
             dao.deleteComputer(c);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
+    public void deleteComputers(List<Long> idsToDelete) throws ServiceException {
+        try {
+            dao.deleteComputers(idsToDelete);
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage());
         }

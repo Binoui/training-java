@@ -45,6 +45,49 @@ public class EditComputer extends HttpServlet {
         super();
     }
 
+    private Long convertStringIdToLong(String idString) {
+        Long id = (long) 0;
+        if ((idString != null) && !idString.isEmpty()) {
+            id = Long.parseLong(idString);
+        }
+
+        return id;
+    }
+
+    private Computer createComputerFromParameters(HttpServletRequest request, HttpServletResponse response, String name,
+            String computerIdString, String introducedString, String discontinuedString, String companyIdString)
+            throws ServletException, IOException {
+        ComputerBuilder computerBuilder = new ComputerBuilder().withName(name);
+
+        try {
+            if ((introducedString != null) && !introducedString.isEmpty()) {
+                computerBuilder.withIntroduced(LocalDate.parse(introducedString));
+            }
+
+            if ((discontinuedString != null) && !discontinuedString.isEmpty()) {
+                computerBuilder.withDiscontinued(LocalDate.parse(discontinuedString));
+            }
+        } catch (DateTimeParseException e) {
+            request.setAttribute("error", "Wrong date format");
+            Logger.error("Cannot edit computer, wrong date format {}", e);
+            doGet(request, response);
+            return null;
+        }
+
+        Long computerId = convertStringIdToLong(computerIdString);
+        if (computerId != 0) {
+            computerBuilder.withId(computerId);
+        }
+
+        Long companyId = convertStringIdToLong(companyIdString);
+        if (companyId != 0) {
+            computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
+        }
+
+        Computer computer = computerBuilder.build();
+        return computer;
+    }
+
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
      *      response)
@@ -104,11 +147,11 @@ public class EditComputer extends HttpServlet {
 
         Computer computer = createComputerFromParameters(request, response, name, computerIdString, introducedString,
                 discontinuedString, companyIdString);
-        
+
         if (computer == null) {
             return;
         }
-        
+
         try {
             computerService.updateComputer(computer);
         } catch (ServiceException | IncorrectValidationException e) {
@@ -117,49 +160,6 @@ public class EditComputer extends HttpServlet {
         }
 
         getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
-    }
-
-    private Computer createComputerFromParameters(HttpServletRequest request, HttpServletResponse response, String name,
-            String computerIdString, String introducedString, String discontinuedString, String companyIdString)
-            throws ServletException, IOException {
-        ComputerBuilder computerBuilder = new ComputerBuilder().withName(name);
-
-        try {
-            if ((introducedString != null) && !introducedString.isEmpty()) {
-                computerBuilder.withIntroduced(LocalDate.parse(introducedString));
-            }
-
-            if ((discontinuedString != null) && !discontinuedString.isEmpty()) {
-                computerBuilder.withDiscontinued(LocalDate.parse(discontinuedString));
-            }
-        } catch (DateTimeParseException e) {
-            request.setAttribute("error", "Wrong date format");
-            Logger.error("Cannot edit computer, wrong date format {}", e);
-            doGet(request, response);
-            return null;
-        }
-
-        Long computerId = convertStringIdToLong(computerIdString);
-        if (computerId != 0) {
-            computerBuilder.withId(computerId);
-        }
-
-        Long companyId = convertStringIdToLong(companyIdString);
-        if (companyId != 0) {
-            computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
-        }
-
-        Computer computer = computerBuilder.build();
-        return computer;
-    }
-
-    private Long convertStringIdToLong(String idString) {
-        Long id = (long) 0;
-        if (idString != null && !idString.isEmpty()) {
-            id = Long.parseLong(idString);
-        }
-
-        return id;
     }
 
     private void redirectToDashboardWithError(HttpServletRequest request, HttpServletResponse response, String error)
