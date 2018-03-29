@@ -6,6 +6,8 @@
 <%@attribute name="itemsPerPage" required="false"%>
 <%@attribute name="computerId" required="false"%>
 <%@attribute name="search" required="false"%>
+<%@attribute name="sortBy" required="false"%>
+<%@attribute name="ascending" required="false"%>
 
 <c:set var="path" value="/ComputerDatabase/" />
 
@@ -18,7 +20,14 @@
 				<c:if test="${search != null}">
 					<c:set var="path" value="${path.concat('&search=').concat(search)}" />
 				</c:if>
-
+				
+				<c:if test="${sortBy != null}">
+					<c:set var="path" value="${path.concat('&sortBy=').concat(sortBy)}" />
+				</c:if>
+				
+				<c:if test="${ascending != null}">
+					<c:set var="path" value="${path.concat('&ascending=').concat(ascending)}" />
+				</c:if>
 			</c:when>
 
 			<c:when test="${target.equals('addComputer')}">

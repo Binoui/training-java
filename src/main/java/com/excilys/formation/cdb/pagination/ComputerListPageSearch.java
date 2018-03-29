@@ -1,7 +1,5 @@
 package com.excilys.formation.cdb.pagination;
 
-import org.slf4j.LoggerFactory;
-
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 
@@ -29,9 +27,9 @@ public class ComputerListPageSearch extends ComputerListPage {
     @Override
     public void refresh() throws ServiceException {
         if (searchWord == null) {
-            elements = service.getListComputers(pageNumber, pageSize);
+            elements = service.getListComputers(pageNumber, pageSize, column, ascendingSort);
         } else {
-            elements = service.getListComputers(pageNumber, pageSize, searchWord);
+            elements = service.getListComputers(pageNumber, pageSize, column, ascendingSort, searchWord);
         }
     }
     

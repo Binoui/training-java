@@ -70,7 +70,7 @@ public class ComputerDAOTest {
 
     @Test(expected = IndexOutOfBoundsException.class)
     public void testGetListComputersIntInt() throws IndexOutOfBoundsException, DAOException {
-        cDao.getListComputers(99999, 10);
+        cDao.getListComputers(99999, 10, SortableComputerColumn.ID, true);
     }
 
     @Test
@@ -87,7 +87,7 @@ public class ComputerDAOTest {
     
     @Test
     public void testSearch() throws IndexOutOfBoundsException, DAOException {
-        assertEquals(cDao.getListComputers(0, 10, "Computer").size(), 2);
+        assertEquals(cDao.getListComputers(0, 10, SortableComputerColumn.ID, true, "Computer").size(), 2);
     }
 
 }

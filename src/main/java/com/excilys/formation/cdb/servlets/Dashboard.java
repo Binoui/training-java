@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.dto.ComputerDTO;
 import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
 import com.excilys.formation.cdb.pagination.ComputerListPage;
@@ -28,7 +29,6 @@ public class Dashboard extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private static final ComputerDTOMapper computerMapper = ComputerDTOMapper.INSTANCE;
-    private static final ComputerService computerService = ComputerService.INSTANCE;
     private static final Logger Logger = LoggerFactory.getLogger(Dashboard.class);
 
     /**
@@ -48,13 +48,39 @@ public class Dashboard extends HttpServlet {
 
         ComputerListPage page;
         String searchWord = request.getParameter("search");
-        
+
+        String sortBy = request.getParameter("sortBy");
+        String ascendingString = request.getParameter("ascending");
+
         try {
-            if (searchWord != null && ! searchWord.trim().isEmpty()) {
-                page = new ComputerListPageSearch(searchWord.trim()); 
+            if (searchWord != null && !searchWord.trim().isEmpty()) {
+                page = new ComputerListPageSearch(searchWord.trim());
             } else {
                 page = new ComputerListPage();
             }
+
+            if (sortBy != null && ascendingString != null) {
+                SortableComputerColumn column;
+                boolean ascending;
+
+                try {
+                    column = SortableComputerColumn.valueOf(sortBy.trim().toUpperCase());
+
+                    if (ascendingString.equalsIgnoreCase("true") || ascendingString.equalsIgnoreCase("false")) {
+
+                        ascending = Boolean.valueOf(ascendingString);
+                        page.setColumn(column);
+                        page.setAscendingSort(ascending);
+
+                    } else {
+                        Logger.debug("Couldn't parse given ascending value into a boolean");
+                    }
+
+                } catch (IllegalArgumentException e) {
+                    Logger.debug("wrong computercolumn given, cannot parse into enum {}", e);
+                }
+            }
+
             handleRequest(request, page);
         } catch (ServiceException e) {
             Logger.error("Error creating page{}", e);
@@ -94,10 +120,9 @@ public class Dashboard extends HttpServlet {
             if (itemsPerPage != null) {
                 page.setPageSize(getIntParam(itemsPerPage, 10));
             }
-            
-            
+
             page.getPage().forEach(computer -> listComputers.add(computerMapper.createComputerDTO(computer)));
-            
+
         } catch (ServiceException e) {
             Logger.error("Error creating page{}", e);
             return;

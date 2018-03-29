@@ -21,8 +21,8 @@ public enum ComputerDAO implements IComputerDAO {
     INSTANCE;
 
     private static final String SELECT_ALL_COMPUTERS = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id;";
-    private static final String SELECT_ALL_COMPUTERS_PAGE = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id order by cu_id limit ? offset ?;";
-    private static final String SELECT_ALL_COMPUTERS_PAGE_WITH_SEARCH = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id where cu_name like ? or ca_name like ? order by ca_id limit ? offset ?;";
+    private static final String SELECT_ALL_COMPUTERS_PAGE = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id order by %s %s limit ? offset ?;";
+    private static final String SELECT_ALL_COMPUTERS_PAGE_WITH_SEARCH = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id where cu_name like ? or ca_name like ? order by %s %s limit ? offset ?;";
     private static final String SELECT_COUNT_COMPUTERS = "select count(cu_id) from computer;";
     private static final String SELECT_COUNT_COMPUTERS_WITH_SEARCH = "select count(cu_id) from computer left join company on computer.ca_id = company.ca_id where ca_name LIKE ? or cu_name LIKE ?;";
     private static final String SELECT_COMPUTER = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id where cu_id = ?;";
@@ -142,7 +142,7 @@ public enum ComputerDAO implements IComputerDAO {
     public int getComputerCount(String searchWord) throws DAOException {
         Logger.info("getComputerCount with searchWord : " + searchWord);
         int computerCount = 0;
-
+        
         try (Connection conn = dbConn.getConnection();
                 PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPUTERS_WITH_SEARCH)) {
 
@@ -185,13 +185,15 @@ public enum ComputerDAO implements IComputerDAO {
     }
 
     @Override
-    public List<Computer> getListComputers(int pageNumber, int pageSize)
+    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending)
             throws DAOException, IndexOutOfBoundsException {
         Logger.info("list computers");
         ArrayList<Computer> computers = new ArrayList<>();
+        
+        String newRequest = String.format(SELECT_ALL_COMPUTERS_PAGE, column.getColumn(), ascending ? "ASC" : "DESC");
 
         try (Connection conn = dbConn.getConnection();
-                PreparedStatement st = conn.prepareStatement(SELECT_ALL_COMPUTERS_PAGE);) {
+                PreparedStatement st = conn.prepareStatement(newRequest);) {
 
             st.setInt(1, pageSize);
             st.setInt(2, pageSize * pageNumber);
@@ -214,19 +216,20 @@ public enum ComputerDAO implements IComputerDAO {
         return computers;
     }
 
-    public List<Computer> getListComputers(int pageNumber, int pageSize, String searchWord)
+    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending, String searchWord)
             throws DAOException, IndexOutOfBoundsException {
         Logger.info("list computers");
         
         if (searchWord == null) {
             Logger.info("search word was null, using regular list computer");
-            return getListComputers(pageNumber, pageSize);
+            return getListComputers(pageNumber, pageSize, column, ascending);
         }
         
         ArrayList<Computer> computers = new ArrayList<>();
+        String newRequest = String.format(SELECT_ALL_COMPUTERS_PAGE_WITH_SEARCH, column.getColumn(), ascending ? "ASC" : "DESC");
 
         try (Connection conn = dbConn.getConnection();
-                PreparedStatement st = conn.prepareStatement(SELECT_ALL_COMPUTERS_PAGE_WITH_SEARCH);) {
+                PreparedStatement st = conn.prepareStatement(newRequest);) {
 
             searchWord = '%' + searchWord + '%';
             st.setString(1, searchWord);

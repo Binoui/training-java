@@ -64,7 +64,7 @@
 					 class=disabled style=color:grey
 				</c:when>
 				<c:otherwise>
-					 href="<tags:links target="dashboard" pageIndex="${i}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>"	
+					 href="<tags:links target="dashboard" sortBy="${sortBy}" pageIndex="${i}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>"	
 				</c:otherwise>
 			</c:choose> 
 		><c:out value="${i + 1}"/>

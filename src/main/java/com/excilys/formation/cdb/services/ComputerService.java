@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.excilys.formation.cdb.dao.ComputerDAO;
 import com.excilys.formation.cdb.dao.DAOException;
+import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.validators.ComputerValidator;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
@@ -80,9 +81,9 @@ public enum ComputerService {
         }
     }
 
-    public List<Computer> getListComputers(int pageNumber, int pageSize) throws ServiceException {
+    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending) throws ServiceException {
         try {
-            return dao.getListComputers(pageNumber, pageSize);
+            return dao.getListComputers(pageNumber, pageSize, column, ascending);
         } catch (IndexOutOfBoundsException | DAOException e) {
             throw new ServiceException(e.getMessage());
         }
@@ -114,9 +115,9 @@ public enum ComputerService {
         }
     }
 
-    public List<Computer> getListComputers(int pageNumber, int pageSize, String searchWord) throws ServiceException {
+    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending, String searchWord) throws ServiceException {
         try {
-            return dao.getListComputers(pageNumber, pageSize, searchWord);
+            return dao.getListComputers(pageNumber, pageSize, column, ascending, searchWord);
         } catch (IndexOutOfBoundsException | DAOException e) {
             throw new ServiceException(e.getMessage());
         }

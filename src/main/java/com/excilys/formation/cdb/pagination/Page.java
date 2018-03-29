@@ -13,12 +13,10 @@ public abstract class Page<T> {
 
     public Page() throws ServiceException {
         pageNumber = 0;
-        refresh();
     }
 
     public Page(int pageNumber) throws ServiceException {
         this.pageNumber = pageNumber;
-        refresh();
     }
 
     public abstract int getLastPageNumber() throws ServiceException;

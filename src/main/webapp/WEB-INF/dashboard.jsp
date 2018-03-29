@@ -76,13 +76,10 @@
 								class="fa fa-trash-o fa-lg"></i>
 						</a>
 					</span></th>
-					<th>Computer name</th>
-					<th>Introduced date</th>
-					<!-- Table heade￼
-					r for Discontinued Date -->
-					<th>Discontinued date</th>
-					<!-- Table header for Company -->
-					<th>Company</th>
+					<th><a href="<tags:links target="dashboard" sortBy="name" ascending="true" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Computer name</a></th>
+					<th><a href="<tags:links target="dashboard" sortBy="introduced" ascending="true" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Introduced date</a></th>
+					<th><a href="<tags:links target="dashboard" sortBy="discontinued" ascending="true" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Discontinued date</a></th>
+					<th><a href="<tags:links target="dashboard" sortBy="company" ascending="true" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Company</a></th>
 
 				</tr>
 			</thead>

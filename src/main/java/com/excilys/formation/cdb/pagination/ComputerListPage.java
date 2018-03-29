@@ -1,5 +1,6 @@
 package com.excilys.formation.cdb.pagination;
 
+import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
@@ -7,13 +8,20 @@ import com.excilys.formation.cdb.services.ServiceException;
 public class ComputerListPage extends Page<Computer> {
 
     private static ComputerService service = ComputerService.INSTANCE;
+    
+    protected SortableComputerColumn column;
+    protected boolean ascendingSort;
 
     public ComputerListPage() throws ServiceException {
         super();
+        column = SortableComputerColumn.ID;
+        ascendingSort = true;
     }
 
     public ComputerListPage(int pageNumber) throws ServiceException {
         super(pageNumber);
+        column = SortableComputerColumn.ID;
+        ascendingSort = true;
     }
 
     @Override
@@ -23,7 +31,7 @@ public class ComputerListPage extends Page<Computer> {
 
     @Override
     public void refresh() throws ServiceException {
-        elements = service.getListComputers(pageNumber, pageSize);
+        elements = service.getListComputers(pageNumber, pageSize, column, ascendingSort);
     }
 
     public int getListComputersPageCount(int pageSize) throws ServiceException {
@@ -32,6 +40,22 @@ public class ComputerListPage extends Page<Computer> {
 
     public int getComputerCount() throws ServiceException {
         return service.getComputerCount();
+    }
+
+    public SortableComputerColumn getColumn() {
+        return column;
+    }
+
+    public void setColumn(SortableComputerColumn column) {
+        this.column = column;
+    }
+
+    public boolean isAscendingSort() {
+        return ascendingSort;
+    }
+
+    public void setAscendingSort(boolean ascendingSort) {
+        this.ascendingSort = ascendingSort;
     }
 
 }

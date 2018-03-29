@@ -11,7 +11,7 @@ public interface IComputerDAO {
 
     List<Computer> getListComputers() throws DAOException;
 
-    List<Computer> getListComputers(int pageNumber, int pageSize) throws DAOException, IndexOutOfBoundsException;
+    List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending) throws DAOException, IndexOutOfBoundsException;
 
     void updateComputer(Computer c) throws DAOException;
 }
