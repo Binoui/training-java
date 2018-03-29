@@ -84,7 +84,7 @@ public enum ComputerService {
     public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending) throws ServiceException {
         try {
             return dao.getListComputers(pageNumber, pageSize, column, ascending);
-        } catch (IndexOutOfBoundsException | DAOException e) {
+        } catch (DAOException e) {
             throw new ServiceException(e.getMessage());
         }
     }
@@ -118,7 +118,7 @@ public enum ComputerService {
     public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending, String searchWord) throws ServiceException {
         try {
             return dao.getListComputers(pageNumber, pageSize, column, ascending, searchWord);
-        } catch (IndexOutOfBoundsException | DAOException e) {
+        } catch (DAOException e) {
             throw new ServiceException(e.getMessage());
         }
     }

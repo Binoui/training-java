@@ -68,11 +68,6 @@ public class ComputerDAOTest {
         assertEquals((long) cDao.getListComputers().get(1).getId(), (long) 2);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testGetListComputersIntInt() throws IndexOutOfBoundsException, DAOException {
-        cDao.getListComputers(99999, 10, SortableComputerColumn.ID, true);
-    }
-
     @Test
     public void testGetListComputersPageCount() throws DAOException {
         assertEquals(cDao.getListComputersPageCount(10), 1);

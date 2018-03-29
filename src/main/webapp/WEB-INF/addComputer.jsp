@@ -44,7 +44,7 @@
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control" name="introduced"
-									data-validation-option="true" data-validation="date"
+									data-validation-optional="true" data-validation="date"
 									data-validation-format="yyyy-mm-dd" id="introduced"
 									placeholder="Introduced date">
 							</div>
@@ -52,7 +52,7 @@
 								<label for="discontinued">Discontinued date</label> <input
 									type="date" class="form-control" name="discontinued"
 									id="discontinued" data-validation="date"
-									data-validation-option="true"
+									data-validation-optional="true"
 									data-validation-format="yyyy-mm-dd"
 									placeholder="Discontinued date">
 							</div>

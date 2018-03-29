@@ -9,6 +9,7 @@
 		<c:set var="stop"  value="${pageCount - pageNumber > 4 ? 4 : pageCount - 1}"/>
 		<c:set var="next"  value="${pageNumber >= pageCount - 1 ? pageNumber : pageNumber + 1}"/>
 	</c:when>
+	
 	<c:when test="${pageNumber == 1}">
 		<c:set var="previous" value="0"/>
 		<c:set var="start" value="0"/>
@@ -39,12 +40,12 @@
 </c:choose>
 
 <li>
-	<a href="<tags:links target="dashboard" pageIndex="0" search="${param.search}" itemsPerPage="${itemsPerPage}"/>"
+	<a href="<tags:links target="dashboard" sortBy="${param.sortBy}" ascending="${param.ascending}" pageIndex="0" search="${param.search}" itemsPerPage="${itemsPerPage}"/>"
 	aria-label="First"><span aria-hidden="true">&laquo;</span></a>
 </li>
 
 <li>
-	<a href="<tags:links target="dashboard" search="${param.search}" pageIndex="${previous}" itemsPerPage="${itemsPerPage}"/>"
+	<a href="<tags:links target="dashboard" sortBy="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" pageIndex="${previous}" itemsPerPage="${itemsPerPage}"/>"
 	aria-label="Previous"><span aria-hidden="true">&lt;</span></a>
 </li>
 
@@ -64,7 +65,7 @@
 					 class=disabled style=color:grey
 				</c:when>
 				<c:otherwise>
-					 href="<tags:links target="dashboard" sortBy="${sortBy}" pageIndex="${i}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>"	
+					 href="<tags:links target="dashboard" sortBy="${param.sortBy}" ascending="${param.ascending}" pageIndex="${i}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>"	
 				</c:otherwise>
 			</c:choose> 
 		><c:out value="${i + 1}"/>
@@ -73,11 +74,11 @@
 </c:forEach> 
 
 <li>
-	<a href="<tags:links target="dashboard" pageIndex="${next}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>"
+	<a href="<tags:links target="dashboard" sortBy="${param.sortBy}" ascending="${param.ascending}" pageIndex="${next}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>"
 	aria-label="Next"> <span aria-hidden="true">&gt;</span></a>
 </li>
 
 <li>
-	<a href="<tags:links target="dashboard" pageIndex="${pageCount - 1}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>"
+	<a href="<tags:links target="dashboard" sortBy="${param.sortBy}" ascending="${param.ascending}" pageIndex="${pageCount - 1}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>"
 	aria-label="Last"> <span aria-hidden="true">&raquo;</span></a>
 </li>

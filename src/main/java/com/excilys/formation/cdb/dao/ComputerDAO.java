@@ -186,7 +186,7 @@ public enum ComputerDAO implements IComputerDAO {
 
     @Override
     public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending)
-            throws DAOException, IndexOutOfBoundsException {
+            throws DAOException {
         Logger.info("list computers");
         ArrayList<Computer> computers = new ArrayList<>();
         
@@ -203,10 +203,6 @@ public enum ComputerDAO implements IComputerDAO {
                 while (rs.next()) {
                     computers.add(mapper.createComputer(rs));
                 }
-
-                if (computers.isEmpty()) {
-                    throw new IndexOutOfBoundsException("Given page number is greater than page count");
-                }
             }
         } catch (SQLException e) {
             Logger.debug("error when trying to get computer list {}", e);
@@ -217,7 +213,7 @@ public enum ComputerDAO implements IComputerDAO {
     }
 
     public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending, String searchWord)
-            throws DAOException, IndexOutOfBoundsException {
+            throws DAOException {
         Logger.info("list computers");
         
         if (searchWord == null) {
@@ -241,10 +237,6 @@ public enum ComputerDAO implements IComputerDAO {
 
                 while (rs.next()) {
                     computers.add(mapper.createComputer(rs));
-                }
-
-                if (computers.isEmpty()) {
-                    throw new IndexOutOfBoundsException("Given page number is greater than page count");
                 }
             }
         } catch (SQLException e) {

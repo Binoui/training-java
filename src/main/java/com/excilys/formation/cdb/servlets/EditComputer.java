@@ -139,7 +139,6 @@ public class EditComputer extends HttpServlet {
 
         Logger.debug("entering doPost");
         String name = request.getParameter("computerName").trim();
-        Logger.debug("name : " + name);
         String computerIdString = request.getParameter("computerId").trim();
         String introducedString = request.getParameter("introduced").trim();
         String discontinuedString = request.getParameter("discontinued").trim();

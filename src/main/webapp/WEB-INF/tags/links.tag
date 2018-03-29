@@ -7,6 +7,7 @@
 <%@attribute name="computerId" required="false"%>
 <%@attribute name="search" required="false"%>
 <%@attribute name="sortBy" required="false"%>
+<%@attribute name="oldSort" required="false"%>
 <%@attribute name="ascending" required="false"%>
 
 <c:set var="path" value="/ComputerDatabase/" />
@@ -20,13 +21,19 @@
 				<c:if test="${search != null}">
 					<c:set var="path" value="${path.concat('&search=').concat(search)}" />
 				</c:if>
-				
+
 				<c:if test="${sortBy != null}">
+					<c:choose>
+						<c:when test="${not empty oldSort && oldSort.equals(sortBy) && ascending.matches('true|false')}">
+							<c:set var="path"
+								value="${path.concat('&ascending=').concat(not ascending)}" />
+						</c:when>
+						<c:otherwise>
+							<c:set var="path"
+								value="${path.concat('&ascending=').concat('true')}" />
+						</c:otherwise>
+					</c:choose>
 					<c:set var="path" value="${path.concat('&sortBy=').concat(sortBy)}" />
-				</c:if>
-				
-				<c:if test="${ascending != null}">
-					<c:set var="path" value="${path.concat('&ascending=').concat(ascending)}" />
 				</c:if>
 			</c:when>
 
