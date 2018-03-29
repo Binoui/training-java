@@ -137,7 +137,6 @@ public class EditComputer extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Logger.debug("entering doPost");
         String name = request.getParameter("computerName").trim();
         String computerIdString = request.getParameter("computerId").trim();
         String introducedString = request.getParameter("introduced").trim();

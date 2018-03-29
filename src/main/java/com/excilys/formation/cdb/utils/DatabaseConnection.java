@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.servlet.ServletContextEvent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +69,13 @@ public enum DatabaseConnection {
         }
 
         return conn;
+    }
+
+    public void contextDestroyed(ServletContextEvent evt) {
+        Logger.info("closing hikari connection");
+        if (hikariDataSource != null) {
+            hikariDataSource.close();
+        }
     }
 
 }

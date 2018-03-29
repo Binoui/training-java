@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,18 +54,18 @@ public class Dashboard extends HttpServlet {
         String ascendingString = request.getParameter("ascending");
 
         try {
-            if (searchWord != null && !searchWord.trim().isEmpty()) {
+            if (! StringUtils.isBlank(searchWord)) { 
                 page = new ComputerListPageSearch(searchWord.trim());
             } else {
                 page = new ComputerListPage();
             }
 
-            if (sortBy != null && ascendingString != null) {
+            if (! StringUtils.isBlank(sortBy) && ! StringUtils.isBlank(ascendingString)) { 
                 SortableComputerColumn column;
                 boolean ascending;
 
                 try {
-                    column = SortableComputerColumn.valueOf(sortBy.trim().toUpperCase());
+                    column = SortableComputerColumn.valueOf(sortBy.toUpperCase());
 
                     if (ascendingString.equalsIgnoreCase("true") || ascendingString.equalsIgnoreCase("false")) {
 
