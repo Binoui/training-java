@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.cdb.mapper.ComputerMapper;
-import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.utils.DatabaseConnection;
@@ -100,6 +99,17 @@ public enum ComputerDAO implements IComputerDAO {
 
     }
 
+    protected void deleteComputers(long id, Connection conn) throws DAOException, SQLException {
+        try (PreparedStatement deleteComputersStatement = conn.prepareStatement(DELETE_COMPUTERS);) {
+            deleteComputersStatement.setLong(1, id);
+            deleteComputersStatement.execute();
+        } catch (SQLException e) {
+            Logger.error("Error while deleting computers, rolling back : ", e);
+            conn.rollback();
+            throw new DAOException("Couldn't delete computers");
+        }
+    }
+
     public Optional<Computer> getComputer(Computer computer) throws DAOException {
         Computer c = null;
 
@@ -115,7 +125,8 @@ public enum ComputerDAO implements IComputerDAO {
                 if (rs.next()) {
                     c = mapper.createComputer(rs);
                 }
-            };
+            }
+            ;
 
         } catch (SQLException e) {
             Logger.debug(e.getMessage());
@@ -123,6 +134,10 @@ public enum ComputerDAO implements IComputerDAO {
         }
 
         return Optional.ofNullable(c);
+    }
+
+    public Optional<Computer> getComputer(long id) throws DAOException {
+        return getComputer(new ComputerBuilder().withId(id).build());
     }
 
     public int getComputerCount() throws DAOException {
@@ -141,18 +156,18 @@ public enum ComputerDAO implements IComputerDAO {
 
         return computerCount;
     }
-    
+
     public int getComputerCount(String searchWord) throws DAOException {
         Logger.info("getComputerCount with searchWord : " + searchWord);
         int computerCount = 0;
-        
+
         try (Connection conn = dbConn.getConnection();
                 PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPUTERS_WITH_SEARCH)) {
 
             searchWord = '%' + searchWord + '%';
             st.setString(1, searchWord);
             st.setString(2, searchWord);
-            
+
             try (ResultSet rs = st.executeQuery()) {
                 rs.next();
                 computerCount = rs.getInt(1);
@@ -162,7 +177,7 @@ public enum ComputerDAO implements IComputerDAO {
             Logger.debug(e.getMessage());
             throw new DAOException("Couldn't get computer count");
         }
-        
+
         return computerCount;
     }
 
@@ -188,15 +203,14 @@ public enum ComputerDAO implements IComputerDAO {
     }
 
     @Override
-    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending)
-            throws DAOException {
+    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column,
+            boolean ascending) throws DAOException {
         Logger.info("list computers");
         ArrayList<Computer> computers = new ArrayList<>();
-        
+
         String newRequest = String.format(SELECT_ALL_COMPUTERS_PAGE, column.getColumn(), ascending ? "ASC" : "DESC");
 
-        try (Connection conn = dbConn.getConnection();
-                PreparedStatement st = conn.prepareStatement(newRequest);) {
+        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(newRequest);) {
 
             st.setInt(1, pageSize);
             st.setInt(2, pageSize * pageNumber);
@@ -215,20 +229,20 @@ public enum ComputerDAO implements IComputerDAO {
         return computers;
     }
 
-    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending, String searchWord)
-            throws DAOException {
+    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column,
+            boolean ascending, String searchWord) throws DAOException {
         Logger.info("list computers");
-        
+
         if (searchWord == null) {
             Logger.info("search word was null, using regular list computer");
             return getListComputers(pageNumber, pageSize, column, ascending);
         }
-        
-        ArrayList<Computer> computers = new ArrayList<>();
-        String newRequest = String.format(SELECT_ALL_COMPUTERS_PAGE_WITH_SEARCH, column.getColumn(), ascending ? "ASC" : "DESC");
 
-        try (Connection conn = dbConn.getConnection();
-                PreparedStatement st = conn.prepareStatement(newRequest);) {
+        ArrayList<Computer> computers = new ArrayList<>();
+        String newRequest = String.format(SELECT_ALL_COMPUTERS_PAGE_WITH_SEARCH, column.getColumn(),
+                ascending ? "ASC" : "DESC");
+
+        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(newRequest);) {
 
             searchWord = '%' + searchWord + '%';
             st.setString(1, searchWord);
@@ -291,17 +305,6 @@ public enum ComputerDAO implements IComputerDAO {
         }
     }
 
-    protected void deleteComputers(long id, Connection conn) throws DAOException, SQLException {
-        try (PreparedStatement deleteComputersStatement = conn.prepareStatement(DELETE_COMPUTERS);) {
-            deleteComputersStatement.setLong(1, id);
-            deleteComputersStatement.execute();
-        } catch (SQLException e) {
-            Logger.error("Error while deleting computers, rolling back : ", e);
-            conn.rollback();
-            throw new DAOException("Couldn't delete computers");
-        }
-    }
-
     @Override
     public void updateComputer(Computer c) throws DAOException {
         Logger.info("update computer");
@@ -315,9 +318,5 @@ public enum ComputerDAO implements IComputerDAO {
             Logger.debug(e.getMessage());
             throw new DAOException("Couldn't update computer with id : " + c.getId());
         }
-    }
-
-    public Optional<Computer> getComputer(long id) throws DAOException {
-        return getComputer(new ComputerBuilder().withId(id).build());
     }
 }

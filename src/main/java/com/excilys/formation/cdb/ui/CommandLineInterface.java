@@ -56,21 +56,21 @@ public class CommandLineInterface {
         }
     }
 
+    private void deleteCompany() {
+        Long id = readNotNullId();
+        try {
+            CompanyService.INSTANCE.deleteCompany(id);
+        } catch (ServiceException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     private void deleteComputer() {
         Long id = readNotNullId();
         Computer c = new ComputerBuilder().withId(id).build();
         try {
             computerService.deleteComputer(c);
         } catch (ServiceException | UnknownComputerIdException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-    private void deleteCompany() {
-        Long id = readNotNullId();
-        try {
-            CompanyService.INSTANCE.deleteCompany(id);
-        } catch (ServiceException e) {
             System.out.println(e.getMessage());
         }
     }

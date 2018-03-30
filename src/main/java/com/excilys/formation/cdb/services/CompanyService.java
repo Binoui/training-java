@@ -11,6 +11,14 @@ public enum CompanyService {
 
     private static CompanyDAO companyDAO = CompanyDAO.INSTANCE;
 
+    public void deleteCompany(Long id) throws ServiceException {
+        try {
+            companyDAO.deleteCompany(id);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
     public List<Company> getListCompanies() throws ServiceException {
         try {
             return companyDAO.getListCompanies();
@@ -35,13 +43,5 @@ public enum CompanyService {
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage());
         }
-    }
-
-    public void deleteCompany(Long id) throws ServiceException {
-        try {
-            companyDAO.deleteCompany(id);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }        
     }
 }

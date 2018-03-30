@@ -19,7 +19,6 @@ import com.excilys.formation.cdb.dto.ComputerDTO;
 import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
 import com.excilys.formation.cdb.pagination.ComputerListPage;
 import com.excilys.formation.cdb.pagination.ComputerListPageSearch;
-import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 
 /**
@@ -54,13 +53,13 @@ public class Dashboard extends HttpServlet {
         String ascendingString = request.getParameter("ascending");
 
         try {
-            if (! StringUtils.isBlank(searchWord)) { 
+            if (!StringUtils.isBlank(searchWord)) {
                 page = new ComputerListPageSearch(searchWord.trim());
             } else {
                 page = new ComputerListPage();
             }
 
-            if (! StringUtils.isBlank(sortBy) && ! StringUtils.isBlank(ascendingString)) { 
+            if (!StringUtils.isBlank(sortBy) && !StringUtils.isBlank(ascendingString)) {
                 SortableComputerColumn column;
                 boolean ascending;
 

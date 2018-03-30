@@ -4,8 +4,8 @@ public enum MenuChoice {
 
     LISTCOMPANIES("    (1) List companies\n"), LISTCOMPUTERS("    (2) List computers\n"), GETCOMPUTERDETAILS(
             "    (3) Get details computer\n"), CREATECOMPUTER("    (4) Create Computer\n"), UPDATECOMPUTER(
-                    "    (5) Update Computer\n"), DELETECOMPUTER(
-                            "    (6) Delete Computer\n"), DELETECOMPANY ("(7) Delete Company\n"), QUIT("    (8) Quit Computer Database\n");
+                    "    (5) Update Computer\n"), DELETECOMPUTER("    (6) Delete Computer\n"), DELETECOMPANY(
+                            "(7) Delete Company\n"), QUIT("    (8) Quit Computer Database\n");
 
     private final String value;
 

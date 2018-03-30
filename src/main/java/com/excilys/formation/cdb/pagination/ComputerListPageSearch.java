@@ -6,21 +6,31 @@ import com.excilys.formation.cdb.services.ServiceException;
 public class ComputerListPageSearch extends ComputerListPage {
 
     private static ComputerService service = ComputerService.INSTANCE;
-    
-    private final String searchWord;
 
-    public ComputerListPageSearch(String searchWord) throws ServiceException {
-        super();
-        this.searchWord = searchWord;
-    }
+    private final String searchWord;
 
     public ComputerListPageSearch(int pageNumber, String searchWord) throws ServiceException {
         super(pageNumber);
         this.searchWord = searchWord;
     }
 
+    public ComputerListPageSearch(String searchWord) throws ServiceException {
+        super();
+        this.searchWord = searchWord;
+    }
+
+    @Override
+    public int getComputerCount() throws ServiceException {
+        return service.getComputerCount(searchWord);
+    }
+
     @Override
     public int getLastPageNumber() throws ServiceException {
+        return service.getListComputersPageCount(pageSize, searchWord);
+    }
+
+    @Override
+    public int getListComputersPageCount(int pageSize) throws ServiceException {
         return service.getListComputersPageCount(pageSize, searchWord);
     }
 
@@ -31,16 +41,6 @@ public class ComputerListPageSearch extends ComputerListPage {
         } else {
             elements = service.getListComputers(pageNumber, pageSize, column, ascendingSort, searchWord);
         }
-    }
-    
-    @Override
-    public int getListComputersPageCount(int pageSize) throws ServiceException {
-        return service.getListComputersPageCount(pageSize, searchWord);
-    }
-
-    @Override
-    public int getComputerCount() throws ServiceException {
-        return service.getComputerCount(searchWord);
     }
 
 }

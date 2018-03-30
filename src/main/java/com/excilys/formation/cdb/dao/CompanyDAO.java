@@ -23,14 +23,40 @@ public enum CompanyDAO implements ICompanyDAO {
     private static final String SELECT_COMPANIES_PAGE = "select ca_id, ca_name from company order by ca_id limit ? offset ? ;";
     private static final String SELECT_COUNT_COMPANIES = "select count(ca_id) from company;";
     private static final String SELECT_COMPANY = "select ca_id, ca_name from company where ca_id = ?";
-    private static final String DELETE_COMPUTERS = "delete from computer where ca_id = ?;";
     private static final String DELETE_COMPANY = "delete from company where ca_id = ?";
-//    private static final String SELECT_COMPUTERS_FROM_COMPANY = "select cu_id from computer where ca_id = ?";
 
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAO.class);
 
     private static CompanyMapper mapper = CompanyMapper.INSTANCE;
     private static DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
+
+    @Override
+    public void deleteCompany(long id) throws DAOException {
+        Logger.info("DAO : Delete Company");
+
+        try (Connection conn = dbConn.getConnection();) {
+
+            conn.setAutoCommit(false);
+
+            ComputerDAO.INSTANCE.deleteComputers(id, conn);
+
+            try (PreparedStatement deleteCompanyStatement = conn.prepareStatement(DELETE_COMPANY);) {
+                deleteCompanyStatement.setLong(1, id);
+                deleteCompanyStatement.execute();
+            } catch (SQLException e) {
+                Logger.error("Error while deleting company, rolling back : ", e);
+                conn.rollback();
+                throw new DAOException("Couldn't delete company");
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            Logger.debug("Couldn't get connection : ", e);
+            throw new DAOException("couldn't get connection");
+        }
+
+    }
 
     public Optional<Company> getCompany(Company c) throws DAOException {
         return getCompany(c.getId());
@@ -81,35 +107,6 @@ public enum CompanyDAO implements ICompanyDAO {
 
         return companies;
     }
-    
-    @Override
-    public void deleteCompany(long id) throws DAOException {
-        Logger.info("DAO : Delete Company");
-        
-        try (Connection conn = dbConn.getConnection(); ) {
-            
-            conn.setAutoCommit(false);
-            
-            ComputerDAO.INSTANCE.deleteComputers(id, conn);
-            
-            try (PreparedStatement deleteCompanyStatement = conn.prepareStatement(DELETE_COMPANY);) {
-                deleteCompanyStatement.setLong(1,  id);
-                deleteCompanyStatement.execute();
-            } catch (SQLException e) {
-                Logger.error("Error while deleting company, rolling back : ", e);
-                conn.rollback();
-                throw new DAOException("Couldn't delete company");
-            }
-            
-            conn.commit();
-            
-        } catch (SQLException e) {
-            Logger.debug("Couldn't get connection : ", e);
-            throw new DAOException("couldn't get connection");
-        }
-        
-    }
-
 
     @Override
     public List<Company> getListCompanies(final int pageNumber, final int pageSize)

@@ -74,15 +74,15 @@ public class ComputerDAOTest {
     }
 
     @Test
+    public void testSearch() throws IndexOutOfBoundsException, DAOException {
+        assertEquals(cDao.getListComputers(0, 10, SortableComputerColumn.ID, true, "Computer").size(), 2);
+    }
+
+    @Test
     public void testUpdateComputer() throws DAOException {
         Computer c = new ComputerBuilder().withId((long) 2).withIntroduced(LocalDate.parse("0001-01-01")).build();
         cDao.updateComputer(c);
         assertEquals(cDao.getComputer(c).get().getIntroduced(), LocalDate.parse("0001-01-01"));
-    }
-    
-    @Test
-    public void testSearch() throws IndexOutOfBoundsException, DAOException {
-        assertEquals(cDao.getListComputers(0, 10, SortableComputerColumn.ID, true, "Computer").size(), 2);
     }
 
 }

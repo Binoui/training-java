@@ -60,7 +60,7 @@ public enum ComputerService {
             throw new ServiceException(e.getMessage());
         }
     }
-    
+
     public int getComputerCount(String searchWord) throws ServiceException {
         try {
             return dao.getComputerCount(searchWord);
@@ -81,9 +81,19 @@ public enum ComputerService {
         }
     }
 
-    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending) throws ServiceException {
+    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column,
+            boolean ascending) throws ServiceException {
         try {
             return dao.getListComputers(pageNumber, pageSize, column, ascending);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
+    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column,
+            boolean ascending, String searchWord) throws ServiceException {
+        try {
+            return dao.getListComputers(pageNumber, pageSize, column, ascending, searchWord);
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage());
         }
@@ -97,16 +107,6 @@ public enum ComputerService {
         }
     }
 
-    public void updateComputer(Computer c) throws IncorrectValidationException, ServiceException {
-        validator.validateComputerId(c.getId());
-        validator.validateComputer(c);
-        try {
-            dao.updateComputer(c);
-        } catch (DAOException e) {
-            throw new ServiceException("Couldn't update computer " + c.getName());
-        }
-    }
-
     public int getListComputersPageCount(int pageSize, String searchWord) throws ServiceException {
         try {
             return dao.getListComputersPageCount(pageSize, searchWord);
@@ -115,11 +115,13 @@ public enum ComputerService {
         }
     }
 
-    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending, String searchWord) throws ServiceException {
+    public void updateComputer(Computer c) throws IncorrectValidationException, ServiceException {
+        validator.validateComputerId(c.getId());
+        validator.validateComputer(c);
         try {
-            return dao.getListComputers(pageNumber, pageSize, column, ascending, searchWord);
+            dao.updateComputer(c);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException("Couldn't update computer " + c.getName());
         }
     }
 }

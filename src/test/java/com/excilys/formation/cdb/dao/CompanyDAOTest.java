@@ -33,6 +33,13 @@ public class CompanyDAOTest {
     }
 
     @Test
+    public void testDeleteCompany() throws DAOException {
+        cDAO.deleteCompany(1);
+        assertFalse(cDAO.getCompany((long) 1).isPresent());
+        assertFalse(ComputerDAO.INSTANCE.getComputer(1).isPresent());
+    }
+
+    @Test
     public void testGetCompanyCompany() throws DAOException {
         assertNotNull(cDAO.getCompany(new CompanyBuilder().withId((long) 1).build()));
     }
@@ -66,13 +73,6 @@ public class CompanyDAOTest {
             fail("should throw exception");
         } catch (IndexOutOfBoundsException e) {
         }
-    }
-    
-    @Test
-    public void testDeleteCompany() throws DAOException {
-        cDAO.deleteCompany(1);
-        assertFalse(cDAO.getCompany((long) 1).isPresent());
-        assertFalse(ComputerDAO.INSTANCE.getComputer((long) 1).isPresent());
     }
 
 }
