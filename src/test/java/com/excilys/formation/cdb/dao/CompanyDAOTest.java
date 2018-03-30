@@ -1,6 +1,7 @@
 package com.excilys.formation.cdb.dao;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -65,6 +66,13 @@ public class CompanyDAOTest {
             fail("should throw exception");
         } catch (IndexOutOfBoundsException e) {
         }
+    }
+    
+    @Test
+    public void testDeleteCompany() throws DAOException {
+        cDAO.deleteCompany(1);
+        assertFalse(cDAO.getCompany((long) 1).isPresent());
+        assertFalse(ComputerDAO.INSTANCE.getComputer((long) 1).isPresent());
     }
 
 }

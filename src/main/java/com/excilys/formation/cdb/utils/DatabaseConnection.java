@@ -71,11 +71,4 @@ public enum DatabaseConnection {
         return conn;
     }
 
-    public void contextDestroyed(ServletContextEvent evt) {
-        Logger.info("closing hikari connection");
-        if (hikariDataSource != null) {
-            hikariDataSource.close();
-        }
-    }
-
 }

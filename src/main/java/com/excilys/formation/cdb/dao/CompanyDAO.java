@@ -23,8 +23,11 @@ public enum CompanyDAO implements ICompanyDAO {
     private static final String SELECT_COMPANIES_PAGE = "select ca_id, ca_name from company order by ca_id limit ? offset ? ;";
     private static final String SELECT_COUNT_COMPANIES = "select count(ca_id) from company;";
     private static final String SELECT_COMPANY = "select ca_id, ca_name from company where ca_id = ?";
+    private static final String DELETE_COMPUTERS = "delete from computer where ca_id = ?;";
+    private static final String DELETE_COMPANY = "delete from company where ca_id = ?";
+//    private static final String SELECT_COMPUTERS_FROM_COMPANY = "select cu_id from computer where ca_id = ?";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
+    private static final Logger Logger = LoggerFactory.getLogger(ComputerDAO.class);
 
     private static CompanyMapper mapper = CompanyMapper.INSTANCE;
     private static DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
@@ -34,7 +37,7 @@ public enum CompanyDAO implements ICompanyDAO {
     }
 
     public Optional<Company> getCompany(Long id) throws DAOException {
-        LOGGER.info("get company");
+        Logger.info("get company");
         Company c = null;
         ResultSet rs = null;
         try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPANY);) {
@@ -51,7 +54,7 @@ public enum CompanyDAO implements ICompanyDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            Logger.debug(e.getMessage());
             throw new DAOException("Couldn't find company with ID : " + c.getId());
         }
 
@@ -60,7 +63,7 @@ public enum CompanyDAO implements ICompanyDAO {
 
     @Override
     public List<Company> getListCompanies() throws DAOException {
-        LOGGER.info("get list companies");
+        Logger.info("get list companies");
         ArrayList<Company> companies = new ArrayList<>();
 
         try (Connection conn = dbConn.getConnection();
@@ -72,17 +75,46 @@ public enum CompanyDAO implements ICompanyDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            Logger.debug(e.getMessage());
             throw new DAOException("Couldn't fetch companies list");
         }
 
         return companies;
     }
+    
+    @Override
+    public void deleteCompany(long id) throws DAOException {
+        Logger.info("DAO : Delete Company");
+        
+        try (Connection conn = dbConn.getConnection(); ) {
+            
+            conn.setAutoCommit(false);
+            
+            ComputerDAO.INSTANCE.deleteComputers(id, conn);
+            
+            try (PreparedStatement deleteCompanyStatement = conn.prepareStatement(DELETE_COMPANY);) {
+                deleteCompanyStatement.setLong(1,  id);
+                deleteCompanyStatement.execute();
+            } catch (SQLException e) {
+                Logger.error("Error while deleting company, rolling back : ", e);
+                conn.rollback();
+                throw new DAOException("Couldn't delete company");
+            }
+            
+            conn.commit();
+            
+        } catch (SQLException e) {
+            Logger.debug("Couldn't get connection : ", e);
+            throw new DAOException("couldn't get connection");
+        }
+        
+    }
+
 
     @Override
     public List<Company> getListCompanies(final int pageNumber, final int pageSize)
             throws DAOException, IndexOutOfBoundsException {
-        LOGGER.info("get list companies");
+        Logger.info("get list companies");
         ArrayList<Company> companies = new ArrayList<>();
         ResultSet rs = null;
         try (Connection conn = dbConn.getConnection();
@@ -101,13 +133,13 @@ public enum CompanyDAO implements ICompanyDAO {
             }
 
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            Logger.debug(e.getMessage());
             throw new DAOException("Couldn't fetch companies list");
         } finally {
             try {
                 rs.close();
             } catch (SQLException e) {
-                LOGGER.debug(e.getMessage());
+                Logger.debug(e.getMessage());
             }
         }
 
@@ -115,7 +147,7 @@ public enum CompanyDAO implements ICompanyDAO {
     }
 
     public int getListCompaniesPageCount(int pageSize) throws DAOException {
-        LOGGER.info("get page count");
+        Logger.info("get page count");
         int pageCount = 0;
 
         try (Connection conn = dbConn.getConnection();
@@ -127,7 +159,7 @@ public enum CompanyDAO implements ICompanyDAO {
             pageCount = companyCount / pageSize;
 
         } catch (SQLException e) {
-            LOGGER.debug(e.getMessage());
+            Logger.debug(e.getMessage());
             throw new DAOException("Couldn't get companies page count");
         }
 

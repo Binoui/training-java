@@ -15,6 +15,7 @@ import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.pagination.CompanyListPage;
 import com.excilys.formation.cdb.pagination.ComputerListPage;
 import com.excilys.formation.cdb.pagination.Page;
+import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
@@ -61,6 +62,15 @@ public class CommandLineInterface {
         try {
             computerService.deleteComputer(c);
         } catch (ServiceException | UnknownComputerIdException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    private void deleteCompany() {
+        Long id = readNotNullId();
+        try {
+            CompanyService.INSTANCE.deleteCompany(id);
+        } catch (ServiceException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -132,6 +142,9 @@ public class CommandLineInterface {
             break;
         case DELETECOMPUTER:
             deleteComputer();
+            break;
+        case DELETECOMPANY:
+            deleteCompany();
             break;
         case QUIT:
             System.out.println("Closing Computer Database...");
@@ -218,7 +231,7 @@ public class CommandLineInterface {
     }
 
     private Long readNotNullId() {
-        System.out.print("Enter ID of wanted computeServiceExceptionr : ");
+        System.out.print("Enter ID of wanted computer : ");
 
         while (!scanner.hasNextLong()) {
             scanner.next();

@@ -14,7 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.cdb.mapper.ComputerMapper;
+import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.utils.DatabaseConnection;
 
 public enum ComputerDAO implements IComputerDAO {
@@ -29,6 +31,7 @@ public enum ComputerDAO implements IComputerDAO {
     private static final String INSERT_COMPUTER = "insert into computer (cu_name, cu_introduced, cu_discontinued, ca_id) values (?, ?, ?, ?);";
     private static final String UPDATE_COMPUTER = "update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?;";
     private static final String DELETE_COMPUTER = "delete from computer where cu_id = ?;";
+    private static final String DELETE_COMPUTERS = "delete from computer where ca_id = ?;";
 
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAO.class);
 
@@ -288,6 +291,17 @@ public enum ComputerDAO implements IComputerDAO {
         }
     }
 
+    protected void deleteComputers(long id, Connection conn) throws DAOException, SQLException {
+        try (PreparedStatement deleteComputersStatement = conn.prepareStatement(DELETE_COMPUTERS);) {
+            deleteComputersStatement.setLong(1, id);
+            deleteComputersStatement.execute();
+        } catch (SQLException e) {
+            Logger.error("Error while deleting computers, rolling back : ", e);
+            conn.rollback();
+            throw new DAOException("Couldn't delete computers");
+        }
+    }
+
     @Override
     public void updateComputer(Computer c) throws DAOException {
         Logger.info("update computer");
@@ -301,5 +315,9 @@ public enum ComputerDAO implements IComputerDAO {
             Logger.debug(e.getMessage());
             throw new DAOException("Couldn't update computer with id : " + c.getId());
         }
+    }
+
+    public Optional<Computer> getComputer(long id) throws DAOException {
+        return getComputer(new ComputerBuilder().withId(id).build());
     }
 }

@@ -36,4 +36,12 @@ public enum CompanyService {
             throw new ServiceException(e.getMessage());
         }
     }
+
+    public void deleteCompany(Long id) throws ServiceException {
+        try {
+            companyDAO.deleteCompany(id);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage());
+        }        
+    }
 }
