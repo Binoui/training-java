@@ -17,7 +17,7 @@ public enum ComputerDTOMapper {
             caDto.setName(computer.getName());
         }
 
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (computer.getIntroduced() != null) {
             caDto.setIntroduced(computer.getIntroduced().format(dateFormatter));
         }
@@ -27,7 +27,7 @@ public enum ComputerDTOMapper {
         }
 
         if (computer.getCompany() != null) {
-            caDto.setCompanyName(computer.getCompany().getName());
+            caDto.setCompany(CompanyDTOMapper.INSTANCE.createCompanyDTO(computer.getCompany()));
         }
 
         return caDto;

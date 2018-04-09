@@ -3,28 +3,33 @@ package com.excilys.formation.cdb.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 public enum DatabaseConnection {
     INSTANCE;
 
-    private Connection conn;
+    private static final Logger Logger = LoggerFactory.getLogger(DatabaseConnection.class);
+    private static final String PROPERTIES_PATH = "connection.properties";
 
-    public Connection getConnection() {
+    private String driver;
+    private HikariDataSource hikariDataSource;
+
+    DatabaseConnection() {
+        InputStream input = null;
+        Properties properties = new Properties();
 
         String url = null;
         String user = null;
         String pass = null;
-        String driver = null;
-
-        String propertiesPath = "connection.properties";
-        InputStream input = null;
-        Properties properties = new Properties();
 
         try {
-            input = this.getClass().getClassLoader().getResourceAsStream(propertiesPath);
+            input = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_PATH);
 
             properties.load(input);
 
@@ -44,14 +49,22 @@ public enum DatabaseConnection {
             }
         }
 
+        hikariDataSource = new HikariDataSource();
+        hikariDataSource.setJdbcUrl(url);
+        hikariDataSource.setUsername(user);
+        hikariDataSource.setPassword(pass);
+        hikariDataSource.setMaxLifetime(60000);
+    }
+
+    public Connection getConnection() {
+
+        Connection conn = null;
+
         try {
             Class.forName(driver);
-            conn = DriverManager.getConnection(url, user, pass);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            conn = hikariDataSource.getConnection();
+        } catch (SQLException | ClassNotFoundException e) {
+            Logger.error("cannot connect to database [}", e);
         }
 
         return conn;

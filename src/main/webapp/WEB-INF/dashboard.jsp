@@ -21,13 +21,17 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
-		<a class="navbar-brand" href='<tags:links target="dashboard"></tags:links>'> Application -
-			Computer Database </a>
+		<a class="navbar-brand"
+			href='<tags:links target="dashboard" ></tags:links>'> Application
+			- Computer Database </a>
 	</div>
 	</header>
 
 	<section id="main">
 	<div class="container">
+
+		<tags:addErrors />
+
 		<h1 id="homeTitle">
 			<c:out value="${computerCount}" />
 			Computers found
@@ -36,8 +40,7 @@
 
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
-				<form id="searchForm" action="#" method="GET" class="form-inline">
-
+				<form id="searchForm" action="<tags:links target="dashboard" itemsPerPage="${itemsPerPage}" search="${search}" pageIndex="${pageNumber}"/>" method="GET" class="form-inline">
 					<input type="search" id="searchbox" name="search"
 						class="form-control" placeholder="Search name" /> <input
 						type="submit" id="searchsubmit" value="Filter by name"
@@ -48,12 +51,14 @@
 				<a class="btn btn-success" id="addComputer"
 					href="<tags:links target="addComputer" itemsPerPage="${itemsPerPage}"/>">
 					Add Computer </a> <a class="btn btn-default" id="editComputer" href="#"
-					onclick="$.fn.toggleEditMode();"> Edit </a>
+					onclick="$.fn.toggleEditMode();"> Delete </a>
 			</div>
 		</div>
 	</div>
 
-	<form id="deleteForm" action="#" method="POST">
+	<form id="deleteForm"
+		action="<tags:links target="delete" pageIndex="${pageNumber}" search="${search}" itemsPerPage="${itemsPerPage}" />"
+		method="POST">
 		<input type="hidden" name="selection" value="">
 	</form>
 
@@ -71,12 +76,10 @@
 								class="fa fa-trash-o fa-lg"></i>
 						</a>
 					</span></th>
-					<th>Computer name</th>
-					<th>Introduced date</th>
-					<!-- Table header for Discontinued Date -->
-					<th>Discontinued date</th>
-					<!-- Table header for Company -->
-					<th>Company</tforEachh>
+					<th><a href="<tags:links target="dashboard" sortBy="name" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Computer name</a></th>
+					<th><a href="<tags:links target="dashboard" sortBy="introduced" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Introduced date</a></th>
+					<th><a href="<tags:links target="dashboard" sortBy="discontinued" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Discontinued date</a></th>
+					<th><a href="<tags:links target="dashboard" sortBy="company" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Company</a></th>
 
 				</tr>
 			</thead>
@@ -85,13 +88,14 @@
 				<c:forEach items="${computers}" var="computer" varStatus="status">
 					<tr>
 						<td class="editMode"><input type="checkbox" name="cb"
-							class="cb" value="0"></td>
-						<td><a href="editComputer.html" onclick=""> <c:out
-									value="${computer.name}" />
+							class="cb" value="${computer.id}"></td>
+						<td><a
+							href="<tags:links target="editComputer" search="${search}" computerId="${computer.id}" itemsPerPage="${itemsPerPage}"/>"
+							onclick=""> <c:out value="${computer.name}" />
 						</a></td>
 						<td><c:out value="${computer.introduced}" /></td>
 						<td><c:out value="${computer.discontinued}" /></td>
-						<td><c:out value="${computer.companyName}" /></td>
+						<td><c:out value="${computer.company.name}" /></td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -109,7 +113,7 @@
 		<div class="btn-group btn-group-sm pull-right" role="group">
 			<c:forEach var="itemsPerPage" items="10,50,100" varStatus="status">
 				<a
-					href="<tags:links target="dashboard" pageIndex="0" itemsPerPage="${itemsPerPage}"/>">
+					href="<tags:links target="dashboard" search="${search}" pageIndex="0" itemsPerPage="${itemsPerPage}"/>">
 					<button type="button" class="btn btn-default">
 						<c:out value="${itemsPerPage}" />
 					</button>

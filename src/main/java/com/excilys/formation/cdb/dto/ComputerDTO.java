@@ -7,15 +7,12 @@ public class ComputerDTO implements Serializable {
     private static final long serialVersionUID = 7703775467384326831L;
     private long id;
     private String name;
-    private String companyName;
+    private CompanyDTO company;
     private String introduced;
     private String discontinued;
 
-    public ComputerDTO() {
-    }
-
-    public String getCompanyName() {
-        return companyName;
+    public CompanyDTO getCompany() {
+        return company;
     }
 
     public String getDiscontinued() {
@@ -34,8 +31,8 @@ public class ComputerDTO implements Serializable {
         return name;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setCompany(CompanyDTO company) {
+        this.company = company;
     }
 
     public void setDiscontinued(String discontinued) {

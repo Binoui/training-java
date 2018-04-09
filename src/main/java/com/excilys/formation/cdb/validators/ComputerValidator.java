@@ -4,9 +4,10 @@ import java.time.LocalDate;
 
 import com.excilys.formation.cdb.dao.CompanyDAO;
 import com.excilys.formation.cdb.dao.ComputerDAO;
+import com.excilys.formation.cdb.dao.DAOException;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.model.Computer.ComputerBuilder;;
+import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 
 public enum ComputerValidator {
     INSTANCE;
@@ -15,7 +16,11 @@ public enum ComputerValidator {
     private ComputerDAO computerDAO = ComputerDAO.INSTANCE;
 
     private void validateCompany(Company company) throws UnknownCompanyIdException {
-        if ((company != null) && (company.getId() != null) && (companyDAO.getCompany(company) == null)) {
+        try {
+            if ((company != null) && (company.getId() != null) && !(companyDAO.getCompany(company).isPresent())) {
+                throw new UnknownCompanyIdException("Cannot find given company.");
+            }
+        } catch (DAOException e) {
             throw new UnknownCompanyIdException("Cannot find given company.");
         }
     }
@@ -27,7 +32,11 @@ public enum ComputerValidator {
     }
 
     public void validateComputerId(Long id) throws UnknownComputerIdException {
-        if ((id != null) && (computerDAO.getComputer(new ComputerBuilder().withId(id).build()) == null)) {
+        try {
+            if ((id != null) && !(computerDAO.getComputer(new ComputerBuilder().withId(id).build()).isPresent())) {
+                throw new UnknownComputerIdException("Cannot find given computer.");
+            }
+        } catch (DAOException e) {
             throw new UnknownComputerIdException("Cannot find given computer.");
         }
     }

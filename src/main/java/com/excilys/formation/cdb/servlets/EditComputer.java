@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.cdb.dto.CompanyDTO;
 import com.excilys.formation.cdb.mapper.CompanyDTOMapper;
+import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
 import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
@@ -26,26 +28,35 @@ import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 
 /**
- * Servlet implementation class AddComputer
+ * Servlet implementation class EditComputer
  */
-@WebServlet(name = "AddComputer", urlPatterns = "/AddComputer")
-public class AddComputer extends HttpServlet {
+@WebServlet(name = "EditComputer", urlPatterns = "/EditComputer")
+public class EditComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final CompanyDTOMapper companyMapper = CompanyDTOMapper.INSTANCE;
     private static final CompanyService companyService = CompanyService.INSTANCE;
     private static final ComputerService computerService = ComputerService.INSTANCE;
-    private static final Logger Logger = LoggerFactory.getLogger(AddComputer.class);
+    private static final Logger Logger = LoggerFactory.getLogger(EditComputer.class);
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AddComputer() {
+    public EditComputer() {
         super();
     }
 
+    private Long convertStringIdToLong(String idString) {
+        Long id = (long) 0;
+        if ((idString != null) && !idString.isEmpty()) {
+            id = Long.parseLong(idString);
+        }
+
+        return id;
+    }
+
     private Computer createComputerFromParameters(HttpServletRequest request, HttpServletResponse response, String name,
-            String introducedString, String discontinuedString, String companyIdString) throws ServletException, IOException {
-        
+            String computerIdString, String introducedString, String discontinuedString, String companyIdString)
+            throws ServletException, IOException {
         ComputerBuilder computerBuilder = new ComputerBuilder().withName(name);
 
         try {
@@ -58,15 +69,19 @@ public class AddComputer extends HttpServlet {
             }
         } catch (DateTimeParseException e) {
             request.setAttribute("error", "Wrong date format");
-            Logger.error("Cannot create computer, wrong date format {}", e);
+            Logger.error("Cannot edit computer, wrong date format {}", e);
             doGet(request, response);
+            return null;
         }
 
-        if ((companyIdString != null) && !companyIdString.isEmpty()) {
-            Long companyId = Long.parseLong(companyIdString);
-            if (companyId != 0) {
-                computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
-            }
+        Long computerId = convertStringIdToLong(computerIdString);
+        if (computerId != 0) {
+            computerBuilder.withId(computerId);
+        }
+
+        Long companyId = convertStringIdToLong(companyIdString);
+        if (companyId != 0) {
+            computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
         }
 
         return computerBuilder.build();
@@ -79,53 +94,75 @@ public class AddComputer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         List<CompanyDTO> listCompanies = new LinkedList<>();
 
+        String computerIdString = request.getParameter("computerId");
+        Long computerId = convertStringIdToLong(computerIdString);
+        Computer computer;
+        Optional<Computer> optionalComputer;
+        if (computerId == 0) {
+            redirectToDashboardWithError(request, response, "Couldn't find given computer");
+            return;
+        }
+
         try {
+            computer = new ComputerBuilder().withId(computerId).build();
+            optionalComputer = computerService.getComputer(computer);
+
+            if (!optionalComputer.isPresent()) {
+                redirectToDashboardWithError(request, response, "Couldn't find given computer");
+                return;
+            }
+
+            request.setAttribute("computer", ComputerDTOMapper.INSTANCE.createComputerDTO(optionalComputer.get()));
+
             companyService.getListCompanies()
                     .forEach(company -> listCompanies.add(companyMapper.createCompanyDTO(company)));
         } catch (ServiceException e) {
-            Logger.debug("Cannot list companies {}", e);
+            e.printStackTrace();
         }
 
         request.setAttribute("companies", listCompanies);
 
-        getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
+        getServletContext().getRequestDispatcher("/WEB-INF/editComputer.jsp").forward(request, response);
     }
 
     /**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)date
+     *      response)
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String name = request.getParameter("computerName").trim();
+        String computerIdString = request.getParameter("computerId").trim();
         String introducedString = request.getParameter("introduced").trim();
         String discontinuedString = request.getParameter("discontinued").trim();
-        String companyIdString = request.getParameter("companyId");
+        String companyIdString = request.getParameter("companyId").trim();
 
-        Computer newComputer = null;
-        
-        try {
-            newComputer = createComputerFromParameters(request, response, name, introducedString,
+        Computer computer = createComputerFromParameters(request, response, name, computerIdString, introducedString,
                 discontinuedString, companyIdString);
-        } catch (Exception e) {
-            Logger.error("couldn't create computer from parameters : ", e);
-        }
 
-        if (newComputer == null) {
+        if (computer == null) {
             return;
         }
 
         try {
-            computerService.createComputer(newComputer);
+            computerService.updateComputer(computer);
         } catch (ServiceException | IncorrectValidationException e) {
-            Logger.debug("Cannot create computer {}", e);
+            Logger.debug("Cannot edit computer {}", e);
             request.setAttribute("error", e.getMessage());
         }
 
+        getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
+    }
+
+    private void redirectToDashboardWithError(HttpServletRequest request, HttpServletResponse response, String error)
+            throws ServletException, IOException {
+        Logger.error("error finding computer, redirecting to dashboard");
+        request.setAttribute("error", error);
         getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
     }
 
