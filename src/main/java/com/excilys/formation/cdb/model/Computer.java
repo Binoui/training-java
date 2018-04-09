@@ -2,13 +2,33 @@ package com.excilys.formation.cdb.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="computer")
 public class Computer {
 
     public static class ComputerBuilder {
+        @Id
+        @GeneratedValue(strategy=GenerationType.IDENTITY)
+        @Column(name="cu_id")
         private Long id;
+        
+        @Column(name="cu_name")
         private String name;
+        
+        @Column(name="ca_id")
         private Company company;
+        
+        @Column(name="ca_introduced")
         private LocalDate introduced;
+
+        @Column(name="ca_discontinued")
         private LocalDate discontinued;
 
         public Computer build() {

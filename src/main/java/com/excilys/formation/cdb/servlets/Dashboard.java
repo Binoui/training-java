@@ -68,30 +68,6 @@ public class Dashboard extends HttpServlet {
         getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
     }
 
-    private void putOrderByOnPage(ComputerListPage page, String sortBy, String ascendingString) {
-        if (!StringUtils.isBlank(sortBy) && !StringUtils.isBlank(ascendingString)) {
-            SortableComputerColumn column;
-            boolean ascending;
-
-            try {
-                column = SortableComputerColumn.valueOf(sortBy.toUpperCase());
-
-                if (ascendingString.equalsIgnoreCase("true") || ascendingString.equalsIgnoreCase("false")) {
-
-                    ascending = Boolean.valueOf(ascendingString);
-                    page.setColumn(column);
-                    page.setAscendingSort(ascending);
-
-                } else {
-                    Logger.debug("Couldn't parse given ascending value into a boolean");
-                }
-
-            } catch (IllegalArgumentException e) {
-                Logger.debug("wrong computercolumn given, cannot parse into enum {}", e);
-            }
-        }
-    }
-
     /**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
      *      response)
@@ -139,6 +115,30 @@ public class Dashboard extends HttpServlet {
         } catch (ServiceException e) {
             Logger.error("Error accessing service {}", e);
             return;
+        }
+    }
+
+    private void putOrderByOnPage(ComputerListPage page, String sortBy, String ascendingString) {
+        if (!StringUtils.isBlank(sortBy) && !StringUtils.isBlank(ascendingString)) {
+            SortableComputerColumn column;
+            boolean ascending;
+
+            try {
+                column = SortableComputerColumn.valueOf(sortBy.toUpperCase());
+
+                if (ascendingString.equalsIgnoreCase("true") || ascendingString.equalsIgnoreCase("false")) {
+
+                    ascending = Boolean.valueOf(ascendingString);
+                    page.setColumn(column);
+                    page.setAscendingSort(ascending);
+
+                } else {
+                    Logger.debug("Couldn't parse given ascending value into a boolean");
+                }
+
+            } catch (IllegalArgumentException e) {
+                Logger.debug("wrong computercolumn given, cannot parse into enum {}", e);
+            }
         }
     }
 

@@ -14,7 +14,7 @@
 		<!-- sets the projects encoding to UTF-8 -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-		
+
 		<common-lang3.version>3.0</common-lang3.version>
 
 		<!-- test -->
@@ -23,6 +23,8 @@
 		<sqltool.version>2.4.0</sqltool.version>
 		<mojo.version>1.2.1</mojo.version>
 		<!-- compile -->
+		<maven-war.version>2.4</maven-war.version>
+		<maven-compiler.version>3.1</maven-compiler.version>
 		<!-- logs -->
 		<slf4j.version>1.7.25</slf4j.version>
 		<logback.version>1.2.3</logback.version>
@@ -36,8 +38,8 @@
 		<jstl.version>1.2</jstl.version>
 		<javax.servlet.version>3.1.0</javax.servlet.version>
 		<tomcat7.version>2.2</tomcat7.version>
-		<maven-war.version>2.4</maven-war.version>
-		<maven-compiler.version>3.1</maven-compiler.version>
+		<spring.version>5.0.5.RELEASE</spring.version>
+		<hibernate.version>5.2.16.Final</hibernate.version>
 
 	</properties>
 
@@ -76,6 +78,7 @@
 				<version>${checkstyle.version}</version>
 				<configuration>
 					<configLocation>checkstyle.xml</configLocation>
+					5.2.16.Final
 					<supressionsLocation>supressions.xml</supressionsLocation>
 				</configuration>
 			</plugin>
@@ -172,6 +175,36 @@
 			<artifactId>HikariCP</artifactId>
 			<version>${hikaricp.version}</version>
 			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
 		</dependency>
 
 	</dependencies>

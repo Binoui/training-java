@@ -30,7 +30,7 @@ public enum ComputerDAO implements IComputerDAO {
     private static final String INSERT_COMPUTER = "insert into computer (cu_name, cu_introduced, cu_discontinued, ca_id) values (?, ?, ?, ?);";
     private static final String UPDATE_COMPUTER = "update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?;";
     private static final String DELETE_COMPUTER = "delete from computer where cu_id = ?;";
-    private static final String DELETE_COMPUTERS = "delete from computer where ca_id = ?;";
+    private static final String DELETE_COMPUTERS_WITH_COMPANY_ID = "delete from computer where ca_id = ?;";
 
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAO.class);
 
@@ -75,6 +75,7 @@ public enum ComputerDAO implements IComputerDAO {
         }
     }
 
+    @Override
     public void deleteComputers(List<Long> idsToDelete) throws DAOException {
         Logger.info("delete computers");
         try (Connection conn = dbConn.getConnection()) {
@@ -98,9 +99,9 @@ public enum ComputerDAO implements IComputerDAO {
 
     }
 
-    protected void deleteComputers(long id, Connection conn) throws DAOException, SQLException {
-        try (PreparedStatement deleteComputersStatement = conn.prepareStatement(DELETE_COMPUTERS);) {
-            deleteComputersStatement.setLong(1, id);
+    protected void deleteComputers(long company_id, Connection conn) throws DAOException, SQLException {
+        try (PreparedStatement deleteComputersStatement = conn.prepareStatement(DELETE_COMPUTERS_WITH_COMPANY_ID);) {
+            deleteComputersStatement.setLong(1, company_id);
             deleteComputersStatement.execute();
         } catch (SQLException e) {
             Logger.error("Error while deleting computers, rolling back : ", e);
@@ -109,6 +110,7 @@ public enum ComputerDAO implements IComputerDAO {
         }
     }
 
+    @Override
     public Optional<Computer> getComputer(Computer computer) throws DAOException {
         Computer c = null;
 
@@ -134,10 +136,12 @@ public enum ComputerDAO implements IComputerDAO {
         return Optional.ofNullable(c);
     }
 
+    @Override
     public Optional<Computer> getComputer(long id) throws DAOException {
         return getComputer(new ComputerBuilder().withId(id).build());
     }
 
+    @Override
     public int getComputerCount() throws DAOException {
         int computerCount = 0;
 
@@ -155,6 +159,7 @@ public enum ComputerDAO implements IComputerDAO {
         return computerCount;
     }
 
+    @Override
     public int getComputerCount(String searchWord) throws DAOException {
         Logger.info("getComputerCount with searchWord : ", searchWord);
         int computerCount = 0;
@@ -227,6 +232,7 @@ public enum ComputerDAO implements IComputerDAO {
         return computers;
     }
 
+    @Override
     public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column,
             boolean ascending, String searchWord) throws DAOException {
         Logger.info("list computers with pages / orderBy / search");
@@ -262,6 +268,7 @@ public enum ComputerDAO implements IComputerDAO {
         return computers;
     }
 
+    @Override
     public int getListComputersPageCount(int pageSize) throws DAOException {
         int pageCount = 0;
 

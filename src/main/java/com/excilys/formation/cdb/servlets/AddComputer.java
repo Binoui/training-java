@@ -44,8 +44,9 @@ public class AddComputer extends HttpServlet {
     }
 
     private Computer createComputerFromParameters(HttpServletRequest request, HttpServletResponse response, String name,
-            String introducedString, String discontinuedString, String companyIdString) throws ServletException, IOException {
-        
+            String introducedString, String discontinuedString, String companyIdString)
+            throws ServletException, IOException {
+
         ComputerBuilder computerBuilder = new ComputerBuilder().withName(name);
 
         try {
@@ -107,10 +108,10 @@ public class AddComputer extends HttpServlet {
         String companyIdString = request.getParameter("companyId");
 
         Computer newComputer = null;
-        
+
         try {
-            newComputer = createComputerFromParameters(request, response, name, introducedString,
-                discontinuedString, companyIdString);
+            newComputer = createComputerFromParameters(request, response, name, introducedString, discontinuedString,
+                    companyIdString);
         } catch (Exception e) {
             Logger.error("couldn't create computer from parameters : ", e);
         }
