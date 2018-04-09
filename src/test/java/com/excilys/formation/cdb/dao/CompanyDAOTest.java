@@ -58,8 +58,8 @@ public class CompanyDAOTest {
     public void testGetListCompanies() throws DAOException {
         List<Company> companies = cDAO.getListCompanies();
         assertNotNull(companies);
-        assertEquals(companies.size(), 3);
-        assertEquals(companies.get(1).getName(), "Company 2");
+        assertEquals(3, companies.size());
+        assertEquals("Company 2", companies.get(1).getName());
     }
 
     @Test
@@ -71,7 +71,7 @@ public class CompanyDAOTest {
         try {
             cDAO.getListCompanies(999999, 10);
             fail("should throw exception");
-        } catch (IndexOutOfBoundsException e) {
+        } catch (DAOException e) {
         }
     }
 

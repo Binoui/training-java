@@ -81,18 +81,17 @@ public enum ComputerDAO implements IComputerDAO {
 
             conn.setAutoCommit(false);
             try (PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
-
                 for (Long id : idsToDelete) {
                     st.setLong(1, id);
                     st.executeUpdate();
                 }
-
                 conn.commit();
             } catch (SQLException e) {
                 Logger.error("Error while deleting, rolling back");
                 conn.rollback();
                 throw new DAOException("Cannot delete computers");
             }
+
         } catch (SQLException e) {
             Logger.error("error with database connection {}", e);
         }
@@ -126,7 +125,6 @@ public enum ComputerDAO implements IComputerDAO {
                     c = mapper.createComputer(rs);
                 }
             }
-            ;
 
         } catch (SQLException e) {
             Logger.debug(e.getMessage());
@@ -158,7 +156,7 @@ public enum ComputerDAO implements IComputerDAO {
     }
 
     public int getComputerCount(String searchWord) throws DAOException {
-        Logger.info("getComputerCount with searchWord : " + searchWord);
+        Logger.info("getComputerCount with searchWord : ", searchWord);
         int computerCount = 0;
 
         try (Connection conn = dbConn.getConnection();
@@ -183,7 +181,7 @@ public enum ComputerDAO implements IComputerDAO {
 
     @Override
     public List<Computer> getListComputers() throws DAOException {
-        Logger.info("list computers");
+        Logger.info("list computers no args");
         ArrayList<Computer> computers = new ArrayList<>();
 
         try (Connection conn = dbConn.getConnection();
@@ -205,7 +203,7 @@ public enum ComputerDAO implements IComputerDAO {
     @Override
     public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column,
             boolean ascending) throws DAOException {
-        Logger.info("list computers");
+        Logger.info("list computers with pages / orderBy");
         ArrayList<Computer> computers = new ArrayList<>();
 
         String newRequest = String.format(SELECT_ALL_COMPUTERS_PAGE, column.getColumn(), ascending ? "ASC" : "DESC");
@@ -231,7 +229,7 @@ public enum ComputerDAO implements IComputerDAO {
 
     public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column,
             boolean ascending, String searchWord) throws DAOException {
-        Logger.info("list computers");
+        Logger.info("list computers with pages / orderBy / search");
 
         if (searchWord == null) {
             Logger.info("search word was null, using regular list computer");

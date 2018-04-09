@@ -30,7 +30,6 @@ public class CommandLineInterface {
         System.out.println("******** Computer Database ********\n");
         CommandLineInterface cli = new CommandLineInterface();
         while (cli.menuLoop()) {
-            ;
         }
     }
 
@@ -52,7 +51,7 @@ public class CommandLineInterface {
             c.setId(computerService.createComputer(c));
             System.out.println("Created new computer with ID " + c.getId());
         } catch (ServiceException | IncorrectValidationException e) {
-            System.out.println(e.getMessage());
+            Logger.error("couldnt create computer {}", e.getMessage());
         }
     }
 
@@ -71,7 +70,7 @@ public class CommandLineInterface {
         try {
             computerService.deleteComputer(c);
         } catch (ServiceException | UnknownComputerIdException e) {
-            System.out.println(e.getMessage());
+            Logger.error("couldnt create computer {}", e.getMessage());
         }
     }
 
@@ -81,7 +80,7 @@ public class CommandLineInterface {
         try {
             readPages(new CompanyListPage());
         } catch (ServiceException e) {
-            System.out.println(e.getMessage());
+            Logger.error("couldnt create computer {}", e.getMessage());
         }
     }
 
@@ -91,7 +90,7 @@ public class CommandLineInterface {
         try {
             readPages(new ComputerListPage());
         } catch (ServiceException e) {
-            System.out.println(e.getMessage());
+            Logger.error("couldnt create computer {}", e.getMessage());
         }
     }
 
@@ -101,7 +100,9 @@ public class CommandLineInterface {
         try {
             c = computerService.getComputer(new ComputerBuilder().withId(id).build());
         } catch (ServiceException e) {
-
+            Logger.error("couldnt get computer {}", e);
+            System.out.println("error cannot find computer with id " + id);
+            return;
         }
         if (c.isPresent()) {
             System.out.println(c.get());
@@ -192,7 +193,6 @@ public class CommandLineInterface {
         while (!acceptable) {
             readString = scanner.nextLine().trim();
             if (readString.isEmpty()) {
-                readDate = null;
                 acceptable = true;
             } else {
                 try {
@@ -215,7 +215,6 @@ public class CommandLineInterface {
             System.out.print("Enter new computer's company ID : ");
             readString = scanner.nextLine().trim();
             if (readString.isEmpty()) {
-                readId = null;
                 acceptable = true;
             } else {
                 try {

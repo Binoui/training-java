@@ -84,8 +84,7 @@ public class EditComputer extends HttpServlet {
             computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
         }
 
-        Computer computer = computerBuilder.build();
-        return computer;
+        return computerBuilder.build();
     }
 
     /**

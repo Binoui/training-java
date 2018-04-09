@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 
@@ -25,7 +24,6 @@ import com.excilys.formation.cdb.services.ServiceException;
 public class DeleteComputer extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final ComputerDTOMapper computerMapper = ComputerDTOMapper.INSTANCE;
     private static final ComputerService computerService = ComputerService.INSTANCE;
     private static final Logger Logger = LoggerFactory.getLogger(DeleteComputer.class);
 
@@ -61,7 +59,7 @@ public class DeleteComputer extends HttpServlet {
             return;
         }
 
-        List<Long> idsToDelete = new LinkedList<Long>();
+        List<Long> idsToDelete = new LinkedList<>();
 
         try {
             Arrays.asList(selectedIds.split(",")).forEach(id -> idsToDelete.add(Long.parseLong(id)));

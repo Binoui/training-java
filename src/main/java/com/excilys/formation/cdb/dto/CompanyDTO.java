@@ -8,9 +8,6 @@ public class CompanyDTO implements Serializable {
     private long id;
     private String name;
 
-    public CompanyDTO() {
-    }
-
     public long getId() {
         return id;
     }

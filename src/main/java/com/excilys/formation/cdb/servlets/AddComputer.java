@@ -44,8 +44,8 @@ public class AddComputer extends HttpServlet {
     }
 
     private Computer createComputerFromParameters(HttpServletRequest request, HttpServletResponse response, String name,
-            String introducedString, String discontinuedString, String companyIdString)
-            throws ServletException, IOException {
+            String introducedString, String discontinuedString, String companyIdString) throws ServletException, IOException {
+        
         ComputerBuilder computerBuilder = new ComputerBuilder().withName(name);
 
         try {
@@ -60,7 +60,6 @@ public class AddComputer extends HttpServlet {
             request.setAttribute("error", "Wrong date format");
             Logger.error("Cannot create computer, wrong date format {}", e);
             doGet(request, response);
-            return null;
         }
 
         if ((companyIdString != null) && !companyIdString.isEmpty()) {
@@ -80,15 +79,13 @@ public class AddComputer extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // TODO Auto-generated method stub
-
         List<CompanyDTO> listCompanies = new LinkedList<>();
 
         try {
             companyService.getListCompanies()
                     .forEach(company -> listCompanies.add(companyMapper.createCompanyDTO(company)));
         } catch (ServiceException e) {
-            e.printStackTrace();
+            Logger.debug("Cannot list companies {}", e);
         }
 
         request.setAttribute("companies", listCompanies);
@@ -98,7 +95,7 @@ public class AddComputer extends HttpServlet {
 
     /**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
+     *      response)date
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -109,8 +106,14 @@ public class AddComputer extends HttpServlet {
         String discontinuedString = request.getParameter("discontinued").trim();
         String companyIdString = request.getParameter("companyId");
 
-        Computer newComputer = createComputerFromParameters(request, response, name, introducedString,
+        Computer newComputer = null;
+        
+        try {
+            newComputer = createComputerFromParameters(request, response, name, introducedString,
                 discontinuedString, companyIdString);
+        } catch (Exception e) {
+            Logger.error("couldn't create computer from parameters : ", e);
+        }
 
         if (newComputer == null) {
             return;

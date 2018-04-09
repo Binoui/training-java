@@ -15,7 +15,7 @@ public enum DatabaseConnection {
     INSTANCE;
 
     private static final Logger Logger = LoggerFactory.getLogger(DatabaseConnection.class);
-    private static final String propertiesPath = "connection.properties";
+    private static final String PROPERTIES_PATH = "connection.properties";
 
     private String driver;
     private HikariDataSource hikariDataSource;
@@ -29,7 +29,7 @@ public enum DatabaseConnection {
         String pass = null;
 
         try {
-            input = this.getClass().getClassLoader().getResourceAsStream(propertiesPath);
+            input = this.getClass().getClassLoader().getResourceAsStream(PROPERTIES_PATH);
 
             properties.load(input);
 
@@ -53,6 +53,7 @@ public enum DatabaseConnection {
         hikariDataSource.setJdbcUrl(url);
         hikariDataSource.setUsername(user);
         hikariDataSource.setPassword(pass);
+        hikariDataSource.setMaxLifetime(60000);
     }
 
     public Connection getConnection() {

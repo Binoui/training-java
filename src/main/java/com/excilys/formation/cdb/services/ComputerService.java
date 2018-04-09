@@ -69,8 +69,8 @@ public enum ComputerService {
         }
     }
 
-    public List<Computer> getComputerPage(int pageNumber) {
-        return new LinkedList<Computer>();
+    public List<Computer> getComputerPage() {
+        return new LinkedList<>();
     }
 
     public List<Computer> getListComputers() throws ServiceException {

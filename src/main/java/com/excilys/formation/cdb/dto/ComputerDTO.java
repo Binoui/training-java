@@ -11,9 +11,6 @@ public class ComputerDTO implements Serializable {
     private String introduced;
     private String discontinued;
 
-    public ComputerDTO() {
-    }
-
     public CompanyDTO getCompany() {
         return company;
     }

@@ -1,21 +1,22 @@
 package com.excilys.formation.cdb.pagination;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import com.excilys.formation.cdb.services.ServiceException;
 
 public abstract class Page<T> {
 
-    protected static int pageSize = 10;
+    protected int pageSize = 10;
 
     protected int pageNumber;
     protected List<T> elements;
 
-    public Page() throws ServiceException {
+    public Page() {
         pageNumber = 0;
     }
 
-    public Page(int pageNumber) throws ServiceException {
+    public Page(int pageNumber) {
         this.pageNumber = pageNumber;
     }
 
@@ -48,7 +49,7 @@ public abstract class Page<T> {
 
     public List<T> goToPage(int pageNumber) throws ServiceException {
         if ((pageNumber < 0) || (pageNumber >= getLastPageNumber())) {
-            return null;
+            return new LinkedList<>();
         }
 
         this.pageNumber = pageNumber;
@@ -79,7 +80,7 @@ public abstract class Page<T> {
 
     public void setPageSize(int pageSize) throws ServiceException {
         if (pageSize > 0) {
-            Page.pageSize = pageSize;
+            this.pageSize = pageSize;
         }
 
         refresh();

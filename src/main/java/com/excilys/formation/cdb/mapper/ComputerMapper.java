@@ -11,7 +11,7 @@ import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 public enum ComputerMapper {
     INSTANCE;
 
-    public static CompanyMapper companyMapper = CompanyMapper.INSTANCE;
+    public static final CompanyMapper companyMapper = CompanyMapper.INSTANCE;
 
     public Computer createComputer(ResultSet rs) throws SQLException {
 

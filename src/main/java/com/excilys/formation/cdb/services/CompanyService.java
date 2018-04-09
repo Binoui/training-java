@@ -30,8 +30,6 @@ public enum CompanyService {
     public List<Company> getListCompanies(int pageNumber, int pageSize) throws ServiceException {
         try {
             return companyDAO.getListCompanies(pageNumber, pageSize);
-        } catch (IndexOutOfBoundsException e) {
-            throw new ServiceException("Page number is greater than page count");
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage());
         }

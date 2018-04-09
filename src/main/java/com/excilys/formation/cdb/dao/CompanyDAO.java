@@ -35,27 +35,25 @@ public enum CompanyDAO implements ICompanyDAO {
         Logger.info("DAO : Delete Company");
 
         try (Connection conn = dbConn.getConnection();) {
-
             conn.setAutoCommit(false);
-
             ComputerDAO.INSTANCE.deleteComputers(id, conn);
-
-            try (PreparedStatement deleteCompanyStatement = conn.prepareStatement(DELETE_COMPANY);) {
-                deleteCompanyStatement.setLong(1, id);
-                deleteCompanyStatement.execute();
-            } catch (SQLException e) {
-                Logger.error("Error while deleting company, rolling back : ", e);
-                conn.rollback();
-                throw new DAOException("Couldn't delete company");
-            }
-
+            deleteALlCompaniesWithId(id, conn);
             conn.commit();
-
         } catch (SQLException e) {
             Logger.debug("Couldn't get connection : ", e);
             throw new DAOException("couldn't get connection");
         }
+    }
 
+    private void deleteALlCompaniesWithId(long id, Connection conn) throws SQLException, DAOException {
+        try (PreparedStatement deleteCompanyStatement = conn.prepareStatement(DELETE_COMPANY);) {
+            deleteCompanyStatement.setLong(1, id);
+            deleteCompanyStatement.execute();
+        } catch (SQLException e) {
+            Logger.error("Error while deleting company, rolling back : ", e);
+            conn.rollback();
+            throw new DAOException("Couldn't delete company");
+        }
     }
 
     public Optional<Company> getCompany(Company c) throws DAOException {
@@ -65,7 +63,6 @@ public enum CompanyDAO implements ICompanyDAO {
     public Optional<Company> getCompany(Long id) throws DAOException {
         Logger.info("get company");
         Company c = null;
-        ResultSet rs = null;
         try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPANY);) {
 
             if (id != null) {
@@ -74,14 +71,15 @@ public enum CompanyDAO implements ICompanyDAO {
                 st.setNull(1, java.sql.Types.BIGINT);
             }
 
-            rs = st.executeQuery();
-            if (rs.next()) {
-                c = mapper.createCompany(rs);
+            try (ResultSet rs = st.executeQuery();) {
+                if (rs.next()) {
+                    c = mapper.createCompany(rs);
+                }
             }
 
         } catch (SQLException e) {
             Logger.debug(e.getMessage());
-            throw new DAOException("Couldn't find company with ID : " + c.getId());
+            throw new DAOException("Couldn't find company with ID : " + id);
         }
 
         return Optional.ofNullable(c);
@@ -110,34 +108,27 @@ public enum CompanyDAO implements ICompanyDAO {
 
     @Override
     public List<Company> getListCompanies(final int pageNumber, final int pageSize)
-            throws DAOException, IndexOutOfBoundsException {
+            throws DAOException {
         Logger.info("get list companies");
         ArrayList<Company> companies = new ArrayList<>();
-        ResultSet rs = null;
         try (Connection conn = dbConn.getConnection();
                 PreparedStatement st = conn.prepareStatement(SELECT_COMPANIES_PAGE);) {
 
             st.setInt(1, pageSize);
             st.setInt(2, pageSize * pageNumber);
-            rs = st.executeQuery();
+            try (ResultSet rs = st.executeQuery();) {
+                while (rs.next()) {
+                    companies.add(mapper.createCompany(rs));
+                }
 
-            while (rs.next()) {
-                companies.add(mapper.createCompany(rs));
-            }
-
-            if (companies.isEmpty()) {
-                throw new IndexOutOfBoundsException("Given page number is greater than page count");
+                if (companies.isEmpty()) {
+                    throw new DAOException("Given page number is greater than page count");
+                }
             }
 
         } catch (SQLException e) {
             Logger.debug(e.getMessage());
             throw new DAOException("Couldn't fetch companies list");
-        } finally {
-            try {
-                rs.close();
-            } catch (SQLException e) {
-                Logger.debug(e.getMessage());
-            }
         }
 
         return companies;
