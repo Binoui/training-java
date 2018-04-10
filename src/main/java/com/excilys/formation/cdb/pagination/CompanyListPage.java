@@ -1,6 +1,7 @@
 package com.excilys.formation.cdb.pagination;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.services.CompanyService;
