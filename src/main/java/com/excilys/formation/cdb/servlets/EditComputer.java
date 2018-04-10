@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.formation.cdb.dto.CompanyDTO;
 import com.excilys.formation.cdb.mapper.CompanyDTOMapper;
@@ -33,10 +34,12 @@ import com.excilys.formation.cdb.validators.IncorrectValidationException;
 @WebServlet(name = "EditComputer", urlPatterns = "/EditComputer")
 public class EditComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final CompanyDTOMapper companyMapper = CompanyDTOMapper.INSTANCE;
-    private static final CompanyService companyService = CompanyService.INSTANCE;
-    private static final ComputerService computerService = ComputerService.INSTANCE;
     private static final Logger Logger = LoggerFactory.getLogger(EditComputer.class);
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private ComputerService computerService;
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -115,10 +118,10 @@ public class EditComputer extends HttpServlet {
                 return;
             }
 
-            request.setAttribute("computer", ComputerDTOMapper.INSTANCE.createComputerDTO(optionalComputer.get()));
+            request.setAttribute("computer", ComputerDTOMapper.createComputerDTO(optionalComputer.get()));
 
             companyService.getListCompanies()
-                    .forEach(company -> listCompanies.add(companyMapper.createCompanyDTO(company)));
+                    .forEach(company -> listCompanies.add(CompanyDTOMapper.createCompanyDTO(company)));
         } catch (ServiceException e) {
             e.printStackTrace();
         }

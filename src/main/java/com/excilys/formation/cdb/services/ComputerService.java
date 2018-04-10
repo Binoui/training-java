@@ -1,127 +1,41 @@
 package com.excilys.formation.cdb.services;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import com.excilys.formation.cdb.dao.ComputerDAO;
-import com.excilys.formation.cdb.dao.DAOException;
 import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.validators.ComputerValidator;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
-public enum ComputerService {
-    INSTANCE;
+public interface ComputerService {
 
-    private static ComputerDAO dao = ComputerDAO.INSTANCE;
-    private static ComputerValidator validator = ComputerValidator.INSTANCE;
+    Long createComputer(Computer c) throws IncorrectValidationException, ServiceException;
 
-    public Long createComputer(Computer c) throws IncorrectValidationException, ServiceException {
-        validator.validateComputer(c);
+    void deleteComputer(Computer c) throws UnknownComputerIdException, ServiceException;
 
-        try {
-            return dao.createComputer(c);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
+    void deleteComputers(List<Long> idsToDelete) throws ServiceException;
 
-    public void deleteComputer(Computer c) throws UnknownComputerIdException, ServiceException {
-        validator.validateComputerId(c.getId());
-        try {
-            dao.deleteComputer(c);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
+    Optional<Computer> getComputer(Computer computer) throws ServiceException;
 
-    public void deleteComputers(List<Long> idsToDelete) throws ServiceException {
-        try {
-            dao.deleteComputers(idsToDelete);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
+    int getComputerCount() throws ServiceException;
 
-    public Optional<Computer> getComputer(Computer computer) throws ServiceException {
-        try {
-            return dao.getComputer(computer);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
+    int getComputerCount(String searchWord) throws ServiceException;
 
-    public int getComputerCount() throws ServiceException {
-        try {
-            return dao.getComputerCount();
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
+    List<Computer> getComputerPage();
 
-    public int getComputerCount(String searchWord) throws ServiceException {
-        try {
-            return dao.getComputerCount(searchWord);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
+    List<Computer> getListComputers() throws ServiceException;
 
-    public List<Computer> getComputerPage() {
-        return new LinkedList<>();
-    }
+    List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending)
+            throws ServiceException;
 
-    public List<Computer> getListComputers() throws ServiceException {
-        try {
-            return dao.getListComputers();
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
+    List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending,
+            String searchWord) throws ServiceException;
 
-    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column,
-            boolean ascending) throws ServiceException {
-        try {
-            return dao.getListComputers(pageNumber, pageSize, column, ascending);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
+    int getListComputersPageCount(int pageSize) throws ServiceException;
 
-    public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column,
-            boolean ascending, String searchWord) throws ServiceException {
-        try {
-            return dao.getListComputers(pageNumber, pageSize, column, ascending, searchWord);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
+    int getListComputersPageCount(int pageSize, String searchWord) throws ServiceException;
 
-    public int getListComputersPageCount(int pageSize) throws ServiceException {
-        try {
-            return dao.getListComputersPageCount(pageSize);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
+    void updateComputer(Computer c) throws IncorrectValidationException, ServiceException;
 
-    public int getListComputersPageCount(int pageSize, String searchWord) throws ServiceException {
-        try {
-            return dao.getListComputersPageCount(pageSize, searchWord);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
-
-    public void updateComputer(Computer c) throws IncorrectValidationException, ServiceException {
-        validator.validateComputerId(c.getId());
-        validator.validateComputer(c);
-        try {
-            dao.updateComputer(c);
-        } catch (DAOException e) {
-            throw new ServiceException("Couldn't update computer " + c.getName());
-        }
-    }
 }

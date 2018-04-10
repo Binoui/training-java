@@ -1,12 +1,15 @@
 package com.excilys.formation.cdb.pagination;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ServiceException;
 
 public class CompanyListPage extends Page<Company> {
 
-    private static CompanyService service = CompanyService.INSTANCE;
+    @Autowired
+    private CompanyService companyService;
 
     public CompanyListPage() throws ServiceException {
         super();
@@ -18,12 +21,12 @@ public class CompanyListPage extends Page<Company> {
 
     @Override
     public int getLastPageNumber() throws ServiceException {
-        return service.getListCompaniesPageCount(pageSize);
+        return companyService.getListCompaniesPageCount(pageSize);
     }
 
     @Override
     public void refresh() throws ServiceException {
-        elements = service.getListCompanies(pageNumber, pageSize);
+        elements = companyService.getListCompanies(pageNumber, pageSize);
     }
 
 }

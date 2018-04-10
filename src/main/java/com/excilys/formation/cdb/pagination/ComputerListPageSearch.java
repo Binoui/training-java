@@ -1,11 +1,14 @@
 package com.excilys.formation.cdb.pagination;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 
 public class ComputerListPageSearch extends ComputerListPage {
 
-    private static ComputerService service = ComputerService.INSTANCE;
+    @Autowired
+    private ComputerService service;
 
     private final String searchWord;
 

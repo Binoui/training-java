@@ -8,18 +8,15 @@ import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 
-public enum ComputerMapper {
-    INSTANCE;
+public class ComputerMapper {
 
-    public static final CompanyMapper companyMapper = CompanyMapper.INSTANCE;
-
-    public Computer createComputer(ResultSet rs) throws SQLException {
+    public static Computer createComputer(ResultSet rs) throws SQLException {
 
         Long id = rs.getLong("cu_id");
 
         String name = rs.getString("cu_name");
 
-        Company company = companyMapper.createCompany(rs);
+        Company company = CompanyMapper.createCompany(rs);
         ComputerBuilder builder = new ComputerBuilder().withId(id).withName(name).withCompany(company);
 
         Date introduced = rs.getDate("cu_introduced");

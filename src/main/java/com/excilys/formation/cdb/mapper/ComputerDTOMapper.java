@@ -5,31 +5,30 @@ import java.time.format.DateTimeFormatter;
 import com.excilys.formation.cdb.dto.ComputerDTO;
 import com.excilys.formation.cdb.model.Computer;
 
-public enum ComputerDTOMapper {
-    INSTANCE;
+public class ComputerDTOMapper {
 
-    public ComputerDTO createComputerDTO(Computer computer) {
-        ComputerDTO caDto = new ComputerDTO();
+    public static ComputerDTO createComputerDTO(Computer computer) {
+        ComputerDTO computerDto = new ComputerDTO();
 
-        caDto.setId(computer.getId());
+        computerDto.setId(computer.getId());
 
         if (computer.getName() != null) {
-            caDto.setName(computer.getName());
+            computerDto.setName(computer.getName());
         }
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         if (computer.getIntroduced() != null) {
-            caDto.setIntroduced(computer.getIntroduced().format(dateFormatter));
+            computerDto.setIntroduced(computer.getIntroduced().format(dateFormatter));
         }
 
         if (computer.getDiscontinued() != null) {
-            caDto.setDiscontinued(computer.getDiscontinued().format(dateFormatter));
+            computerDto.setDiscontinued(computer.getDiscontinued().format(dateFormatter));
         }
 
         if (computer.getCompany() != null) {
-            caDto.setCompany(CompanyDTOMapper.INSTANCE.createCompanyDTO(computer.getCompany()));
+            computerDto.setCompany(CompanyDTOMapper.createCompanyDTO(computer.getCompany()));
         }
 
-        return caDto;
+        return computerDto;
     }
 }

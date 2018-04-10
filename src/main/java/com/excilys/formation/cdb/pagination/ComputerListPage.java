@@ -1,5 +1,7 @@
 package com.excilys.formation.cdb.pagination;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.services.ComputerService;
@@ -7,7 +9,8 @@ import com.excilys.formation.cdb.services.ServiceException;
 
 public class ComputerListPage extends Page<Computer> {
 
-    private static ComputerService service = ComputerService.INSTANCE;
+    @Autowired
+    private ComputerService computerService;
 
     protected SortableComputerColumn column;
     protected boolean ascendingSort;
@@ -29,16 +32,16 @@ public class ComputerListPage extends Page<Computer> {
     }
 
     public int getComputerCount() throws ServiceException {
-        return service.getComputerCount();
+        return computerService.getComputerCount();
     }
 
     @Override
     public int getLastPageNumber() throws ServiceException {
-        return service.getListComputersPageCount(pageSize);
+        return computerService.getListComputersPageCount(pageSize);
     }
 
     public int getListComputersPageCount(int pageSize) throws ServiceException {
-        return service.getListComputersPageCount(pageSize);
+        return computerService.getListComputersPageCount(pageSize);
     }
 
     public boolean isAscendingSort() {
@@ -47,7 +50,7 @@ public class ComputerListPage extends Page<Computer> {
 
     @Override
     public void refresh() throws ServiceException {
-        elements = service.getListComputers(pageNumber, pageSize, column, ascendingSort);
+        elements = computerService.getListComputers(pageNumber, pageSize, column, ascendingSort);
     }
 
     public void setAscendingSort(boolean ascendingSort) {

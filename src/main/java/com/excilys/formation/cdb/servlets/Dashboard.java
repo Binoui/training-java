@@ -28,7 +28,6 @@ import com.excilys.formation.cdb.services.ServiceException;
 public class Dashboard extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final ComputerDTOMapper computerMapper = ComputerDTOMapper.INSTANCE;
     private static final Logger Logger = LoggerFactory.getLogger(Dashboard.class);
 
     /**
@@ -54,7 +53,7 @@ public class Dashboard extends HttpServlet {
 
         try {
             if (!StringUtils.isBlank(searchWord)) {
-                page = new ComputerListPageSearch(searchWord.trim());
+                page = new ComputerListPageSearch(searchWord);
             } else {
                 page = new ComputerListPage();
             }
@@ -100,7 +99,7 @@ public class Dashboard extends HttpServlet {
                 page.setPageSize(getIntParam(itemsPerPage, 10));
             }
 
-            page.getPage().forEach(computer -> listComputers.add(computerMapper.createComputerDTO(computer)));
+            page.getPage().forEach(computer -> listComputers.add(ComputerDTOMapper.createComputerDTO(computer)));
 
         } catch (ServiceException e) {
             Logger.error("Error creating page{}", e);
