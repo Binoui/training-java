@@ -42,7 +42,7 @@ public abstract class Page<T> {
     }
 
     public List<T> goToLast() throws ServiceException {
-        pageNumber = getLastPageNumber();
+        pageNumber = getLastPageNumber() - 1;
         refresh();
         return elements;
     }
