@@ -10,8 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.cdb.mapper.ComputerMapper;
@@ -34,15 +37,16 @@ public class ComputerDAOImpl implements ComputerDAO {
     private static final String DELETE_COMPUTERS_WITH_COMPANY_ID = "delete from computer where ca_id = ?;";
 
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
-
-    private static DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
+    
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     public Long createComputer(Computer c) throws DAOException {
         Logger.info("create computer");
         Long key = null;
 
-        try (Connection conn = dbConn.getConnection();
+        try (Connection conn = getConnection();
                 PreparedStatement st = conn.prepareStatement(INSERT_COMPUTER, Statement.RETURN_GENERATED_KEYS);) {
 
             populateStatementFromComputer(c, st);
@@ -64,7 +68,7 @@ public class ComputerDAOImpl implements ComputerDAO {
     @Override
     public void deleteComputer(Computer c) throws DAOException {
         Logger.info("delete computer");
-        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
+        try (Connection conn = getConnection(); PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
 
             st.setLong(1, c.getId());
             st.executeUpdate();
@@ -78,7 +82,7 @@ public class ComputerDAOImpl implements ComputerDAO {
     @Override
     public void deleteComputers(List<Long> idsToDelete) throws DAOException {
         Logger.info("delete computers");
-        try (Connection conn = dbConn.getConnection()) {
+        try (Connection conn = getConnection()) {
 
             conn.setAutoCommit(false);
             try (PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
@@ -115,7 +119,7 @@ public class ComputerDAOImpl implements ComputerDAO {
     public Optional<Computer> getComputer(Computer computer) throws DAOException {
         Computer c = null;
 
-        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPUTER);) {
+        try (Connection conn = getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPUTER);) {
 
             if (computer.getId() != null) {
                 st.setLong(1, computer.getId());
@@ -146,7 +150,7 @@ public class ComputerDAOImpl implements ComputerDAO {
     public int getComputerCount() throws DAOException {
         int computerCount = 0;
 
-        try (Connection conn = dbConn.getConnection();
+        try (Connection conn = getConnection();
                 PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPUTERS);
                 ResultSet rs = st.executeQuery()) {
             rs.next();
@@ -165,7 +169,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         Logger.info("getComputerCount with searchWord : ", searchWord);
         int computerCount = 0;
 
-        try (Connection conn = dbConn.getConnection();
+        try (Connection conn = getConnection();
                 PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPUTERS_WITH_SEARCH)) {
 
             searchWord = '%' + searchWord + '%';
@@ -190,7 +194,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         Logger.info("list computers no args");
         ArrayList<Computer> computers = new ArrayList<>();
 
-        try (Connection conn = dbConn.getConnection();
+        try (Connection conn = getConnection();
                 Statement st = conn.createStatement();
                 ResultSet computerList = st.executeQuery(SELECT_ALL_COMPUTERS)) {
 
@@ -214,7 +218,7 @@ public class ComputerDAOImpl implements ComputerDAO {
 
         String newRequest = String.format(SELECT_ALL_COMPUTERS_PAGE, column.getColumn(), ascending ? "ASC" : "DESC");
 
-        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(newRequest);) {
+        try (Connection conn = getConnection(); PreparedStatement st = conn.prepareStatement(newRequest);) {
 
             st.setInt(1, pageSize);
             st.setInt(2, pageSize * pageNumber);
@@ -247,7 +251,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         String newRequest = String.format(SELECT_ALL_COMPUTERS_PAGE_WITH_SEARCH, column.getColumn(),
                 ascending ? "ASC" : "DESC");
 
-        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(newRequest);) {
+        try (Connection conn = getConnection(); PreparedStatement st = conn.prepareStatement(newRequest);) {
 
             searchWord = '%' + searchWord + '%';
             st.setString(1, searchWord);
@@ -315,7 +319,7 @@ public class ComputerDAOImpl implements ComputerDAO {
     @Override
     public void updateComputer(Computer c) throws DAOException {
         Logger.info("update computer");
-        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(UPDATE_COMPUTER);) {
+        try (Connection conn = getConnection(); PreparedStatement st = conn.prepareStatement(UPDATE_COMPUTER);) {
 
             populateStatementFromComputer(c, st);
             st.setLong(5, c.getId());
@@ -325,5 +329,9 @@ public class ComputerDAOImpl implements ComputerDAO {
             Logger.debug(e.getMessage());
             throw new DAOException("Couldn't update computer with id : " + c.getId());
         }
+    }
+    
+    private Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 }

@@ -35,12 +35,8 @@ public class Dashboard extends HttpServlet {
     private ComputerService computerService;
 
     @Override
-    public void init(ServletConfig config) {
-        try {
-            super.init(config);
-        } catch (ServletException e) {
-            Logger.error("error while trying to initialize servlet dashboard");
-        }
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
         SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
     }
     

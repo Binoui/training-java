@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.cdb.mapper.CompanyMapper;
 import com.excilys.formation.cdb.model.Company;
-import com.excilys.formation.cdb.utils.DatabaseConnection;
 
 @Repository("companyDAO")
 public class CompanyDAOImpl implements CompanyDAO {
@@ -29,7 +30,8 @@ public class CompanyDAOImpl implements CompanyDAO {
 
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
-    private static DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
+    @Autowired 
+    private DataSource dataSource;
 
     @Autowired
     private ComputerDAO computerDAO;
@@ -49,7 +51,7 @@ public class CompanyDAOImpl implements CompanyDAO {
     public void deleteCompany(long id) throws DAOException {
         Logger.info("DAO : Delete Company");
 
-        try (Connection conn = dbConn.getConnection();) {
+        try (Connection conn = getConnection();) {
             conn.setAutoCommit(false);
             computerDAO.deleteComputers(id, conn);
             deleteALlCompaniesWithId(id, conn);
@@ -70,7 +72,7 @@ public class CompanyDAOImpl implements CompanyDAO {
         Logger.info("get company");
         Company c = null;
 
-        try (Connection conn = dbConn.getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPANY);) {
+        try (Connection conn = getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPANY);) {
 
             if (id != null) {
                 st.setLong(1, id);
@@ -97,7 +99,7 @@ public class CompanyDAOImpl implements CompanyDAO {
         Logger.info("get list companies");
         ArrayList<Company> companies = new ArrayList<>();
 
-        try (Connection conn = dbConn.getConnection();
+        try (Connection conn = getConnection();
                 Statement st = conn.createStatement();
                 ResultSet rs = st.executeQuery(SELECT_COMPANIES)) {
 
@@ -117,7 +119,7 @@ public class CompanyDAOImpl implements CompanyDAO {
     public List<Company> getListCompanies(final int pageNumber, final int pageSize) throws DAOException {
         Logger.info("get list companies");
         ArrayList<Company> companies = new ArrayList<>();
-        try (Connection conn = dbConn.getConnection();
+        try (Connection conn = getConnection();
                 PreparedStatement st = conn.prepareStatement(SELECT_COMPANIES_PAGE);) {
 
             st.setInt(1, pageSize);
@@ -145,7 +147,7 @@ public class CompanyDAOImpl implements CompanyDAO {
         Logger.info("get page count");
         int pageCount = 0;
 
-        try (Connection conn = dbConn.getConnection();
+        try (Connection conn = getConnection();
                 PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPANIES);
                 ResultSet rs = st.executeQuery()) {
 
@@ -159,6 +161,10 @@ public class CompanyDAOImpl implements CompanyDAO {
         }
 
         return pageCount;
+    }
+    
+    private Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
 }
