@@ -20,7 +20,6 @@ import org.springframework.stereotype.Repository;
 import com.excilys.formation.cdb.mapper.ComputerMapper;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
-import com.excilys.formation.cdb.utils.DatabaseConnection;
 
 @Repository("computerDAO")
 public class ComputerDAOImpl implements ComputerDAO {

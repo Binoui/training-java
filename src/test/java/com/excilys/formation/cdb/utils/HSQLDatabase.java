@@ -8,25 +8,34 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.sql.DataSource;
+
 import org.hsqldb.cmdline.SqlFile;
 import org.hsqldb.cmdline.SqlToolError;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-public abstract class HSQLDatabase {
+@Component
+public class HSQLDatabase {
 
-    private static final DatabaseConnection dbConn = DatabaseConnection.INSTANCE;
+    @Autowired
+    private DataSource dataSource;
 
     private static final String DROP_COMPUTER_TABLE = "DROP TABLE computer;";
     private static final String DROP_COMPANY_TABLE = "DROP TABLE company;";
 
-    public static void destroy() throws SQLException {
-        try (Connection connection = dbConn.getConnection(); Statement statement = connection.createStatement();) {
+    public void destroy() throws SQLException {
+        try (Connection connection = getConnection(); Statement statement = connection.createStatement();) {
             statement.executeUpdate(DROP_COMPUTER_TABLE);
             statement.executeUpdate(DROP_COMPANY_TABLE);
         }
     }
 
-    public static void initDatabase() throws SQLException, IOException {
-        try (Connection connection = dbConn.getConnection();
+    public void initDatabase() throws SQLException, IOException {
+        try (Connection connection = getConnection();
                 InputStream inputStream = HSQLDatabase.class.getResourceAsStream("/hsqldb_script.sql")) {
 
             SqlFile sqlFile = new SqlFile(new InputStreamReader(inputStream), "init", System.out, "UTF-8", false,
@@ -38,6 +47,10 @@ public abstract class HSQLDatabase {
                 e.printStackTrace();
             }
         }
+    }
+    
+    private Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
 }

@@ -29,15 +29,17 @@ public class CompanyDAOTest {
     private CompanyDAOImpl companyDAO;
     @Autowired
     private ComputerDAOImpl computerDAO;
+    @Autowired
+    private HSQLDatabase hSqlDatabase;
 
     @After
     public void cleanUp() throws SQLException {
-        HSQLDatabase.destroy();
+        hSqlDatabase.destroy();
     }
 
     @Before
     public void setUp() throws SQLException, IOException {
-        HSQLDatabase.initDatabase();
+        hSqlDatabase.initDatabase();
     }
 
     @Test
