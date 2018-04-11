@@ -8,11 +8,10 @@ import java.util.stream.Stream;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 
-import com.excilys.formation.cdb.config.AppConfig;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer;
@@ -30,15 +29,16 @@ import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 public class CommandLineInterface {
 
     @Autowired
-    private static CompanyService companyService;
+    private CompanyService companyService;
 
     @Autowired
-    private static ComputerService computerService;
+    private ComputerService computerService;
 
     private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(CommandLineInterface.class);
 
     public static void main(String[] arg) {
-        AbstractApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        @SuppressWarnings("resource")
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml"); 
 
         System.out.println("******** Computer Database ********\n");
         CommandLineInterface cli = context.getBean(CommandLineInterface.class);
@@ -91,7 +91,7 @@ public class CommandLineInterface {
         System.out.println("******** Companies List ********");
 
         try {
-            readPages(new CompanyListPage());
+            readPages(new CompanyListPage(companyService));
         } catch (ServiceException e) {
             Logger.error("couldnt create computer {}", e.getMessage());
         }
@@ -101,7 +101,7 @@ public class CommandLineInterface {
         System.out.println("******** Computer List ********");
 
         try {
-            readPages(new ComputerListPage());
+            readPages(new ComputerListPage(computerService));
         } catch (ServiceException e) {
             Logger.error("couldnt create computer {}", e.getMessage());
         }

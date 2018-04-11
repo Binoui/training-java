@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,34 +14,40 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.dto.ComputerDTO;
 import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
 import com.excilys.formation.cdb.pagination.ComputerListPage;
 import com.excilys.formation.cdb.pagination.ComputerListPageSearch;
+import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 
-/**
- * Servlet implementation class Dashboard
- */
 @WebServlet(name = "Dashboard", urlPatterns = "/Dashboard")
 public class Dashboard extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private static final Logger Logger = LoggerFactory.getLogger(Dashboard.class);
+    
+    @Autowired
+    private ComputerService computerService;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    @Override
+    public void init(ServletConfig config) {
+        try {
+            super.init(config);
+        } catch (ServletException e) {
+            Logger.error("error while trying to initialize servlet dashboard");
+        }
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
+    
     public Dashboard() {
         super();
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -53,9 +60,9 @@ public class Dashboard extends HttpServlet {
 
         try {
             if (!StringUtils.isBlank(searchWord)) {
-                page = new ComputerListPageSearch(searchWord);
+                page = new ComputerListPageSearch(searchWord, computerService);
             } else {
-                page = new ComputerListPage();
+                page = new ComputerListPage(computerService);
             }
 
             putOrderByOnPage(page, sortBy, ascendingString);
@@ -67,10 +74,6 @@ public class Dashboard extends HttpServlet {
         getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

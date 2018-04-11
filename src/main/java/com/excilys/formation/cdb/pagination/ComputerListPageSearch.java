@@ -1,51 +1,47 @@
 package com.excilys.formation.cdb.pagination;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.stereotype.Component;
-
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 
-@Component
 public class ComputerListPageSearch extends ComputerListPage {
 
-    @Autowired
-    private ComputerService service;
+    private ComputerService computerService;
 
     private final String searchWord;
 
-    public ComputerListPageSearch(int pageNumber, String searchWord) throws ServiceException {
+    public ComputerListPageSearch(int pageNumber, String searchWord, ComputerService computerService) throws ServiceException {
         super(pageNumber);
         this.searchWord = searchWord;
+        this.computerService = computerService;
     }
 
-    public ComputerListPageSearch(String searchWord) throws ServiceException {
+    public ComputerListPageSearch(String searchWord, ComputerService computerService) throws ServiceException {
         super();
         this.searchWord = searchWord;
+        this.computerService = computerService;
     }
 
     @Override
     public int getComputerCount() throws ServiceException {
-        return service.getComputerCount(searchWord);
+        return computerService.getComputerCount(searchWord);
     }
 
     @Override
     public int getLastPageNumber() throws ServiceException {
-        return service.getListComputersPageCount(pageSize, searchWord);
+        return computerService.getListComputersPageCount(pageSize, searchWord);
     }
 
     @Override
     public int getListComputersPageCount(int pageSize) throws ServiceException {
-        return service.getListComputersPageCount(pageSize, searchWord);
+        return computerService.getListComputersPageCount(pageSize, searchWord);
     }
 
     @Override
     public void refresh() throws ServiceException {
         if (searchWord == null) {
-            elements = service.getListComputers(pageNumber, pageSize, column, ascendingSort);
+            elements = computerService.getListComputers(pageNumber, pageSize, column, ascendingSort);
         } else {
-            elements = service.getListComputers(pageNumber, pageSize, column, ascendingSort, searchWord);
+            elements = computerService.getListComputers(pageNumber, pageSize, column, ascendingSort, searchWord);
         }
     }
 

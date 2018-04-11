@@ -1,23 +1,21 @@
 package com.excilys.formation.cdb.pagination;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ServiceException;
 
 public class CompanyListPage extends Page<Company> {
 
-    @Autowired
     private CompanyService companyService;
 
-    public CompanyListPage() throws ServiceException {
+    public CompanyListPage(CompanyService companyService) throws ServiceException {
         super();
+        this.companyService = companyService;
     }
 
-    public CompanyListPage(int pageNumber) throws ServiceException {
+    public CompanyListPage(int pageNumber, CompanyService companyService) throws ServiceException {
         super(pageNumber);
+        this.companyService = companyService;
     }
 
     @Override

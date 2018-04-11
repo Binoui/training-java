@@ -1,33 +1,41 @@
 package com.excilys.formation.cdb.pagination;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.stereotype.Component;
-
 import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 
-@Component
 public class ComputerListPage extends Page<Computer> {
 
-    @Autowired
     private ComputerService computerService;
 
     protected SortableComputerColumn column;
     protected boolean ascendingSort;
 
-    public ComputerListPage() throws ServiceException {
+    protected ComputerListPage() throws ServiceException {
         super();
         column = SortableComputerColumn.ID;
         ascendingSort = true;
     }
-
-    public ComputerListPage(int pageNumber) throws ServiceException {
+    
+    protected ComputerListPage(int pageNumber) throws ServiceException {
         super(pageNumber);
         column = SortableComputerColumn.ID;
         ascendingSort = true;
+    }
+    
+    public ComputerListPage(ComputerService computerService) throws ServiceException {
+        super();
+        column = SortableComputerColumn.ID;
+        ascendingSort = true;
+        this.computerService = computerService;
+    }
+
+    public ComputerListPage(int pageNumber, ComputerService computerService) throws ServiceException {
+        super(pageNumber);
+        column = SortableComputerColumn.ID;
+        ascendingSort = true;
+        this.computerService = computerService;
     }
 
     public SortableComputerColumn getColumn() {

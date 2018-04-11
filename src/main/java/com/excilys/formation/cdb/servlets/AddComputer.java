@@ -6,6 +6,7 @@ import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.formation.cdb.dto.CompanyDTO;
 import com.excilys.formation.cdb.mapper.CompanyDTOMapper;
@@ -39,9 +41,15 @@ public class AddComputer extends HttpServlet {
     @Autowired
     private ComputerService computerService;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    public void init(ServletConfig config) {
+        try {
+            super.init(config);
+        } catch (ServletException e) {
+            Logger.error("error while trying to initialize servlet addcomputer");
+        }
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
+
     public AddComputer() {
         super();
     }

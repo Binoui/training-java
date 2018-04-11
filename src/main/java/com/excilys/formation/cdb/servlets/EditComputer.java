@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.formation.cdb.dto.CompanyDTO;
 import com.excilys.formation.cdb.mapper.CompanyDTOMapper;
@@ -28,9 +30,6 @@ import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 
-/**
- * Servlet implementation class EditComputer
- */
 @WebServlet(name = "EditComputer", urlPatterns = "/EditComputer")
 public class EditComputer extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -41,9 +40,15 @@ public class EditComputer extends HttpServlet {
     @Autowired
     private ComputerService computerService;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    public void init(ServletConfig config) {
+        try {
+            super.init(config);
+        } catch (ServletException e) {
+            Logger.error("error while trying to initialize servlet dashboard");
+        }
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    }
+
     public EditComputer() {
         super();
     }
@@ -90,10 +95,6 @@ public class EditComputer extends HttpServlet {
         return computerBuilder.build();
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -131,10 +132,6 @@ public class EditComputer extends HttpServlet {
         getServletContext().getRequestDispatcher("/WEB-INF/editComputer.jsp").forward(request, response);
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
