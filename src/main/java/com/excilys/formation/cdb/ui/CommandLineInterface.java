@@ -40,8 +40,8 @@ public class CommandLineInterface {
         @SuppressWarnings("resource")
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml"); 
 
-        System.out.println("******** Computer Database ********\n");
         CommandLineInterface cli = context.getBean(CommandLineInterface.class);
+        System.out.println("******** Computer Database ********\n");
         while (cli.menuLoop()) {
         }
     }

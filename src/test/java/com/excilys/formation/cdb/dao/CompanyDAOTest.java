@@ -26,9 +26,9 @@ import com.excilys.formation.cdb.utils.HSQLDatabase;
 public class CompanyDAOTest {
 
     @Autowired
-    private CompanyDAOImpl companyDAO;
+    private CompanyDAO companyDAO;
     @Autowired
-    private ComputerDAOImpl computerDAO;
+    private ComputerDAO computerDAO;
     @Autowired
     private HSQLDatabase hSqlDatabase;
 

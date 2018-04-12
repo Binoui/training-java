@@ -26,7 +26,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class ComputerDAOTest {
 
     @Autowired
-    private ComputerDAOImpl computerDAO;
+    private ComputerDAO computerDAO;
     @Autowired
     private HSQLDatabase hSqlDatabase;
 

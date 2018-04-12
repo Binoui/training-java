@@ -39,6 +39,7 @@
 		<javax.servlet.version>3.1.0</javax.servlet.version>
 		<tomcat7.version>2.2</tomcat7.version>
 		<spring.version>5.0.5.RELEASE</spring.version>
+		<aspectj.version>1.9.0</aspectj.version>
 
 	</properties>
 

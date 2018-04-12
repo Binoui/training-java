@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.cdb.dao.CompanyDAO;
 import com.excilys.formation.cdb.dao.ComputerDAO;
@@ -18,7 +20,8 @@ import com.excilys.formation.cdb.validators.IncorrectValidationException;
 import com.excilys.formation.cdb.validators.UnknownCompanyIdException;
 import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
-@Service("computerService")
+@Service("ComputerService")
+@EnableTransactionManagement
 public class ComputerServiceImpl implements ComputerService {
 
     @Autowired
@@ -55,6 +58,7 @@ public class ComputerServiceImpl implements ComputerService {
     }
 
     @Override
+    @Transactional(rollbackFor=Exception.class)
     public void deleteComputers(List<Long> idsToDelete) throws ServiceException {
         try {
             computerDAO.deleteComputers(idsToDelete);

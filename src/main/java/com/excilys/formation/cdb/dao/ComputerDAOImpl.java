@@ -15,13 +15,14 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.cdb.mapper.ComputerMapper;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 
-@Repository("computerDAO")
+@Repository("ComputerDAO")
 public class ComputerDAOImpl implements ComputerDAO {
 
     private static final String SELECT_ALL_COMPUTERS = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id;";
@@ -81,25 +82,17 @@ public class ComputerDAOImpl implements ComputerDAO {
     @Override
     public void deleteComputers(List<Long> idsToDelete) throws DAOException {
         Logger.info("delete computers");
-        try (Connection conn = getConnection()) {
+        Connection conn = getConnection();
 
-            conn.setAutoCommit(false);
             try (PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
                 for (Long id : idsToDelete) {
                     st.setLong(1, id);
                     st.executeUpdate();
                 }
-                conn.commit();
             } catch (SQLException e) {
-                Logger.error("Error while deleting, rolling back");
-                conn.rollback();
+                Logger.error("Error while deleting, rolling back {}", e);
                 throw new DAOException("Cannot delete computers");
             }
-
-        } catch (SQLException e) {
-            Logger.error("error with database connection {}", e);
-        }
-
     }
 
     @Override
@@ -330,7 +323,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         }
     }
     
-    private Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+    private Connection getConnection() {
+        return DataSourceUtils.getConnection(dataSource);
     }
 }

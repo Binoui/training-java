@@ -9,7 +9,7 @@ import com.excilys.formation.cdb.dao.CompanyDAO;
 import com.excilys.formation.cdb.dao.DAOException;
 import com.excilys.formation.cdb.model.Company;
 
-@Service("companyService")
+@Service("CompanyService")
 public class CompanyServiceImpl implements CompanyService {
 
     @Autowired

@@ -14,12 +14,14 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.cdb.mapper.CompanyMapper;
 import com.excilys.formation.cdb.model.Company;
 
-@Repository("companyDAO")
+@Repository("CompanyDAO")
 public class CompanyDAOImpl implements CompanyDAO {
 
     private static final String SELECT_COMPANIES = "select ca_id, ca_name from company;";
@@ -42,7 +44,6 @@ public class CompanyDAOImpl implements CompanyDAO {
             deleteCompanyStatement.execute();
         } catch (SQLException e) {
             Logger.error("Error while deleting company, rolling back : ", e);
-            conn.rollback();
             throw new DAOException("Couldn't delete company");
         }
     }
@@ -52,10 +53,8 @@ public class CompanyDAOImpl implements CompanyDAO {
         Logger.info("DAO : Delete Company");
 
         try (Connection conn = getConnection();) {
-            conn.setAutoCommit(false);
             computerDAO.deleteComputers(id, conn);
             deleteALlCompaniesWithId(id, conn);
-            conn.commit();
         } catch (SQLException e) {
             Logger.debug("Couldn't get connection : ", e);
             throw new DAOException("couldn't get connection");
@@ -164,7 +163,7 @@ public class CompanyDAOImpl implements CompanyDAO {
     }
     
     private Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+        return DataSourceUtils.getConnection(dataSource);
     }
 
 }
