@@ -15,8 +15,12 @@ import com.excilys.formation.cdb.model.Company;
 @EnableTransactionManagement
 public class CompanyServiceImpl implements CompanyService {
 
-    @Autowired
     private CompanyDAO companyDAO;
+    
+    @Autowired
+    public CompanyServiceImpl(CompanyDAO companyDAO) {
+        this.companyDAO = companyDAO;
+    }
 
     @Override
     @Transactional(rollbackFor=ServiceException.class)

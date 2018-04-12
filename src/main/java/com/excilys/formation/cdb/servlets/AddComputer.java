@@ -84,10 +84,6 @@ public class AddComputer extends HttpServlet {
         return computerBuilder.build();
     }
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -105,10 +101,6 @@ public class AddComputer extends HttpServlet {
         getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)date
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

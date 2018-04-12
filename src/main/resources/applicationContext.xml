@@ -24,12 +24,15 @@
 	</bean>
 
 	<context:component-scan
-		base-package="com.excilys.formation.cdb" />
+		base-package="com.excilys.formation.cdb.dao com.excilys.formation.cdb.services 
+		com.excilys.formation.cdb.servlets com.excilys.formation.cdb.ui" />
 
-    <tx:annotation-driven transaction-manager="txManager"/>
+	<tx:annotation-driven
+		transaction-manager="txManager" />
 
-    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 
 </beans>

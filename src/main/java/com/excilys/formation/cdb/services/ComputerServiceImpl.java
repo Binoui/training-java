@@ -24,11 +24,15 @@ import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 @EnableTransactionManagement
 public class ComputerServiceImpl implements ComputerService {
 
-    @Autowired
     private ComputerDAO computerDAO;
 
-    @Autowired
     private CompanyDAO companyDAO;
+    
+    @Autowired
+    public ComputerServiceImpl(ComputerDAO computerDAO, CompanyDAO companyDAO) {
+        this.computerDAO = computerDAO;
+        this.companyDAO = companyDAO;
+    }
 
     @Override
     public Long createComputer(Computer c) throws IncorrectValidationException, ServiceException {

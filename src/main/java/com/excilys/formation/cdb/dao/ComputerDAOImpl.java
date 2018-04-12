@@ -37,9 +37,13 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
     
-    @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    public ComputerDAOImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+    
     @Override
     public Long createComputer(Computer c) throws DAOException {
         Logger.info("create computer");

@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.cdb.mapper.CompanyMapper;
 import com.excilys.formation.cdb.model.Company;
@@ -33,8 +32,12 @@ public class CompanyDAOImpl implements CompanyDAO {
 
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
-    @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    public CompanyDAOImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public void deleteCompany(long id) throws DAOException {
