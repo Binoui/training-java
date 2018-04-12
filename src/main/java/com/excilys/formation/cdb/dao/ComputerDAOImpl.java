@@ -15,8 +15,14 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.cdb.mapper.ComputerMapper;
 import com.excilys.formation.cdb.model.Computer;
@@ -33,69 +39,54 @@ public class ComputerDAOImpl implements ComputerDAO {
     private static final String SELECT_COMPUTER = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id where cu_id = ?;";
     private static final String INSERT_COMPUTER = "insert into computer (cu_name, cu_introduced, cu_discontinued, ca_id) values (?, ?, ?, ?);";
     private static final String UPDATE_COMPUTER = "update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?;";
-    private static final String DELETE_COMPUTER = "delete from computer where cu_id = ?;";
+    private static final String DELETE_COMPUTER = "delete from computer where cu_id in (?);";
 
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
     
-    private DataSource dataSource;
-
-    @Autowired
-    public ComputerDAOImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    private JdbcTemplate jdbcTemplate;
     
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
     @Override
     public Long createComputer(Computer c) throws DAOException {
         Logger.info("create computer");
-        Long key = null;
-
-        try (Connection conn = getConnection();
-                PreparedStatement st = conn.prepareStatement(INSERT_COMPUTER, Statement.RETURN_GENERATED_KEYS);) {
-
-            populateStatementFromComputer(c, st);
-            st.executeUpdate();
-
-            try (ResultSet rs = st.getGeneratedKeys()) {
-                rs.next();
-                key = rs.getLong(1);
+        GeneratedKeyHolder holder = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
+                PreparedStatement statement = conn.prepareStatement(INSERT_COMPUTER, Statement.RETURN_GENERATED_KEYS);
+                populateStatementFromComputer(c, statement);
+                return statement;
             }
+        }, holder);
 
-        } catch (SQLException e) {
-            Logger.debug(e.getMessage());
-            throw new DAOException("Couldn't create computer");
-        }
-
-        return key;
+        return holder.getKey().longValue();
     }
 
     @Override
     public void deleteComputer(Computer c) throws DAOException {
         Logger.info("delete computer");
-        try (Connection conn = getConnection(); PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
-
-            st.setLong(1, c.getId());
-            st.executeUpdate();
-
-        } catch (SQLException e) {
-            Logger.debug(e.getMessage());
-            throw new DAOException("Couldn't delete computer with ID : " + c.getId());
-        }
+        jdbcTemplate.update(DELETE_COMPUTER, c.getId());
     }
 
     @Override
     public void deleteComputers(List<Long> idsToDelete) throws DAOException {
-        Logger.info("delete computers");
-        Connection conn = getConnection();
+        jdbcTemplate.batchUpdate(DELETE_COMPUTER, new BatchPreparedStatementSetter() {
 
-            try (PreparedStatement st = conn.prepareStatement(DELETE_COMPUTER)) {
-                for (Long id : idsToDelete) {
-                    st.setLong(1, id);
-                    st.executeUpdate();
-                }
-            } catch (SQLException e) {
-                Logger.error("Error while deleting, rolling back {}", e);
-                throw new DAOException("Cannot delete computers");
+            @Override
+            public int getBatchSize() {
+                return idsToDelete.size();
             }
+
+            @Override
+            public void setValues(PreparedStatement st, int i) throws SQLException {
+                st.setLong(1, idsToDelete.get(i));
+            }
+            
+        }); 
     }
 
     @Override
@@ -313,8 +304,8 @@ public class ComputerDAOImpl implements ComputerDAO {
             throw new DAOException("Couldn't update computer with id : " + c.getId());
         }
     }
-    
+
     private Connection getConnection() {
-        return DataSourceUtils.getConnection(dataSource);
+        return DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
     }
 }

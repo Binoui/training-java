@@ -20,42 +20,42 @@ public class Company {
         }
     }
 
-    private Long id;
+    private Long ca_id;
 
-    private String name;
+    private String ca_name;
 
     public Company() {
     }
 
     public Company(CompanyBuilder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
+        this.ca_id = builder.id;
+        this.ca_name = builder.name;
     }
 
     public Company(Long id, String name) {
-        this.id = id;
-        this.name = name;
+        this.ca_id = id;
+        this.ca_name = name;
     }
 
     public Long getId() {
-        return id;
+        return ca_id;
     }
 
     public String getName() {
-        return name;
+        return ca_name;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.ca_id = id;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.ca_name = name;
     }
 
     @Override
     public String toString() {
-        return new StringBuilder().append("Company ").append(id).append(" : ").append(name).toString();
+        return new StringBuilder().append("Company ").append(ca_id).append(" : ").append(ca_name).toString();
     }
 
 }

@@ -14,6 +14,9 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
@@ -32,11 +35,11 @@ public class CompanyDAOImpl implements CompanyDAO {
 
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
-    private DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public CompanyDAOImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public void setDataSource(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
@@ -44,27 +47,21 @@ public class CompanyDAOImpl implements CompanyDAO {
         Logger.info("DAO : Delete Company");
 
         Connection conn;
-        try {
-            conn = getConnection();
-            try (PreparedStatement deleteComputersStatement = conn
-                    .prepareStatement(DELETE_COMPUTERS_WITH_COMPANY_ID);) {
-                deleteComputersStatement.setLong(1, id);
-                deleteComputersStatement.execute();
-            } catch (SQLException e) {
-                Logger.error("Error while deleting computers, rolling back : ", e);
-                throw new DAOException("Couldn't delete computers");
-            }
+        conn = getConnection();
+        try (PreparedStatement deleteComputersStatement = conn.prepareStatement(DELETE_COMPUTERS_WITH_COMPANY_ID);) {
+            deleteComputersStatement.setLong(1, id);
+            deleteComputersStatement.execute();
+        } catch (SQLException e) {
+            Logger.error("Error while deleting computers, rolling back : ", e);
+            throw new DAOException("Couldn't delete computers");
+        }
 
-            try (PreparedStatement deleteCompanyStatement = conn.prepareStatement(DELETE_COMPANY);) {
-                deleteCompanyStatement.setLong(1, id);
-                deleteCompanyStatement.execute();
-            } catch (SQLException e) {
-                Logger.error("Error while deleting company, rolling back : ", e);
-                throw new DAOException("Couldn't delete company");
-            }
-        } catch (SQLException e1) {
-            Logger.error("Could not get connection {}", e1);
-            throw new DAOException("Could not get connection");
+        try (PreparedStatement deleteCompanyStatement = conn.prepareStatement(DELETE_COMPANY);) {
+            deleteCompanyStatement.setLong(1, id);
+            deleteCompanyStatement.execute();
+        } catch (SQLException e) {
+            Logger.error("Error while deleting company, rolling back : ", e);
+            throw new DAOException("Couldn't delete company");
         }
     }
 
@@ -122,27 +119,25 @@ public class CompanyDAOImpl implements CompanyDAO {
     }
 
     @Override
-    public List<Company> getListCompanies(final int pageNumber, final int pageSize) throws DAOException {
+    public List<Company> getListCompanies(int pageNumber, int pageSize) throws DAOException {
         Logger.info("get list companies");
-        ArrayList<Company> companies = new ArrayList<>();
-        try (Connection conn = getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPANIES_PAGE);) {
 
-            st.setInt(1, pageSize);
-            st.setInt(2, pageSize * pageNumber);
-            try (ResultSet rs = st.executeQuery();) {
-                while (rs.next()) {
-                    companies.add(CompanyMapper.createCompany(rs));
-                }
+        List<Company> companies = jdbcTemplate.query(SELECT_COMPANIES_PAGE, new PreparedStatementSetter() {
 
-                if (companies.isEmpty()) {
-                    throw new DAOException("Given page number is greater than page count");
-                }
+            @Override
+            public void setValues(PreparedStatement st) throws SQLException {
+                st.setInt(1, pageSize);
+                st.setInt(2, pageSize * pageNumber);
             }
 
-        } catch (SQLException e) {
-            Logger.debug(e.getMessage());
-            throw new DAOException("Couldn't fetch companies list");
-        }
+        }, new RowMapper<Company>() {
+
+            @Override
+            public Company mapRow(ResultSet rs, int arg1) throws SQLException {
+                return CompanyMapper.createCompany(rs);
+            }
+
+        });
 
         return companies;
     }
@@ -150,26 +145,10 @@ public class CompanyDAOImpl implements CompanyDAO {
     @Override
     public int getListCompaniesPageCount(int pageSize) throws DAOException {
         Logger.info("get page count");
-        int pageCount = 0;
-
-        try (Connection conn = getConnection();
-                PreparedStatement st = conn.prepareStatement(SELECT_COUNT_COMPANIES);
-                ResultSet rs = st.executeQuery()) {
-
-            rs.next();
-            int companyCount = rs.getInt(1);
-            pageCount = companyCount / pageSize;
-
-        } catch (SQLException e) {
-            Logger.debug(e.getMessage());
-            throw new DAOException("Couldn't get companies page count");
-        }
-
-        return pageCount;
+        return jdbcTemplate.queryForObject(SELECT_COUNT_COMPANIES, Integer.class) / pageSize;
     }
 
-    private Connection getConnection() throws SQLException {
-        return DataSourceUtils.getConnection(dataSource);
+    private Connection getConnection() {
+        return DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
     }
-
 }

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.Before;
@@ -56,6 +57,13 @@ public class ComputerDAOTest {
         c.setId(computerDAO.createComputer(c));
         computerDAO.deleteComputer(c);
         assertFalse(computerDAO.getComputer(c).isPresent());
+    }
+    
+    @Test
+    public void testDeleteComputers() throws DAOException {
+        computerDAO.deleteComputers(Arrays.asList(1L, 3L));
+        computerDAO.deleteComputers(Arrays.asList(2L, 3444L));
+        assertTrue(computerDAO.getComputer(new ComputerBuilder().withId((long) 2).build()).isPresent());
     }
 
     @Test

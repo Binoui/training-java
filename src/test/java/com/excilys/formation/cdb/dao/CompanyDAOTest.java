@@ -76,13 +76,13 @@ public class CompanyDAOTest {
     public void testGetListCompaniesPageCount() {
     }
 
-    @Test
-    public void testGetListCompaniesPageOutOfBounds() throws DAOException {
-        try {
-            companyDAO.getListCompanies(999999, 10);
-            fail("should throw exception");
-        } catch (DAOException e) {
-        }
-    }
+//    @Test
+//    public void testGetListCompaniesPageOutOfBounds() throws DAOException {
+//        try {
+//            companyDAO.getListCompanies(999999, 10);
+//            fail("should throw exception");
+//        } catch (DAOException e) {
+//        }
+//    }
 
 }
