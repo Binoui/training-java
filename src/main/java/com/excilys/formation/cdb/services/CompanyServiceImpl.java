@@ -4,18 +4,22 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.cdb.dao.CompanyDAO;
 import com.excilys.formation.cdb.dao.DAOException;
 import com.excilys.formation.cdb.model.Company;
 
 @Service("CompanyService")
+@EnableTransactionManagement
 public class CompanyServiceImpl implements CompanyService {
 
     @Autowired
     private CompanyDAO companyDAO;
 
     @Override
+    @Transactional(rollbackFor=ServiceException.class)
     public void deleteCompany(Long id) throws ServiceException {
         try {
             companyDAO.deleteCompany(id);

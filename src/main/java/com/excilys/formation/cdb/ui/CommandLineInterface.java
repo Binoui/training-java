@@ -243,7 +243,7 @@ public class CommandLineInterface {
     }
 
     private Long readNotNullId() {
-        System.out.print("Enter ID of wanted computer : ");
+        System.out.print("Enter wanted ID : ");
 
         while (!scanner.hasNextLong()) {
             scanner.next();

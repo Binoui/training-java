@@ -29,35 +29,39 @@ public class CompanyDAOImpl implements CompanyDAO {
     private static final String SELECT_COUNT_COMPANIES = "select count(ca_id) from company;";
     private static final String SELECT_COMPANY = "select ca_id, ca_name from company where ca_id = ?";
     private static final String DELETE_COMPANY = "delete from company where ca_id = ?";
+    private static final String DELETE_COMPUTERS_WITH_COMPANY_ID = "delete from computer where ca_id = ?;";
 
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
-    @Autowired 
-    private DataSource dataSource;
-
     @Autowired
-    private ComputerDAO computerDAO;
-
-    private void deleteALlCompaniesWithId(long id, Connection conn) throws SQLException, DAOException {
-        try (PreparedStatement deleteCompanyStatement = conn.prepareStatement(DELETE_COMPANY);) {
-            deleteCompanyStatement.setLong(1, id);
-            deleteCompanyStatement.execute();
-        } catch (SQLException e) {
-            Logger.error("Error while deleting company, rolling back : ", e);
-            throw new DAOException("Couldn't delete company");
-        }
-    }
+    private DataSource dataSource;
 
     @Override
     public void deleteCompany(long id) throws DAOException {
         Logger.info("DAO : Delete Company");
 
-        try (Connection conn = getConnection();) {
-            computerDAO.deleteComputers(id, conn);
-            deleteALlCompaniesWithId(id, conn);
-        } catch (SQLException e) {
-            Logger.debug("Couldn't get connection : ", e);
-            throw new DAOException("couldn't get connection");
+        Connection conn;
+        try {
+            conn = getConnection();
+            try (PreparedStatement deleteComputersStatement = conn
+                    .prepareStatement(DELETE_COMPUTERS_WITH_COMPANY_ID);) {
+                deleteComputersStatement.setLong(1, id);
+                deleteComputersStatement.execute();
+            } catch (SQLException e) {
+                Logger.error("Error while deleting computers, rolling back : ", e);
+                throw new DAOException("Couldn't delete computers");
+            }
+
+            try (PreparedStatement deleteCompanyStatement = conn.prepareStatement(DELETE_COMPANY);) {
+                deleteCompanyStatement.setLong(1, id);
+                deleteCompanyStatement.execute();
+            } catch (SQLException e) {
+                Logger.error("Error while deleting company, rolling back : ", e);
+                throw new DAOException("Couldn't delete company");
+            }
+        } catch (SQLException e1) {
+            Logger.error("Could not get connection {}", e1);
+            throw new DAOException("Could not get connection");
         }
     }
 
@@ -118,8 +122,7 @@ public class CompanyDAOImpl implements CompanyDAO {
     public List<Company> getListCompanies(final int pageNumber, final int pageSize) throws DAOException {
         Logger.info("get list companies");
         ArrayList<Company> companies = new ArrayList<>();
-        try (Connection conn = getConnection();
-                PreparedStatement st = conn.prepareStatement(SELECT_COMPANIES_PAGE);) {
+        try (Connection conn = getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPANIES_PAGE);) {
 
             st.setInt(1, pageSize);
             st.setInt(2, pageSize * pageNumber);
@@ -161,7 +164,7 @@ public class CompanyDAOImpl implements CompanyDAO {
 
         return pageCount;
     }
-    
+
     private Connection getConnection() throws SQLException {
         return DataSourceUtils.getConnection(dataSource);
     }

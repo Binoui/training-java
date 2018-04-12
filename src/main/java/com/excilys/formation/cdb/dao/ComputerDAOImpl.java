@@ -34,7 +34,6 @@ public class ComputerDAOImpl implements ComputerDAO {
     private static final String INSERT_COMPUTER = "insert into computer (cu_name, cu_introduced, cu_discontinued, ca_id) values (?, ?, ?, ?);";
     private static final String UPDATE_COMPUTER = "update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?;";
     private static final String DELETE_COMPUTER = "delete from computer where cu_id = ?;";
-    private static final String DELETE_COMPUTERS_WITH_COMPANY_ID = "delete from computer where ca_id = ?;";
 
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
     
@@ -93,18 +92,6 @@ public class ComputerDAOImpl implements ComputerDAO {
                 Logger.error("Error while deleting, rolling back {}", e);
                 throw new DAOException("Cannot delete computers");
             }
-    }
-
-    @Override
-    public void deleteComputers(long company_id, Connection conn) throws DAOException, SQLException {
-        try (PreparedStatement deleteComputersStatement = conn.prepareStatement(DELETE_COMPUTERS_WITH_COMPANY_ID);) {
-            deleteComputersStatement.setLong(1, company_id);
-            deleteComputersStatement.execute();
-        } catch (SQLException e) {
-            Logger.error("Error while deleting computers, rolling back : ", e);
-            conn.rollback();
-            throw new DAOException("Couldn't delete computers");
-        }
     }
 
     @Override

@@ -14,8 +14,6 @@ public interface ComputerDAO {
 
     void deleteComputers(List<Long> idsToDelete) throws DAOException;
 
-    void deleteComputers(long company_id, Connection conn) throws DAOException, SQLException;
-
     Optional<Computer> getComputer(Computer computer) throws DAOException;
 
     Optional<Computer> getComputer(long id) throws DAOException;

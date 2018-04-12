@@ -58,7 +58,7 @@ public class ComputerServiceImpl implements ComputerService {
     }
 
     @Override
-    @Transactional(rollbackFor=Exception.class)
+    @Transactional(rollbackFor=ServiceException.class)
     public void deleteComputers(List<Long> idsToDelete) throws ServiceException {
         try {
             computerDAO.deleteComputers(idsToDelete);
@@ -108,12 +108,6 @@ public class ComputerServiceImpl implements ComputerService {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.excilys.formation.cdb.services.ComputerService#getListComputers(int,
-     * int, com.excilys.formation.cdb.dao.SortableComputerColumn, boolean)
-     */
     @Override
     public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column,
             boolean ascending) throws ServiceException {
