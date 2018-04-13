@@ -100,6 +100,7 @@ public class CompanyDAOImpl implements CompanyDAO {
     @Override
     public List<Company> getListCompanies() throws DAOException {
         Logger.info("get list companies");
+        
         ArrayList<Company> companies = new ArrayList<>();
 
         try (Connection conn = getConnection();

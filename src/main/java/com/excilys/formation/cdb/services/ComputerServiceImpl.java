@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,8 @@ import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
 @Service("ComputerService")
 @EnableTransactionManagement
+@DependsOn("txManager")
+@ImportResource("classpath:applicationContext.xml")
 public class ComputerServiceImpl implements ComputerService {
 
     private ComputerDAO computerDAO;

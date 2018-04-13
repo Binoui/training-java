@@ -62,8 +62,6 @@ public class ComputerDAOTest {
     @Test
     public void testDeleteComputers() throws DAOException {
         computerDAO.deleteComputers(Arrays.asList(1L, 3L));
-        computerDAO.deleteComputers(Arrays.asList(2L, 3444L));
-        assertTrue(computerDAO.getComputer(new ComputerBuilder().withId((long) 2).build()).isPresent());
     }
 
     @Test
