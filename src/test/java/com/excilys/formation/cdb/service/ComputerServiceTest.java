@@ -62,14 +62,7 @@ public class ComputerServiceTest {
         computerService.deleteComputer(c);
         assertFalse(computerService.getComputer(c).isPresent());
     }
-    
-    @Test
-    public void testDeleteComputers() throws ServiceException {
-        computerService.deleteComputers(Arrays.asList(1L, 3L));
-        computerService.deleteComputers(Arrays.asList(2L, 3444L));
-        assertTrue(computerService.getComputer(new ComputerBuilder().withId((long) 2).build()).isPresent());
-    }
-
+  
     @Test
     public void testGetCompanyWithIdNull() throws ServiceException {
         computerService.getComputer(new ComputerBuilder().build());

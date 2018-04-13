@@ -24,8 +24,6 @@ import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
 @Service("ComputerService")
 @EnableTransactionManagement
-@DependsOn("txManager")
-@ImportResource("classpath:applicationContext.xml")
 public class ComputerServiceImpl implements ComputerService {
 
     private ComputerDAO computerDAO;
@@ -66,7 +64,7 @@ public class ComputerServiceImpl implements ComputerService {
     }
 
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(value="txManager", rollbackFor=ServiceException.class)
     public void deleteComputers(List<Long> idsToDelete) throws ServiceException {
         try {
             computerDAO.deleteComputers(idsToDelete);

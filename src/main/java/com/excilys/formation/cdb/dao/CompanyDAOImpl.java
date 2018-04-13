@@ -8,12 +8,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
@@ -73,74 +76,36 @@ public class CompanyDAOImpl implements CompanyDAO {
     @Override
     public Optional<Company> getCompany(Long id) throws DAOException {
         Logger.info("get company");
-        Company c = null;
-
-        try (Connection conn = getConnection(); PreparedStatement st = conn.prepareStatement(SELECT_COMPANY);) {
-
-            if (id != null) {
-                st.setLong(1, id);
-            } else {
-                st.setNull(1, java.sql.Types.BIGINT);
-            }
-
-            try (ResultSet rs = st.executeQuery();) {
-                if (rs.next()) {
-                    c = CompanyMapper.createCompany(rs);
-                }
-            }
-
-        } catch (SQLException e) {
-            Logger.debug(e.getMessage());
-            throw new DAOException("Couldn't find company with ID : " + id);
+        try {
+            return Optional
+                    .of(jdbcTemplate.queryForObject(SELECT_COMPANY, new Object[] { id }, (ResultSet rs, int arg1) -> {
+                        return CompanyMapper.createCompany(rs);
+                    }));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
         }
-
-        return Optional.ofNullable(c);
     }
 
     @Override
     public List<Company> getListCompanies() throws DAOException {
         Logger.info("get list companies");
-        
-        ArrayList<Company> companies = new ArrayList<>();
-
-        try (Connection conn = getConnection();
-                Statement st = conn.createStatement();
-                ResultSet rs = st.executeQuery(SELECT_COMPANIES)) {
-
-            while (rs.next()) {
-                companies.add(CompanyMapper.createCompany(rs));
-            }
-
-        } catch (SQLException e) {
-            Logger.debug(e.getMessage());
-            throw new DAOException("Couldn't fetch companies list");
-        }
-
-        return companies;
+        return jdbcTemplate.query(SELECT_COMPANIES, (ResultSet rs, int arg1) -> {
+            return CompanyMapper.createCompany(rs);
+        });
     }
 
     @Override
     public List<Company> getListCompanies(int pageNumber, int pageSize) throws DAOException {
         Logger.info("get list companies");
-
-        List<Company> companies = jdbcTemplate.query(SELECT_COMPANIES_PAGE, new PreparedStatementSetter() {
-
+        return jdbcTemplate.query(SELECT_COMPANIES_PAGE, new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement st) throws SQLException {
                 st.setInt(1, pageSize);
                 st.setInt(2, pageSize * pageNumber);
             }
-
-        }, new RowMapper<Company>() {
-
-            @Override
-            public Company mapRow(ResultSet rs, int arg1) throws SQLException {
-                return CompanyMapper.createCompany(rs);
-            }
-
+        }, (ResultSet rs, int arg1) -> {
+            return CompanyMapper.createCompany(rs);
         });
-
-        return companies;
     }
 
     @Override
