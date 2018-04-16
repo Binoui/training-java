@@ -41,15 +41,6 @@ public class AddComputer extends HttpServlet {
     @Autowired
     private ComputerService computerService;
 
-    public void init(ServletConfig config) {
-        try {
-            super.init(config);
-        } catch (ServletException e) {
-            Logger.error("error while trying to initialize servlet addcomputer");
-        }
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
-    }
-
     public AddComputer() {
         super();
     }
@@ -131,6 +122,16 @@ public class AddComputer extends HttpServlet {
         }
 
         getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
+    }
+
+    @Override
+    public void init(ServletConfig config) {
+        try {
+            super.init(config);
+        } catch (ServletException e) {
+            Logger.error("error while trying to initialize servlet addcomputer");
+        }
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
     }
 
 }

@@ -9,7 +9,8 @@ public class ComputerListPageSearch extends ComputerListPage {
 
     private final String searchWord;
 
-    public ComputerListPageSearch(int pageNumber, String searchWord, ComputerService computerService) throws ServiceException {
+    public ComputerListPageSearch(int pageNumber, String searchWord, ComputerService computerService)
+            throws ServiceException {
         super(pageNumber);
         this.searchWord = searchWord;
         this.computerService = computerService;

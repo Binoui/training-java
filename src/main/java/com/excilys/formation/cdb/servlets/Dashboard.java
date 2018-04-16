@@ -30,16 +30,10 @@ public class Dashboard extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private static final Logger Logger = LoggerFactory.getLogger(Dashboard.class);
-    
+
     @Autowired
     private ComputerService computerService;
 
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
-    }
-    
     public Dashboard() {
         super();
     }
@@ -114,6 +108,12 @@ public class Dashboard extends HttpServlet {
             Logger.error("Error accessing service {}", e);
             return;
         }
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
     }
 
     private void putOrderByOnPage(ComputerListPage page, String sortBy, String ascendingString) {

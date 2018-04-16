@@ -28,15 +28,6 @@ public class DeleteComputer extends HttpServlet {
     @Autowired
     private ComputerService computerService;
 
-    public void init(ServletConfig config) {
-        try {
-            super.init(config);
-        } catch (ServletException e) {
-            Logger.error("error while trying to initialize servlet dashboard");
-        }
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
-    }
-
     public DeleteComputer() {
         super();
     }
@@ -75,6 +66,16 @@ public class DeleteComputer extends HttpServlet {
         }
 
         doGet(request, response);
+    }
+
+    @Override
+    public void init(ServletConfig config) {
+        try {
+            super.init(config);
+        } catch (ServletException e) {
+            Logger.error("error while trying to initialize servlet dashboard");
+        }
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
     }
 
     private void redirectToDashboardWithError(HttpServletRequest request, HttpServletResponse response, String error)

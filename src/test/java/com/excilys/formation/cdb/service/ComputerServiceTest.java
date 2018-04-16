@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.After;
@@ -15,6 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.model.Computer;
@@ -23,9 +24,6 @@ import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.utils.HSQLDatabase;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
-
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext.xml" })
@@ -63,7 +61,7 @@ public class ComputerServiceTest {
         computerService.deleteComputer(c);
         assertFalse(computerService.getComputer(c).isPresent());
     }
-  
+
     @Test
     public void testGetCompanyWithIdNull() throws ServiceException {
         computerService.getComputer(new ComputerBuilder().build());
@@ -96,7 +94,8 @@ public class ComputerServiceTest {
 
     @Test
     public void testUpdateComputer() throws ServiceException, IncorrectValidationException {
-        Computer c = new ComputerBuilder().withId((long) 2).withName("Computer 2").withIntroduced(LocalDate.parse("0001-01-01")).withDiscontinued(null).build();
+        Computer c = new ComputerBuilder().withId((long) 2).withName("Computer 2")
+                .withIntroduced(LocalDate.parse("0001-01-01")).withDiscontinued(null).build();
         computerService.updateComputer(c);
         assertEquals(Optional.of(LocalDate.parse("0001-01-01")), computerService.getComputer(c).get().getIntroduced());
     }

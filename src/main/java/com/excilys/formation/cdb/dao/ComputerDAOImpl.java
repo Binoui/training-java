@@ -17,11 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.cdb.mapper.ComputerMapper;
+import com.excilys.formation.cdb.mapper.RowComputerMapper;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 
@@ -41,11 +41,6 @@ public class ComputerDAOImpl implements ComputerDAO {
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
     private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
 
     @Override
     public Long createComputer(Computer computer) throws DAOException {
@@ -86,8 +81,9 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     @Override
     public Optional<Computer> getComputer(Computer computer) throws DAOException {
-        if (computer == null || computer.getId() == null)
+        if ((computer == null) || (computer.getId() == null)) {
             return Optional.empty();
+        }
         return getComputer(computer.getId());
     }
 
@@ -95,9 +91,7 @@ public class ComputerDAOImpl implements ComputerDAO {
     public Optional<Computer> getComputer(long id) throws DAOException {
         try {
             return Optional
-                    .of(jdbcTemplate.queryForObject(SELECT_COMPUTER, new Object[] { id }, (ResultSet rs, int arg1) -> {
-                        return ComputerMapper.createComputer(rs);
-                    }));
+                    .of(jdbcTemplate.queryForObject(SELECT_COMPUTER, new Object[] { id }, new RowComputerMapper()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -119,9 +113,7 @@ public class ComputerDAOImpl implements ComputerDAO {
     @Override
     public List<Computer> getListComputers() throws DAOException {
         Logger.info("list computers no args");
-        return jdbcTemplate.query(SELECT_COMPUTERS, (ResultSet rs, int arg1) -> {
-            return ComputerMapper.createComputer(rs);
-        });
+        return jdbcTemplate.query(SELECT_COMPUTERS, new RowComputerMapper());
     }
 
     @Override
@@ -130,9 +122,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         Logger.info("list computers with pages / orderBy");
         String newRequest = String.format(SELECT_COMPUTERS_PAGE, column.getColumn(), ascending ? "ASC" : "DESC");
         return jdbcTemplate.query(newRequest, new Object[] { pageSize, pageSize * pageNumber },
-                (ResultSet rs, int arg1) -> {
-                    return ComputerMapper.createComputer(rs);
-                });
+                new RowComputerMapper());
     }
 
     @Override
@@ -173,17 +163,6 @@ public class ComputerDAOImpl implements ComputerDAO {
         return pageCount;
     }
 
-    @Override
-    public void updateComputer(Computer computer) throws DAOException {
-        Logger.info("update computer");
-        computer.getIntroduced().map(Date::valueOf).orElse(null);
-
-        jdbcTemplate.update(UPDATE_COMPUTER,
-                new Object[] { computer.getName(), computer.getIntroduced().map(Date::valueOf).orElse(null),
-                        computer.getDiscontinued().map(Date::valueOf).orElse(null),
-                        computer.getCompany().map(Company::getId).orElse(null), computer.getId() });
-    }
-
     private void populateStatementFromComputer(Computer computer, PreparedStatement statement) throws SQLException {
 
         statement.setString(1, computer.getName());
@@ -205,6 +184,22 @@ public class ComputerDAOImpl implements ComputerDAO {
         } else {
             statement.setNull(4, java.sql.Types.BIGINT);
         }
+    }
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    @Override
+    public void updateComputer(Computer computer) throws DAOException {
+        Logger.info("update computer");
+        computer.getIntroduced().map(Date::valueOf).orElse(null);
+
+        jdbcTemplate.update(UPDATE_COMPUTER,
+                new Object[] { computer.getName(), computer.getIntroduced().map(Date::valueOf).orElse(null),
+                        computer.getDiscontinued().map(Date::valueOf).orElse(null),
+                        computer.getCompany().map(Company::getId).orElse(null), computer.getId() });
     }
 
 }

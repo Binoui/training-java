@@ -12,26 +12,27 @@ import javax.sql.DataSource;
 
 import org.hsqldb.cmdline.SqlFile;
 import org.hsqldb.cmdline.SqlToolError;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @Component
 public class HSQLDatabase {
 
+    private static final String DROP_COMPUTER_TABLE = "DROP TABLE computer;";
+
+    private static final String DROP_COMPANY_TABLE = "DROP TABLE company;";
     @Autowired
     private DataSource dataSource;
-
-    private static final String DROP_COMPUTER_TABLE = "DROP TABLE computer;";
-    private static final String DROP_COMPANY_TABLE = "DROP TABLE company;";
 
     public void destroy() throws SQLException {
         try (Connection connection = getConnection(); Statement statement = connection.createStatement();) {
             statement.executeUpdate(DROP_COMPUTER_TABLE);
             statement.executeUpdate(DROP_COMPANY_TABLE);
         }
+    }
+
+    private Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 
     public void initDatabase() throws SQLException, IOException {
@@ -47,10 +48,6 @@ public class HSQLDatabase {
                 e.printStackTrace();
             }
         }
-    }
-    
-    private Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
     }
 
 }

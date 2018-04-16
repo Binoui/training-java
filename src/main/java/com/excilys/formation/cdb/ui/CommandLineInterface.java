@@ -28,23 +28,23 @@ import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 @Controller
 public class CommandLineInterface {
 
-    @Autowired
-    private CompanyService companyService;
-
-    @Autowired
-    private ComputerService computerService;
-
     private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(CommandLineInterface.class);
 
     public static void main(String[] arg) {
         @SuppressWarnings("resource")
-        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml"); 
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
         CommandLineInterface cli = context.getBean(CommandLineInterface.class);
         System.out.println("******** Computer Database ********\n");
         while (cli.menuLoop()) {
         }
     }
+
+    @Autowired
+    private CompanyService companyService;
+
+    @Autowired
+    private ComputerService computerService;
 
     private Scanner scanner;
 

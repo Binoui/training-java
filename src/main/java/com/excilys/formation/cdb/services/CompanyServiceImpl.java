@@ -16,14 +16,14 @@ import com.excilys.formation.cdb.model.Company;
 public class CompanyServiceImpl implements CompanyService {
 
     private CompanyDAO companyDAO;
-    
+
     @Autowired
     public CompanyServiceImpl(CompanyDAO companyDAO) {
         this.companyDAO = companyDAO;
     }
 
     @Override
-    @Transactional(rollbackFor=ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void deleteCompany(Long id) throws ServiceException {
         try {
             companyDAO.deleteCompany(id);

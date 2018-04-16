@@ -14,13 +14,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.utils.HSQLDatabase;
-
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext.xml" })
@@ -92,14 +91,16 @@ public class ComputerDAOTest {
     }
 
     @Test
-    public void testGetListComputersSorted() throws DAOException {
-        assertEquals(2, (long) computerDAO.getListComputers(0, 10, SortableComputerColumn.INTRODUCED, false).get(0).getId());
-        assertEquals(1, (long) computerDAO.getListComputers(0, 10, SortableComputerColumn.INTRODUCED, false).get(2).getId());
+    public void testGetListComputersPageCount() throws DAOException {
+        assertEquals(computerDAO.getListComputersPageCount(10), 1);
     }
 
     @Test
-    public void testGetListComputersPageCount() throws DAOException {
-        assertEquals(computerDAO.getListComputersPageCount(10), 1);
+    public void testGetListComputersSorted() throws DAOException {
+        assertEquals(2,
+                (long) computerDAO.getListComputers(0, 10, SortableComputerColumn.INTRODUCED, false).get(0).getId());
+        assertEquals(1,
+                (long) computerDAO.getListComputers(0, 10, SortableComputerColumn.INTRODUCED, false).get(2).getId());
     }
 
     @Test

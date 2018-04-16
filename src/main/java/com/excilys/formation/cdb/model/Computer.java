@@ -15,7 +15,7 @@ public class Computer {
         private Optional<LocalDate> introduced;
 
         private Optional<LocalDate> discontinued;
-        
+
         public ComputerBuilder() {
             introduced = Optional.empty();
             discontinued = Optional.empty();
@@ -70,7 +70,8 @@ public class Computer {
         this.company = builder.company;
     }
 
-    public Computer(String name, Optional<LocalDate> introduced, Optional<LocalDate> discontinued, Optional<Company> company) {
+    public Computer(String name, Optional<LocalDate> introduced, Optional<LocalDate> discontinued,
+            Optional<Company> company) {
         this.name = name;
         this.introduced = introduced;
         this.discontinued = discontinued;

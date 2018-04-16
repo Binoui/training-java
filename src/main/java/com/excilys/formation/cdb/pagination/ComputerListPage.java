@@ -17,18 +17,18 @@ public class ComputerListPage extends Page<Computer> {
         column = SortableComputerColumn.ID;
         ascendingSort = true;
     }
-    
-    protected ComputerListPage(int pageNumber) throws ServiceException {
-        super(pageNumber);
-        column = SortableComputerColumn.ID;
-        ascendingSort = true;
-    }
-    
+
     public ComputerListPage(ComputerService computerService) throws ServiceException {
         super();
         column = SortableComputerColumn.ID;
         ascendingSort = true;
         this.computerService = computerService;
+    }
+
+    protected ComputerListPage(int pageNumber) throws ServiceException {
+        super(pageNumber);
+        column = SortableComputerColumn.ID;
+        ascendingSort = true;
     }
 
     public ComputerListPage(int pageNumber, ComputerService computerService) throws ServiceException {

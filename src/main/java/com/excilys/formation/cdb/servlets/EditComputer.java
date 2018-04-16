@@ -40,15 +40,6 @@ public class EditComputer extends HttpServlet {
     @Autowired
     private ComputerService computerService;
 
-    public void init(ServletConfig config) {
-        try {
-            super.init(config);
-        } catch (ServletException e) {
-            Logger.error("error while trying to initialize servlet dashboard");
-        }
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
-    }
-
     public EditComputer() {
         super();
     }
@@ -157,6 +148,16 @@ public class EditComputer extends HttpServlet {
         }
 
         getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
+    }
+
+    @Override
+    public void init(ServletConfig config) {
+        try {
+            super.init(config);
+        } catch (ServletException e) {
+            Logger.error("error while trying to initialize servlet dashboard");
+        }
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
     }
 
     private void redirectToDashboardWithError(HttpServletRequest request, HttpServletResponse response, String error)

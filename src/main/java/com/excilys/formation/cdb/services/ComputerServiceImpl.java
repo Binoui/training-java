@@ -6,8 +6,6 @@ import java.util.Optional;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +25,11 @@ import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 @EnableTransactionManagement
 public class ComputerServiceImpl implements ComputerService {
 
+    private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(ComputerValidator.class);
+
     private ComputerDAO computerDAO;
 
     private CompanyDAO companyDAO;
-
-    private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(ComputerValidator.class);
 
     @Autowired
     public ComputerServiceImpl(ComputerDAO computerDAO, CompanyDAO companyDAO) {
@@ -172,12 +170,13 @@ public class ComputerServiceImpl implements ComputerService {
 
     private void validateCompany(Optional<Company> optionalCompany) throws UnknownCompanyIdException {
 
-        if (!optionalCompany.isPresent())
+        if (!optionalCompany.isPresent()) {
             return;
+        }
 
         Company company = optionalCompany.get();
         try {
-            if (company.getId() != null && !(companyDAO.getCompany(company).isPresent())) {
+            if ((company.getId() != null) && !(companyDAO.getCompany(company).isPresent())) {
                 throw new UnknownCompanyIdException("Cannot find given company.");
             }
         } catch (DAOException e) {

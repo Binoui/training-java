@@ -3,7 +3,6 @@ package com.excilys.formation.cdb.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -76,13 +75,13 @@ public class CompanyDAOTest {
     public void testGetListCompaniesPageCount() {
     }
 
-//    @Test
-//    public void testGetListCompaniesPageOutOfBounds() throws DAOException {
-//        try {
-//            companyDAO.getListCompanies(999999, 10);
-//            fail("should throw exception");
-//        } catch (DAOException e) {
-//        }
-//    }
+    // @Test
+    // public void testGetListCompaniesPageOutOfBounds() throws DAOException {
+    // try {
+    // companyDAO.getListCompanies(999999, 10);
+    // fail("should throw exception");
+    // } catch (DAOException e) {
+    // }
+    // }
 
 }

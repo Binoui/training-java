@@ -18,15 +18,15 @@ public class ComputerDTOMapper {
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        if (computer.getIntroduced() != null) {
+        if (computer.getIntroduced().isPresent()) {
             computerDto.setIntroduced(computer.getIntroduced().get().format(dateFormatter));
         }
 
-        if (computer.getDiscontinued() != null) {
+        if (computer.getDiscontinued().isPresent()) {
             computerDto.setDiscontinued(computer.getDiscontinued().get().format(dateFormatter));
         }
 
-        if (computer.getCompany() != null) {
+        if (computer.getCompany().isPresent()) {
             computerDto.setCompany(CompanyDTOMapper.createCompanyDTO(computer.getCompany().get()));
         }
 

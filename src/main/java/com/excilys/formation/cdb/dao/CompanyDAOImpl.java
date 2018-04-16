@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.cdb.mapper.CompanyMapper;
+import com.excilys.formation.cdb.mapper.RowCompanyMapper;
 import com.excilys.formation.cdb.model.Company;
 
 @Repository("CompanyDAO")
@@ -30,21 +31,18 @@ public class CompanyDAOImpl implements CompanyDAO {
 
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
-
     @Override
     public void deleteCompany(long id) throws DAOException {
         Logger.info("DAO : Delete Company");
-        jdbcTemplate.update(DELETE_COMPUTERS_WITH_COMPANY_ID, new Object[] {id});
-        jdbcTemplate.update(DELETE_COMPANY, new Object[] {id});
-    } 
+        jdbcTemplate.update(DELETE_COMPUTERS_WITH_COMPANY_ID, new Object[] { id });
+        jdbcTemplate.update(DELETE_COMPANY, new Object[] { id });
+    }
 
     @Override
     public Optional<Company> getCompany(Company c) throws DAOException {
-        if (c == null || c.getId() == null) return Optional.empty();
+        if ((c == null) || (c.getId() == null)) {
+            return Optional.empty();
+        }
         return getCompany(c.getId());
     }
 
@@ -53,9 +51,7 @@ public class CompanyDAOImpl implements CompanyDAO {
         Logger.info("get company");
         try {
             return Optional
-                    .of(jdbcTemplate.queryForObject(SELECT_COMPANY, new Object[] { id }, (ResultSet rs, int arg1) -> {
-                        return CompanyMapper.createCompany(rs);
-                    }));
+                    .of(jdbcTemplate.queryForObject(SELECT_COMPANY, new Object[] { id }, new RowCompanyMapper()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -64,23 +60,25 @@ public class CompanyDAOImpl implements CompanyDAO {
     @Override
     public List<Company> getListCompanies() throws DAOException {
         Logger.info("get list companies");
-        return jdbcTemplate.query(SELECT_COMPANIES, (ResultSet rs, int row) -> {
-            return CompanyMapper.createCompany(rs);
-        });
+        return jdbcTemplate.query(SELECT_COMPANIES, new RowCompanyMapper());
     }
 
     @Override
     public List<Company> getListCompanies(int pageNumber, int pageSize) throws DAOException {
         Logger.info("get list companies");
         return jdbcTemplate.query(SELECT_COMPANIES_PAGE, new Object[] { pageSize, pageSize * pageNumber },
-                (ResultSet rs, int arg1) -> {
-                    return CompanyMapper.createCompany(rs);
-                });
+                new RowCompanyMapper());
+
     }
 
     @Override
     public int getListCompaniesPageCount(int pageSize) throws DAOException {
         Logger.info("get page count");
         return jdbcTemplate.queryForObject(SELECT_COUNT_COMPANIES, Integer.class) / pageSize;
+    }
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 }
