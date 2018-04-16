@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.ImportResource;
@@ -29,7 +30,9 @@ public class ComputerServiceImpl implements ComputerService {
     private ComputerDAO computerDAO;
 
     private CompanyDAO companyDAO;
-    
+
+    private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(ComputerValidator.class);
+
     @Autowired
     public ComputerServiceImpl(ComputerDAO computerDAO, CompanyDAO companyDAO) {
         this.computerDAO = computerDAO;
@@ -64,7 +67,7 @@ public class ComputerServiceImpl implements ComputerService {
     }
 
     @Override
-    @Transactional(value="txManager", rollbackFor=ServiceException.class)
+    @Transactional(value = "txManager", rollbackFor = ServiceException.class)
     public void deleteComputers(List<Long> idsToDelete) throws ServiceException {
         try {
             computerDAO.deleteComputers(idsToDelete);
@@ -154,7 +157,6 @@ public class ComputerServiceImpl implements ComputerService {
 
     @Override
     public void updateComputer(Computer c) throws IncorrectValidationException, ServiceException {
-
         try {
             if ((c.getId() != null) && computerDAO.getComputer(c).isPresent()) {
                 ComputerValidator.validateComputer(c);
@@ -168,9 +170,14 @@ public class ComputerServiceImpl implements ComputerService {
         }
     }
 
-    private void validateCompany(Company company) throws UnknownCompanyIdException {
+    private void validateCompany(Optional<Company> optionalCompany) throws UnknownCompanyIdException {
+
+        if (!optionalCompany.isPresent())
+            return;
+
+        Company company = optionalCompany.get();
         try {
-            if ((company != null) && (company.getId() != null) && !(companyDAO.getCompany(company).isPresent())) {
+            if (company.getId() != null && !(companyDAO.getCompany(company).isPresent())) {
                 throw new UnknownCompanyIdException("Cannot find given company.");
             }
         } catch (DAOException e) {

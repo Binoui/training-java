@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
@@ -95,9 +96,9 @@ public class ComputerServiceTest {
 
     @Test
     public void testUpdateComputer() throws ServiceException, IncorrectValidationException {
-        Computer c = new ComputerBuilder().withId((long) 2).withName("Computer 2").withIntroduced(LocalDate.parse("0001-01-01")).build();
+        Computer c = new ComputerBuilder().withId((long) 2).withName("Computer 2").withIntroduced(LocalDate.parse("0001-01-01")).withDiscontinued(null).build();
         computerService.updateComputer(c);
-        assertEquals( LocalDate.parse("0001-01-01"), computerService.getComputer(c).get().getIntroduced());
+        assertEquals(Optional.of(LocalDate.parse("0001-01-01")), computerService.getComputer(c).get().getIntroduced());
     }
 
 }

@@ -111,7 +111,7 @@ public class ComputerDAOTest {
     public void testUpdateComputer() throws DAOException {
         Computer c = new ComputerBuilder().withId((long) 2).withIntroduced(LocalDate.parse("0001-01-01")).build();
         computerDAO.updateComputer(c);
-        assertEquals(computerDAO.getComputer(c).get().getIntroduced(), LocalDate.parse("0001-01-01"));
+        assertEquals(LocalDate.parse("0001-01-01"), computerDAO.getComputer(c).get().getIntroduced().orElse(null));
     }
 
 }

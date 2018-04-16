@@ -5,4 +5,8 @@ public class IncorrectValidationException extends Exception {
     public IncorrectValidationException(String message) {
         super(message);
     }
+
+    public IncorrectValidationException() {
+        super();
+    }
 }

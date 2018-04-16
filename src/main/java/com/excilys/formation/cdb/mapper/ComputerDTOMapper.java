@@ -17,16 +17,17 @@ public class ComputerDTOMapper {
         }
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
         if (computer.getIntroduced() != null) {
-            computerDto.setIntroduced(computer.getIntroduced().format(dateFormatter));
+            computerDto.setIntroduced(computer.getIntroduced().get().format(dateFormatter));
         }
 
         if (computer.getDiscontinued() != null) {
-            computerDto.setDiscontinued(computer.getDiscontinued().format(dateFormatter));
+            computerDto.setDiscontinued(computer.getDiscontinued().get().format(dateFormatter));
         }
 
         if (computer.getCompany() != null) {
-            computerDto.setCompany(CompanyDTOMapper.createCompanyDTO(computer.getCompany()));
+            computerDto.setCompany(CompanyDTOMapper.createCompanyDTO(computer.getCompany().get()));
         }
 
         return computerDto;

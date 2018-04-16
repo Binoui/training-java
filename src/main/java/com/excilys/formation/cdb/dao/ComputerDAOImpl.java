@@ -1,6 +1,5 @@
 package com.excilys.formation.cdb.dao;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,6 +22,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.cdb.mapper.ComputerMapper;
+import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 
 @Repository("ComputerDAO")
@@ -48,19 +48,17 @@ public class ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
-    public Long createComputer(Computer c) throws DAOException {
+    public Long createComputer(Computer computer) throws DAOException {
         Logger.info("create computer");
         GeneratedKeyHolder holder = new GeneratedKeyHolder();
-        jdbcTemplate.update(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
-                PreparedStatement statement = conn.prepareStatement(INSERT_COMPUTER, Statement.RETURN_GENERATED_KEYS);
-                populateStatementFromComputer(c, statement);
-                return statement;
-            }
+        jdbcTemplate.update((conn) -> {
+            PreparedStatement statement = conn.prepareStatement(INSERT_COMPUTER, Statement.RETURN_GENERATED_KEYS);
+            populateStatementFromComputer(computer, statement);
+            return statement;
         }, holder);
 
         return holder.getKey().longValue();
+
     }
 
     @Override
@@ -152,7 +150,7 @@ public class ComputerDAOImpl implements ComputerDAO {
         searchWord = '%' + searchWord + '%';
 
         return jdbcTemplate.query(newRequest, new Object[] { searchWord, searchWord, pageSize, pageSize * pageNumber },
-                (ResultSet rs, int arg1) -> {
+                (ResultSet rs, int row) -> {
                     return ComputerMapper.createComputer(rs);
                 });
     }
@@ -178,28 +176,32 @@ public class ComputerDAOImpl implements ComputerDAO {
     @Override
     public void updateComputer(Computer computer) throws DAOException {
         Logger.info("update computer");
-        jdbcTemplate.update(UPDATE_COMPUTER, new Object[] { computer.getName(), computer.getIntroduced() != null ? Date.valueOf(computer.getIntroduced()) : null,
-                computer.getDiscontinued() != null ? Date.valueOf(computer.getDiscontinued()) : null, computer.getCompany() != null ? computer.getCompany().getId() : null, computer.getId() });
+        computer.getIntroduced().map(Date::valueOf).orElse(null);
+
+        jdbcTemplate.update(UPDATE_COMPUTER,
+                new Object[] { computer.getName(), computer.getIntroduced().map(Date::valueOf).orElse(null),
+                        computer.getDiscontinued().map(Date::valueOf).orElse(null),
+                        computer.getCompany().map(Company::getId).orElse(null), computer.getId() });
     }
 
     private void populateStatementFromComputer(Computer computer, PreparedStatement statement) throws SQLException {
 
         statement.setString(1, computer.getName());
 
-        if (computer.getIntroduced() != null) {
-            statement.setDate(2, Date.valueOf(computer.getIntroduced()));
+        if (computer.getIntroduced().isPresent()) {
+            statement.setDate(2, Date.valueOf(computer.getIntroduced().get()));
         } else {
             statement.setNull(2, java.sql.Types.DATE);
         }
 
-        if (computer.getDiscontinued() != null) {
-            statement.setDate(3, Date.valueOf(computer.getDiscontinued()));
+        if (computer.getDiscontinued().isPresent()) {
+            statement.setDate(3, Date.valueOf(computer.getDiscontinued().get()));
         } else {
             statement.setNull(3, java.sql.Types.DATE);
         }
 
-        if ((computer.getCompany() != null) && (computer.getCompany().getId() != null)) {
-            statement.setLong(4, computer.getCompany().getId());
+        if ((computer.getCompany().isPresent()) && (computer.getCompany().get().getId() != null)) {
+            statement.setLong(4, computer.getCompany().get().getId());
         } else {
             statement.setNull(4, java.sql.Types.BIGINT);
         }

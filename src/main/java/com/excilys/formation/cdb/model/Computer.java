@@ -1,6 +1,7 @@
 package com.excilys.formation.cdb.model;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 public class Computer {
 
@@ -9,23 +10,29 @@ public class Computer {
 
         private String name;
 
-        private Company company;
+        private Optional<Company> company;
 
-        private LocalDate introduced;
+        private Optional<LocalDate> introduced;
 
-        private LocalDate discontinued;
+        private Optional<LocalDate> discontinued;
+        
+        public ComputerBuilder() {
+            introduced = Optional.empty();
+            discontinued = Optional.empty();
+            company = Optional.empty();
+        }
 
         public Computer build() {
             return new Computer(this);
         }
 
         public ComputerBuilder withCompany(Company company) {
-            this.company = company;
+            this.company = Optional.ofNullable(company);
             return this;
         }
 
         public ComputerBuilder withDiscontinued(LocalDate discontinued) {
-            this.discontinued = discontinued;
+            this.discontinued = Optional.ofNullable(discontinued);
             return this;
         }
 
@@ -35,7 +42,7 @@ public class Computer {
         }
 
         public ComputerBuilder withIntroduced(LocalDate introduced) {
-            this.introduced = introduced;
+            this.introduced = Optional.ofNullable(introduced);
             return this;
         }
 
@@ -47,10 +54,10 @@ public class Computer {
 
     private Long id;
     private String name;
-    private Company company;
-    private LocalDate introduced;
+    private Optional<Company> company;
+    private Optional<LocalDate> introduced;
 
-    private LocalDate discontinued;
+    private Optional<LocalDate> discontinued;
 
     public Computer() {
     }
@@ -63,18 +70,18 @@ public class Computer {
         this.company = builder.company;
     }
 
-    public Computer(String name, LocalDate introduced, LocalDate discontinued, Company company) {
+    public Computer(String name, Optional<LocalDate> introduced, Optional<LocalDate> discontinued, Optional<Company> company) {
         this.name = name;
         this.introduced = introduced;
         this.discontinued = discontinued;
         this.company = company;
     }
 
-    public Company getCompany() {
+    public Optional<Company> getCompany() {
         return company;
     }
 
-    public LocalDate getDiscontinued() {
+    public Optional<LocalDate> getDiscontinued() {
         return discontinued;
     }
 
@@ -82,7 +89,7 @@ public class Computer {
         return id;
     }
 
-    public LocalDate getIntroduced() {
+    public Optional<LocalDate> getIntroduced() {
         return introduced;
     }
 
@@ -91,11 +98,11 @@ public class Computer {
     }
 
     public void setCompany(Company company) {
-        this.company = company;
+        this.company = Optional.ofNullable(company);
     }
 
     public void setDiscontinued(LocalDate discontinued) {
-        this.discontinued = discontinued;
+        this.discontinued = Optional.ofNullable(discontinued);
     }
 
     public void setId(long id) {
@@ -103,7 +110,7 @@ public class Computer {
     }
 
     public void setIntroduced(LocalDate introduced) {
-        this.introduced = introduced;
+        this.introduced = Optional.ofNullable(introduced);
     }
 
     public void setName(String name) {

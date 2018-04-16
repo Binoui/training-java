@@ -38,7 +38,6 @@ public class CompanyDAOImpl implements CompanyDAO {
     @Override
     public void deleteCompany(long id) throws DAOException {
         Logger.info("DAO : Delete Company");
-
         jdbcTemplate.update(DELETE_COMPUTERS_WITH_COMPANY_ID, new Object[] {id});
         jdbcTemplate.update(DELETE_COMPANY, new Object[] {id});
     } 
@@ -65,7 +64,7 @@ public class CompanyDAOImpl implements CompanyDAO {
     @Override
     public List<Company> getListCompanies() throws DAOException {
         Logger.info("get list companies");
-        return jdbcTemplate.query(SELECT_COMPANIES, (ResultSet rs, int arg1) -> {
+        return jdbcTemplate.query(SELECT_COMPANIES, (ResultSet rs, int row) -> {
             return CompanyMapper.createCompany(rs);
         });
     }

@@ -5,4 +5,8 @@ public class InvalidDatesException extends IncorrectValidationException {
     public InvalidDatesException(String message) {
         super(message);
     }
+    
+    public InvalidDatesException() {
+        super();
+    }
 }
