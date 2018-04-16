@@ -78,7 +78,6 @@
 				<version>${checkstyle.version}</version>
 				<configuration>
 					<configLocation>checkstyle.xml</configLocation>
-					5.2.16.Final
 					<supressionsLocation>supressions.xml</supressionsLocation>
 				</configuration>
 			</plugin>
@@ -242,6 +241,12 @@
 			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
 		</dependency>
 
 	</dependencies>

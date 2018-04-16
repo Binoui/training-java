@@ -15,6 +15,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.formation.cdb.dao.SortableComputerColumn;
@@ -25,10 +29,10 @@ import com.excilys.formation.cdb.pagination.ComputerListPageSearch;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 
-@WebServlet(name = "Dashboard", urlPatterns = "/Dashboard")
-public class Dashboard extends HttpServlet {
+@Controller
+@RequestMapping("/dashboard")
+public class Dashboard {
 
-    private static final long serialVersionUID = 1L;
     private static final Logger Logger = LoggerFactory.getLogger(Dashboard.class);
 
     @Autowired
@@ -38,13 +42,12 @@ public class Dashboard extends HttpServlet {
         super();
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    @RequestMapping(value= "/dashboard", method=RequestMethod.GET)
+    protected String doGet(Model model)
             throws ServletException, IOException {
 
         ComputerListPage page;
         String searchWord = request.getParameter("search");
-
         String sortBy = request.getParameter("sortBy");
         String ascendingString = request.getParameter("ascending");
 
@@ -61,10 +64,10 @@ public class Dashboard extends HttpServlet {
             Logger.error("Error creating page{}", e);
         }
 
-        getServletContext().getRequestDispatcher("/WEB-INF/dashboard.jsp").forward(request, response);
+        return "dashboard";
     }
 
-    @Override
+    @RequestMapping(value= "/dashboard", method=RequestMethod.POST)
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
@@ -108,12 +111,6 @@ public class Dashboard extends HttpServlet {
             Logger.error("Error accessing service {}", e);
             return;
         }
-    }
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
     }
 
     private void putOrderByOnPage(ComputerListPage page, String sortBy, String ascendingString) {

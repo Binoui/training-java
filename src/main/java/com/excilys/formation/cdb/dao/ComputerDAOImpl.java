@@ -53,7 +53,6 @@ public class ComputerDAOImpl implements ComputerDAO {
         }, holder);
 
         return holder.getKey().longValue();
-
     }
 
     @Override
