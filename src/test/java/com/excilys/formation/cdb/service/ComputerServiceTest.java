@@ -97,7 +97,7 @@ public class ComputerServiceTest {
     public void testUpdateComputer() throws ServiceException, IncorrectValidationException {
         Computer c = new ComputerBuilder().withId((long) 2).withName("Computer 2").withIntroduced(LocalDate.parse("0001-01-01")).build();
         computerService.updateComputer(c);
-        assertEquals(computerService.getComputer(c).get().getIntroduced(), LocalDate.parse("0001-01-01"));
+        assertEquals( LocalDate.parse("0001-01-01"), computerService.getComputer(c).get().getIntroduced());
     }
 
 }

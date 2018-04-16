@@ -58,7 +58,7 @@ public class ComputerDAOTest {
         computerDAO.deleteComputer(c);
         assertFalse(computerDAO.getComputer(c).isPresent());
     }
-    
+
     @Test
     public void testDeleteComputers() throws DAOException {
         computerDAO.deleteComputers(Arrays.asList(1L, 3L));
@@ -76,12 +76,25 @@ public class ComputerDAOTest {
 
     @Test
     public void testGetComputerCount() throws DAOException {
-        assertEquals(computerDAO.getComputerCount(), 3);
+        assertEquals(3, computerDAO.getComputerCount());
+    }
+
+    @Test
+    public void testGetComputerCountSearch() throws DAOException {
+        assertEquals(2, computerDAO.getComputerCount("Computer"));
+        assertEquals(1, computerDAO.getComputerCount("Computer 1"));
+        assertEquals(0, computerDAO.getComputerCount("zepc,pfz,^^$efze"));
     }
 
     @Test
     public void testGetListComputers() throws DAOException {
         assertEquals((long) computerDAO.getListComputers().get(1).getId(), (long) 2);
+    }
+
+    @Test
+    public void testGetListComputersSorted() throws DAOException {
+        assertEquals(2, (long) computerDAO.getListComputers(0, 10, SortableComputerColumn.INTRODUCED, false).get(0).getId());
+        assertEquals(1, (long) computerDAO.getListComputers(0, 10, SortableComputerColumn.INTRODUCED, false).get(2).getId());
     }
 
     @Test

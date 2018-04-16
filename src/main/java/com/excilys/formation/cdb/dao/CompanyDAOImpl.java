@@ -1,14 +1,8 @@
 package com.excilys.formation.cdb.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import javax.sql.DataSource;
 
@@ -16,11 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.cdb.mapper.CompanyMapper;
@@ -49,27 +39,13 @@ public class CompanyDAOImpl implements CompanyDAO {
     public void deleteCompany(long id) throws DAOException {
         Logger.info("DAO : Delete Company");
 
-        Connection conn;
-        conn = getConnection();
-        try (PreparedStatement deleteComputersStatement = conn.prepareStatement(DELETE_COMPUTERS_WITH_COMPANY_ID);) {
-            deleteComputersStatement.setLong(1, id);
-            deleteComputersStatement.execute();
-        } catch (SQLException e) {
-            Logger.error("Error while deleting computers, rolling back : ", e);
-            throw new DAOException("Couldn't delete computers");
-        }
-
-        try (PreparedStatement deleteCompanyStatement = conn.prepareStatement(DELETE_COMPANY);) {
-            deleteCompanyStatement.setLong(1, id);
-            deleteCompanyStatement.execute();
-        } catch (SQLException e) {
-            Logger.error("Error while deleting company, rolling back : ", e);
-            throw new DAOException("Couldn't delete company");
-        }
-    }
+        jdbcTemplate.update(DELETE_COMPUTERS_WITH_COMPANY_ID, new Object[] {id});
+        jdbcTemplate.update(DELETE_COMPANY, new Object[] {id});
+    } 
 
     @Override
     public Optional<Company> getCompany(Company c) throws DAOException {
+        if (c == null || c.getId() == null) return Optional.empty();
         return getCompany(c.getId());
     }
 
@@ -97,24 +73,15 @@ public class CompanyDAOImpl implements CompanyDAO {
     @Override
     public List<Company> getListCompanies(int pageNumber, int pageSize) throws DAOException {
         Logger.info("get list companies");
-        return jdbcTemplate.query(SELECT_COMPANIES_PAGE, new PreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement st) throws SQLException {
-                st.setInt(1, pageSize);
-                st.setInt(2, pageSize * pageNumber);
-            }
-        }, (ResultSet rs, int arg1) -> {
-            return CompanyMapper.createCompany(rs);
-        });
+        return jdbcTemplate.query(SELECT_COMPANIES_PAGE, new Object[] { pageSize, pageSize * pageNumber },
+                (ResultSet rs, int arg1) -> {
+                    return CompanyMapper.createCompany(rs);
+                });
     }
 
     @Override
     public int getListCompaniesPageCount(int pageSize) throws DAOException {
         Logger.info("get page count");
         return jdbcTemplate.queryForObject(SELECT_COUNT_COMPANIES, Integer.class) / pageSize;
-    }
-
-    private Connection getConnection() {
-        return DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
     }
 }
