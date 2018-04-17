@@ -16,7 +16,7 @@
 	<c:when test="${not empty target}">
 		<c:choose>
 			<c:when test="${target.equals('dashboard')}">
-				<c:set var="path" value="${path.concat('Dashboard?')}" />
+				<c:set var="path" value="${path.concat('dashboard?')}" />
 
 				<c:if test="${search != null}">
 					<c:set var="path" value="${path.concat('&search=').concat(search)}" />
@@ -38,11 +38,11 @@
 			</c:when>
 
 			<c:when test="${target.equals('addComputer')}">
-				<c:set var="path" value="${path.concat('AddComputer?')}" />
+				<c:set var="path" value="${path.concat('addComputer?')}" />
 			</c:when>
 
 			<c:when test="${target.equals('editComputer')}">
-				<c:set var="path" value="${path.concat('EditComputer?')}" />
+				<c:set var="path" value="${path.concat('editComputer?')}" />
 
 				<c:if test="${(computerId != null) && computerId.matches('[0-9]+')}">
 					<c:set var="path"
@@ -56,7 +56,7 @@
 		</c:choose>
 	</c:when>
 	<c:otherwise>
-		<c:out value="${path.concat('Dashboard?')}" />
+		<c:out value="${path.concat('dashboard?')}" />
 	</c:otherwise>
 </c:choose>
 

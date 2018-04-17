@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.formation.cdb.dto.CompanyDTO;
@@ -28,13 +31,8 @@ import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 
-/**
- * Servlet implementation class AddComputer
- */
-@WebServlet(name = "AddComputer", urlPatterns = "/AddComputer")
-public class AddComputer extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
+@Controller
+public class AddComputer {
     private static final Logger Logger = LoggerFactory.getLogger(AddComputer.class);
     @Autowired
     private CompanyService companyService;
@@ -75,7 +73,7 @@ public class AddComputer extends HttpServlet {
         return computerBuilder.build();
     }
 
-    @Override
+    @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<CompanyDTO> listCompanies = new LinkedList<>();
@@ -88,11 +86,9 @@ public class AddComputer extends HttpServlet {
         }
 
         request.setAttribute("companies", listCompanies);
-
-        getServletContext().getRequestDispatcher("/WEB-INF/addComputer.jsp").forward(request, response);
     }
 
-    @Override
+    @RequestMapping(value = "/dashboard", method = RequestMethod.POST)
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -121,17 +117,5 @@ public class AddComputer extends HttpServlet {
             request.setAttribute("error", e.getMessage());
         }
 
-        getServletContext().getRequestDispatcher("/Dashboard").forward(request, response);
     }
-
-    @Override
-    public void init(ServletConfig config) {
-        try {
-            super.init(config);
-        } catch (ServletException e) {
-            Logger.error("error while trying to initialize servlet addcomputer");
-        }
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
-    }
-
 }
