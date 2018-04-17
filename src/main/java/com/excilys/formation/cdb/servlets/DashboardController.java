@@ -49,8 +49,7 @@ public class DashboardController {
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
     protected ModelAndView doGet(@RequestParam(value = "sortBy", required = false) String sortBy,
             @RequestParam(value = "ascending", required = false) boolean ascending,
-            @RequestParam(value = "searchWord", required = false) String searchWord, ModelAndView modelAndView)
-            throws ServletException, IOException {
+            @RequestParam(value = "searchWord", required = false) String searchWord, ModelAndView modelAndView) {
 
         ComputerListPage page;
         modelAndView.setViewName("dashboard");

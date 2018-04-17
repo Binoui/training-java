@@ -97,6 +97,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>${maven-war.version}</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -173,13 +176,6 @@
 			<artifactId>sqltool</artifactId>
 			<version>${sqltool.version}</version>
 			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>${hikaricp.version}</version>
-			<scope>compile</scope>
 		</dependency>
 
 		<dependency>

@@ -51,7 +51,7 @@
 			</c:when>
 
 			<c:when test="${target.equals('delete')}">
-				<c:set var="path" value="${path.concat('DeleteComputer?')}" />
+				<c:set var="path" value="${path.concat('deleteComputer?')}" />
 			</c:when>
 		</c:choose>
 	</c:when>

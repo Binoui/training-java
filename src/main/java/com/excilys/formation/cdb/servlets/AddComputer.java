@@ -19,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.formation.cdb.dto.CompanyDTO;
 import com.excilys.formation.cdb.mapper.CompanyDTOMapper;
@@ -43,65 +45,38 @@ public class AddComputer {
         super();
     }
 
-    private Computer createComputerFromParameters(HttpServletRequest request, HttpServletResponse response, String name,
-            String introducedString, String discontinuedString, String companyIdString)
-            throws ServletException, IOException {
-
-        ComputerBuilder computerBuilder = new ComputerBuilder().withName(name);
-
-        try {
-            if ((introducedString != null) && !introducedString.isEmpty()) {
-                computerBuilder.withIntroduced(LocalDate.parse(introducedString));
-            }
-
-            if ((discontinuedString != null) && !discontinuedString.isEmpty()) {
-                computerBuilder.withDiscontinued(LocalDate.parse(discontinuedString));
-            }
-        } catch (DateTimeParseException e) {
-            request.setAttribute("error", "Wrong date format");
-            Logger.error("Cannot create computer, wrong date format {}", e);
-            doGet(request, response);
-        }
-
-        if ((companyIdString != null) && !companyIdString.isEmpty()) {
-            Long companyId = Long.parseLong(companyIdString);
-            if (companyId != 0) {
-                computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
-            }
-        }
-
+    private Computer createComputerFromParameters(String name, LocalDate introduced, LocalDate discontinued,
+            Long companyId) {
+        ComputerBuilder computerBuilder = new ComputerBuilder().withName(name).withIntroduced(introduced)
+                .withDiscontinued(discontinued).withCompany(new CompanyBuilder().withId(companyId).build());
         return computerBuilder.build();
     }
 
-    @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<CompanyDTO> listCompanies = new LinkedList<>();
+    @RequestMapping(value = "/addComputer", method = RequestMethod.GET)
+    protected ModelAndView doGet(ModelAndView modelAndView) {
 
+        List<CompanyDTO> listCompanies = new LinkedList<>();
         try {
             companyService.getListCompanies()
                     .forEach(company -> listCompanies.add(CompanyDTOMapper.createCompanyDTO(company)));
         } catch (ServiceException e) {
             Logger.debug("Cannot list companies {}", e);
         }
-
-        request.setAttribute("companies", listCompanies);
+        modelAndView.addObject(listCompanies);
+        modelAndView.setViewName("addComputer");
+        return modelAndView;
     }
 
-    @RequestMapping(value = "/dashboard", method = RequestMethod.POST)
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        String name = request.getParameter("computerName").trim();
-        String introducedString = request.getParameter("introduced").trim();
-        String discontinuedString = request.getParameter("discontinued").trim();
-        String companyIdString = request.getParameter("companyId");
+    @RequestMapping(value = "/addComputer", method = RequestMethod.POST)
+    protected void doPost(@RequestParam(value = "computerName") String name,
+            @RequestParam(value = "introduced") LocalDate introduced,
+            @RequestParam(value = "discontinued") LocalDate discontinued,
+            @RequestParam(value = "companyId") Long companyId, ModelAndView modelAndView) {
 
         Computer newComputer = null;
 
         try {
-            newComputer = createComputerFromParameters(request, response, name, introducedString, discontinuedString,
-                    companyIdString);
+            newComputer = createComputerFromParameters(name, introduced, discontinued, companyId);
         } catch (Exception e) {
             Logger.error("couldn't create computer from parameters : ", e);
         }
@@ -114,7 +89,7 @@ public class AddComputer {
             computerService.createComputer(newComputer);
         } catch (ServiceException | IncorrectValidationException e) {
             Logger.debug("Cannot create computer {}", e);
-            request.setAttribute("error", e.getMessage());
+            modelAndView.addObject("error", e.getMessage());
         }
 
     }
