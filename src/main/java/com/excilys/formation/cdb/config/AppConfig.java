@@ -21,7 +21,7 @@ import org.springframework.web.servlet.view.JstlView;
 @Profile("cli")
 @PropertySource("classpath:connection.properties")
 @ComponentScan({"com.excilys.formation.cdb.dao", "com.excilys.formation.cdb.services",
-        "com.excilys.formation.cdb.ui", "com.excilys.formation.cdb.config", "com.excilys.formation.cdb.utils"  })
+        "com.excilys.formation.cdb.controllers.cli","com.excilys.formation.cdb.config", "com.excilys.formation.cdb.utils"  })
 public class AppConfig {
 
     private static final Logger Logger = LoggerFactory.getLogger(AppConfig.class);

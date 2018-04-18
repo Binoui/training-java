@@ -1,13 +1,11 @@
-package com.excilys.formation.cdb.servlets;
+package com.excilys.formation.cdb.controllers.web;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -47,9 +45,12 @@ public class DashboardController {
     }
 
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
-    protected ModelAndView doGet(@RequestParam(value = "sortBy", required = false) String sortBy,
+    private ModelAndView doGet(@RequestParam(value = "sortBy", required = false) String sortBy,
             @RequestParam(value = "ascending", required = false) boolean ascending,
-            @RequestParam(value = "searchWord", required = false) String searchWord, ModelAndView modelAndView) {
+            @RequestParam(value = "searchWord", required = false) String searchWord,
+            @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber, 
+            @RequestParam(value = "itemsPerPage", required = false, defaultValue = "10") int itemsPerPage, 
+            ModelAndView modelAndView) {
 
         ComputerListPage page;
         modelAndView.setViewName("dashboard");
@@ -61,6 +62,9 @@ public class DashboardController {
                 page = new ComputerListPage(computerService);
             }
 
+            page.goToPage(pageNumber);
+            page.setPageSize(itemsPerPage);
+            
             putOrderByOnPage(page, sortBy, ascending);
             fillModelAndViewWithPageArgs(modelAndView, page);
         } catch (ServiceException e) {
@@ -70,30 +74,12 @@ public class DashboardController {
         return modelAndView;
     }
 
-    private int getIntParam(String param, int defaultValue) {
-        try {
-            return Integer.parseInt(param);
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
-    }
-
     private void fillModelAndViewWithPageArgs(ModelAndView modelAndView, ComputerListPage page) {
 
         Map<String, Object> argsMap = modelAndView.getModelMap();
         List<ComputerDTO> listComputers = new LinkedList<>();
 
         try {
-            String pageNumber = (String) argsMap.get("pageNumber");
-            if (pageNumber != null) {
-                page.goToPage(getIntParam(pageNumber, 0));
-            }
-
-            String itemsPerPage = (String) argsMap.get("itemsPerPage");
-            if (itemsPerPage != null) {
-                page.setPageSize(getIntParam(itemsPerPage, 10));
-            }
-
             page.getPage().forEach(computer -> listComputers.add(ComputerDTOMapper.createComputerDTO(computer)));
         } catch (ServiceException e) {
             Logger.error("Error creating page{}", e);
@@ -102,6 +88,7 @@ public class DashboardController {
 
         argsMap.put("computers", listComputers);
         argsMap.put("pageNumber", page.getPageNumber());
+        argsMap.put("itemsPerPage", page.getPageSize());
         try {
             argsMap.put("pageCount", page.getListComputersPageCount(page.getPageSize()));
             argsMap.put("computerCount", page.getComputerCount());

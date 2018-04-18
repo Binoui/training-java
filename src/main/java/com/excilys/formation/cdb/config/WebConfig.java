@@ -12,7 +12,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -23,8 +22,8 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableWebMvc
 @Profile("web")
 @PropertySource("classpath:connection.properties")
-@ComponentScan(basePackages = { "com.excilys.formation.cdb.dao", "com.excilys.formation.cdb.servlets",
-        "com.excilys.formation.cdb.ui" })
+@ComponentScan(basePackages = { "com.excilys.formation.cdb.dao", "com.excilys.formation.cdb.controllers.web",
+        "com.excilys.formation.cdb.services" })
 public class WebConfig implements WebMvcConfigurer {
 
     private static final Logger Logger = LoggerFactory.getLogger(WebConfig.class);
@@ -69,10 +68,4 @@ public class WebConfig implements WebMvcConfigurer {
     public DataSourceTransactionManager txManager() {
         return new DataSourceTransactionManager(dataSource());
     }
-
-    @Override
-    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-        configurer.enable();
-    }
-
 }

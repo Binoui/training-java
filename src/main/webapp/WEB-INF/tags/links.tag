@@ -65,7 +65,7 @@
 		value="${path.concat('&pageNumber=').concat(pageIndex)}" />
 </c:if>
 
-<c:if test="${(itemsPerPage != null) && itemsPerPage.matches('[0-9]+')}">
+<c:if test="${(itemsPerPage != null)}">
 	<c:set var="path"
 		value="${path.concat('&itemsPerPage=').concat(itemsPerPage)}" />
 </c:if>

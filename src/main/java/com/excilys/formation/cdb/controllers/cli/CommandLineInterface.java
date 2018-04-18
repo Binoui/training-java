@@ -1,4 +1,4 @@
-package com.excilys.formation.cdb.ui;
+package com.excilys.formation.cdb.controllers.cli;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;

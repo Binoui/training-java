@@ -69,7 +69,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<mainClass>com.excilys.formation.cdb.ui.CommandLineInterface</mainClass>
+					<mainClass>com.excilys.formation.cdb.controllers.cli.CommandLineInterface</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
