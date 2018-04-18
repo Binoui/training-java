@@ -35,7 +35,7 @@ public class CommandLineInterface {
     public static void main(String[] arg) {
         @SuppressWarnings("resource")
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-
+        
         CommandLineInterface cli = context.getBean(CommandLineInterface.class);
         System.out.println("******** Computer Database ********\n");
         while (cli.menuLoop()) {

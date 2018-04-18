@@ -14,9 +14,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import com.excilys.formation.cdb.config.AppConfig;
 import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
@@ -26,7 +29,8 @@ import com.excilys.formation.cdb.utils.HSQLDatabase;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext.xml" })
+@ContextConfiguration(classes=AppConfig.class, loader=AnnotationConfigContextLoader.class)
+@ActiveProfiles("cli")
 public class ComputerServiceTest {
 
     @Autowired

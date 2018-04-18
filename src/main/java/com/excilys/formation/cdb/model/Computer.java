@@ -121,6 +121,8 @@ public class Computer {
     @Override
     public String toString() {
         return new StringBuilder().append("Computer ").append(id).append(" : ").append(name).append(" (")
-                .append(introduced).append(" - ").append(discontinued).append(") from ").append(company).toString();
+                .append(introduced.map(LocalDate::toString).orElse("[no introduced date]")).append(" - ")
+                .append(discontinued.map(LocalDate::toString).orElse("[no discontinued date]")).append(") from ")
+                .append(company.map(Company::toString).orElse("[no company]")).toString();
     }
 }

@@ -18,11 +18,10 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
-@EnableWebMvc
 @Profile("cli")
 @PropertySource("classpath:connection.properties")
-@ComponentScan(basePackages = { "com.excilys.formation.cdb.dao", "com.excilys.formation.cdb.services",
-        "com.excilys.formation.cdb.ui" })
+@ComponentScan({"com.excilys.formation.cdb.dao", "com.excilys.formation.cdb.services",
+        "com.excilys.formation.cdb.ui", "com.excilys.formation.cdb.config", "com.excilys.formation.cdb.utils"  })
 public class AppConfig {
 
     private static final Logger Logger = LoggerFactory.getLogger(AppConfig.class);
@@ -47,20 +46,6 @@ public class AppConfig {
         dataSource.setPassword(pass);
         dataSource.setDriverClassName(driver);
         return dataSource;
-    }
-
-    @Bean
-    public ViewResolver viewResolver() {
-        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setViewClass(JstlView.class);
-        viewResolver.setPrefix("/WEB-INF/");
-        viewResolver.setSuffix(".jsp");
-
-        return viewResolver;
-    }
-
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations("/static/");
     }
 
     @Bean
