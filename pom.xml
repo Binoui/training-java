@@ -37,6 +37,7 @@
 		<!-- server -->
 		<jstl.version>1.2</jstl.version>
 		<javax.servlet.version>3.1.0</javax.servlet.version>
+		<javax-validation.version>2.0.1.Final</javax-validation.version>
 		<tomcat7.version>2.2</tomcat7.version>
 		<spring.version>5.0.5.RELEASE</spring.version>
 		<aspectj.version>1.9.0</aspectj.version>
@@ -163,6 +164,13 @@
 			<version>${javax.servlet.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>${javax-validation.version}</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>org.hsqldb</groupId>
