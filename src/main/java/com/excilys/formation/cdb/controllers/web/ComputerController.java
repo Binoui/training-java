@@ -148,7 +148,7 @@ public class ComputerController {
 
     @GetMapping(value = "/edit")
     private ModelAndView editComputerGet(@RequestParam(value = "computerId") Long computerId,
-            ModelAndView modelAndView) {
+            ModelAndView modelAndView, RedirectAttributes attributes) {
 
         List<CompanyDTO> listCompanies = new LinkedList<>();
         Optional<Computer> optionalComputer;
@@ -157,12 +157,12 @@ public class ComputerController {
             optionalComputer = computerService.getComputer(new ComputerBuilder().withId(computerId).build());
 
             if (!optionalComputer.isPresent()) {
-                modelAndView.addObject("error", "Cannot find computer");
-                modelAndView.setViewName("dashboard");
+                attributes.addFlashAttribute("error", "Cannot delete computers, wrong selection");
+                modelAndView.setViewName("redirect:/computer/dashboard");
                 return modelAndView;
             }
 
-            modelAndView.addObject("computer", ComputerDTOMapper.createComputerDTO(optionalComputer.get()));
+            modelAndView.addObject("computerDTO", ComputerDTOMapper.createComputerDTO(optionalComputer.get()));
 
             companyService.getListCompanies()
                     .forEach(company -> listCompanies.add(CompanyDTOMapper.createCompanyDTO(company)));
@@ -172,34 +172,24 @@ public class ComputerController {
             e.printStackTrace();
         }
 
+        modelAndView.setViewName("editComputer");
         modelAndView.addObject("companies", listCompanies);
         return modelAndView;
     }
 
     @PostMapping(value = "/edit")
-    private ModelAndView deleteComputerPost(@RequestParam(value = "computerName") String name,
-            @RequestParam(value = "computerId") Long computerId,
-            @RequestParam(value = "introduced", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate introduced,
-            @RequestParam(value = "discontinued", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate discontinued,
-            @RequestParam(value = "companyId") Long companyId, ModelAndView modelAndView) {
-
-        modelAndView.setViewName("dashboard");
-
-        ComputerBuilder computerBuilder = new ComputerBuilder().withId(computerId).withName(name)
-                .withIntroduced(introduced).withDiscontinued(discontinued);
-        if (companyId != null) {
-            computerBuilder.withCompany(new CompanyBuilder().withId(companyId).build());
-        }
-
-        Computer computer = computerBuilder.build();
+    private ModelAndView editComputerPost(ComputerDTO computerDto, ModelAndView modelAndView, RedirectAttributes attributes) {
 
         try {
-            computerService.updateComputer(computer);
+            computerService.updateComputer(ComputerDTOMapper.createComputerFromDto(computerDto));
+            attributes.addFlashAttribute("computerId", computerDto.getId());
+            attributes.addFlashAttribute("success", "Computer updated !");
         } catch (ServiceException | IncorrectValidationException e) {
             Logger.debug("Cannot edit computer {}", e);
-            modelAndView.addObject("error", e.getMessage());
+            attributes.addFlashAttribute("error", e.getMessage());
         }
 
+        modelAndView.setViewName("redirect:/computer/edit?computerId=" + computerDto.getId());
         return modelAndView;
     }
 
@@ -211,7 +201,7 @@ public class ComputerController {
         try {
             page.getPage().forEach(computer -> listComputers.add(ComputerDTOMapper.createComputerDTO(computer)));
         } catch (ServiceException e) {
-            Logger.error("Error creating page{}", e);
+            Logger.error("Error creaing page{}", e);
             return;
         }
 

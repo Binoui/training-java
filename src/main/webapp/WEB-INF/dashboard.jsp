@@ -42,7 +42,9 @@
 
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
-				<form id="searchForm" action="<tags:links target="dashboard" itemsPerPage="${itemsPerPage}" search="${search}" pageIndex="${pageNumber}"/>" method="GET" class="form-inline">
+				<form id="searchForm"
+					action="<tags:links target="dashboard" itemsPerPage="${itemsPerPage}" search="${search}" pageIndex="${pageNumber}"/>"
+					method="GET" class="form-inline">
 					<input type="search" id="searchbox" name="search"
 						class="form-control" placeholder="Search name" /> <input
 						type="submit" id="searchsubmit" value="Filter by name"
@@ -78,10 +80,17 @@
 								class="fa fa-trash-o fa-lg"></i>
 						</a>
 					</span></th>
-					<th><a href="<tags:links target="dashboard" sortBy="name" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Computer name</a></th>
-					<th><a href="<tags:links target="dashboard" sortBy="introduced" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Introduced date</a></th>
-					<th><a href="<tags:links target="dashboard" sortBy="discontinued" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Discontinued date</a></th>
-					<th><a href="<tags:links target="dashboard" sortBy="company" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Company</a></th>
+					<th><a
+						href="<tags:links target="dashboard" sortBy="name" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Computer
+							name</a></th>
+					<th><a
+						href="<tags:links target="dashboard" sortBy="introduced" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Introduced
+							date</a></th>
+					<th><a
+						href="<tags:links target="dashboard" sortBy="discontinued" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Discontinued
+							date</a></th>
+					<th><a
+						href="<tags:links target="dashboard" sortBy="company" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Company</a></th>
 
 				</tr>
 			</thead>

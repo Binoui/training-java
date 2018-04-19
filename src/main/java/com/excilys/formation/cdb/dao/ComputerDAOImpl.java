@@ -63,6 +63,8 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     @Override
     public void deleteComputers(List<Long> idsToDelete) throws DAOException {
+        Logger.info("delete computers");
+        
         jdbcTemplate.batchUpdate(DELETE_COMPUTER, new BatchPreparedStatementSetter() {
 
             @Override
