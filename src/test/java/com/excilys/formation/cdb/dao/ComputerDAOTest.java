@@ -25,7 +25,7 @@ import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.utils.HSQLDatabase;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=AppConfig.class, loader=AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = AppConfig.class, loader = AnnotationConfigContextLoader.class)
 @ActiveProfiles("cli")
 public class ComputerDAOTest {
 

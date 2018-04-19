@@ -1,33 +1,19 @@
 package com.excilys.formation.cdb.controllers.web;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -37,7 +23,6 @@ import com.excilys.formation.cdb.dto.ComputerDTO;
 import com.excilys.formation.cdb.mapper.CompanyDTOMapper;
 import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.pagination.ComputerListPage;
 import com.excilys.formation.cdb.pagination.ComputerListPageSearch;
@@ -45,7 +30,6 @@ import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
-import com.excilys.formation.cdb.validators.InvalidDatesException;
 
 @Controller
 @RequestMapping(value = "/computer")
@@ -61,6 +45,44 @@ public class ComputerController {
 
     public ComputerController() {
         super();
+    }
+
+    @GetMapping(value = "/add")
+    private ModelAndView addComputerGet(ModelAndView modelAndView) {
+
+        List<CompanyDTO> listCompanies = new LinkedList<>();
+
+        try {
+            companyService.getListCompanies()
+                    .forEach(company -> listCompanies.add(CompanyDTOMapper.createCompanyDTO(company)));
+        } catch (ServiceException e) {
+            Logger.debug("Cannot list companies {}", e);
+        }
+
+        modelAndView.addObject("computerDTO", new ComputerDTO());
+        modelAndView.addObject("companies", listCompanies);
+        modelAndView.setViewName("addComputer");
+
+        return modelAndView;
+    }
+
+    @PostMapping(value = "/add")
+    private ModelAndView addComputerPost(ComputerDTO newComputerDto, ModelAndView modelAndView,
+            RedirectAttributes attributes) {
+
+        Computer newComputer;
+        modelAndView.setViewName("redirect:/computer/add");
+
+        try {
+            newComputer = ComputerDTOMapper.createComputerFromDto(newComputerDto);
+            computerService.createComputer(newComputer);
+            attributes.addFlashAttribute("success", "Computer added !");
+        } catch (ServiceException | IncorrectValidationException e) {
+            Logger.debug("Cannot create computer {}", e);
+            attributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return modelAndView;
     }
 
     @GetMapping(value = "/dashboard")
@@ -93,43 +115,6 @@ public class ComputerController {
         return modelAndView;
     }
 
-    @GetMapping(value = "/add")
-    private ModelAndView addComputerGet(ModelAndView modelAndView) {
-
-        List<CompanyDTO> listCompanies = new LinkedList<>();
-
-        try {
-            companyService.getListCompanies()
-                    .forEach(company -> listCompanies.add(CompanyDTOMapper.createCompanyDTO(company)));
-        } catch (ServiceException e) {
-            Logger.debug("Cannot list companies {}", e);
-        }
-
-        modelAndView.addObject("computerDTO", new ComputerDTO());
-        modelAndView.addObject("companies", listCompanies);
-        modelAndView.setViewName("addComputer");
-
-        return modelAndView;
-    }
-
-    @PostMapping(value = "/add")
-    private ModelAndView addComputerPost(ComputerDTO newComputerDto, ModelAndView modelAndView, RedirectAttributes attributes) {
-
-        Computer newComputer;
-        modelAndView.setViewName("redirect:/computer/add");
-
-        try {
-            newComputer = ComputerDTOMapper.createComputerFromDto(newComputerDto);
-            computerService.createComputer(newComputer);
-            attributes.addFlashAttribute("success", "Computer added !");
-        } catch (ServiceException | IncorrectValidationException e) {
-            Logger.debug("Cannot create computer {}", e);
-            attributes.addFlashAttribute("error", e.getMessage());
-        }
-
-        return modelAndView;
-    }
-
     @PostMapping(value = "/delete")
     private ModelAndView deleteComputerPost(@RequestParam(value = "selection") List<Long> idsToDelete,
             ModelAndView modelAndView, RedirectAttributes attributes) {
@@ -147,8 +132,8 @@ public class ComputerController {
     }
 
     @GetMapping(value = "/edit")
-    private ModelAndView editComputerGet(@RequestParam(value = "computerId") Long computerId,
-            ModelAndView modelAndView, RedirectAttributes attributes) {
+    private ModelAndView editComputerGet(@RequestParam(value = "computerId") Long computerId, ModelAndView modelAndView,
+            RedirectAttributes attributes) {
 
         List<CompanyDTO> listCompanies = new LinkedList<>();
         Optional<Computer> optionalComputer;
@@ -178,7 +163,8 @@ public class ComputerController {
     }
 
     @PostMapping(value = "/edit")
-    private ModelAndView editComputerPost(ComputerDTO computerDto, ModelAndView modelAndView, RedirectAttributes attributes) {
+    private ModelAndView editComputerPost(ComputerDTO computerDto, ModelAndView modelAndView,
+            RedirectAttributes attributes) {
 
         try {
             computerService.updateComputer(ComputerDTOMapper.createComputerFromDto(computerDto));

@@ -29,7 +29,7 @@ import com.excilys.formation.cdb.utils.HSQLDatabase;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=AppConfig.class, loader=AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = AppConfig.class, loader = AnnotationConfigContextLoader.class)
 @ActiveProfiles("cli")
 public class ComputerServiceTest {
 

@@ -13,7 +13,7 @@ public class CompanyDTOMapper {
 
         return caDto;
     }
-    
+
     public static Company createCompanyFromDto(CompanyDTO companyDto) {
         CompanyBuilder companyBuilder = new CompanyBuilder();
         companyBuilder.withId(companyDto.getId());

@@ -1,8 +1,8 @@
 package com.excilys.formation.cdb.dto;
 
 import java.io.Serializable;
-import javax.validation.constraints.NotNull;
 
+import javax.validation.constraints.NotNull;
 
 public class ComputerDTO implements Serializable {
 

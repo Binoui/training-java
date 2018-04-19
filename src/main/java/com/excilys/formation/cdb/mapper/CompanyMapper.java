@@ -10,11 +10,11 @@ public class CompanyMapper {
 
     public static Company createCompany(ResultSet rs) throws SQLException {
         Long id = rs.getLong("ca_id");
-        
-        if (id == null || id == 0) {
+
+        if ((id == null) || (id == 0)) {
             return null;
         }
-        
+
         String name = rs.getString("ca_name");
         return new CompanyBuilder().withId(id).withName(name).build();
     }

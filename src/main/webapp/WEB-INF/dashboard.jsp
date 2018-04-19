@@ -5,7 +5,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -24,8 +23,7 @@
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
 		<a class="navbar-brand"
-			href='<tags:links target="dashboard" ></tags:links>'> Application
-			- Computer Database </a>
+			href='<tags:links target="dashboard" ></tags:links>'> <spring:message code="dashboard.title"/> </a>
 	</div>
 	</header>
 
@@ -36,7 +34,7 @@
 
 		<h1 id="homeTitle">
 			<c:out value="${computerCount}" />
-			Computers found
+			<spring:message code="dashboard.computersFound" />
 		</h1>
 
 
@@ -46,16 +44,16 @@
 					action="<tags:links target="dashboard" itemsPerPage="${itemsPerPage}" search="${search}" pageIndex="${pageNumber}"/>"
 					method="GET" class="form-inline">
 					<input type="search" id="searchbox" name="search"
-						class="form-control" placeholder="Search name" /> <input
-						type="submit" id="searchsubmit" value="Filter by name"
+						class="form-control" placeholder="<spring:message code="dashboard.search"/>" /> <input
+						type="submit" id="searchsubmit" value="<spring:message code="dashboard.filter"/>"
 						class="btn btn-primary" />
 				</form>
 			</div>
 			<div class="pull-right">
 				<a class="btn btn-success" id="addComputer"
 					href="<tags:links target="addComputer" itemsPerPage="${itemsPerPage}"/>">
-					Add Computer </a> <a class="btn btn-default" id="editComputer" href="#"
-					onclick="$.fn.toggleEditMode();"> Delete </a>
+					<spring:message code="dashboard.addComputer"/> </a> <a class="btn btn-default" id="editComputer" href="#"
+					onclick="$.fn.toggleEditMode();"> <spring:message code="dashboard.delete"/> </a>
 			</div>
 		</div>
 	</div>
@@ -81,16 +79,21 @@
 						</a>
 					</span></th>
 					<th><a
-						href="<tags:links target="dashboard" sortBy="name" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Computer
-							name</a></th>
+						href="<tags:links target="dashboard" sortBy="name" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">
+							<spring:message code="computerName" />
+					</a></th>
 					<th><a
-						href="<tags:links target="dashboard" sortBy="introduced" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Introduced
-							date</a></th>
+						href="<tags:links target="dashboard" sortBy="introduced" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">
+							<spring:message code="introduced" />
+					</a></th>
 					<th><a
-						href="<tags:links target="dashboard" sortBy="discontinued" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Discontinued
-							date</a></th>
+						href="<tags:links target="dashboard" sortBy="discontinued" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">
+							<spring:message code="discontinued" />
+					</a></th>
 					<th><a
-						href="<tags:links target="dashboard" sortBy="company" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">Company</a></th>
+						href="<tags:links target="dashboard" sortBy="company" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">
+							<spring:message code="company" />
+					</a></th>
 
 				</tr>
 			</thead>

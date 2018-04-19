@@ -54,7 +54,7 @@ public class ComputerDTOMapper {
             }
         }
 
-        if (computerDto.getCompanyDTO() != null && computerDto.getCompanyDTO().getId() != 0) {
+        if ((computerDto.getCompanyDTO() != null) && (computerDto.getCompanyDTO().getId() != 0)) {
             computerBuilder.withCompany(CompanyDTOMapper.createCompanyFromDto(computerDto.getCompanyDTO()));
         }
 

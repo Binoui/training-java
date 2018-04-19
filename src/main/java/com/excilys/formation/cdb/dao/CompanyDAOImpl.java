@@ -1,6 +1,5 @@
 package com.excilys.formation.cdb.dao;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +12,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.excilys.formation.cdb.mapper.CompanyMapper;
 import com.excilys.formation.cdb.mapper.RowCompanyMapper;
 import com.excilys.formation.cdb.model.Company;
 

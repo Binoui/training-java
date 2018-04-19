@@ -1,6 +1,7 @@
 package com.excilys.formation.cdb.config;
 
 import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,22 +10,24 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
 @Profile("cli")
 @PropertySource("classpath:connection.properties")
-@ComponentScan({"com.excilys.formation.cdb.dao", "com.excilys.formation.cdb.services",
-        "com.excilys.formation.cdb.controllers.cli","com.excilys.formation.cdb.config", "com.excilys.formation.cdb.utils"  })
+@ComponentScan({ "com.excilys.formation.cdb.dao", "com.excilys.formation.cdb.services",
+        "com.excilys.formation.cdb.controllers.cli", "com.excilys.formation.cdb.config",
+        "com.excilys.formation.cdb.utils" })
 public class AppConfig {
 
     private static final Logger Logger = LoggerFactory.getLogger(AppConfig.class);
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
     @Value("${jdbc.url}")
     private String url;

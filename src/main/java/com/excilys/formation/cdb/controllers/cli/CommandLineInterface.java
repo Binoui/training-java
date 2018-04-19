@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import com.excilys.formation.cdb.config.AppConfig;
@@ -35,7 +34,7 @@ public class CommandLineInterface {
     public static void main(String[] arg) {
         @SuppressWarnings("resource")
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-        
+
         CommandLineInterface cli = context.getBean(CommandLineInterface.class);
         System.out.println("******** Computer Database ********\n");
         while (cli.menuLoop()) {
