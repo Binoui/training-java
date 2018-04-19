@@ -1,9 +1,15 @@
 package com.excilys.formation.cdb.mapper;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.excilys.formation.cdb.dto.ComputerDTO;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
+import com.excilys.formation.cdb.validators.InvalidDatesException;
 
 public class ComputerDTOMapper {
 
@@ -27,9 +33,31 @@ public class ComputerDTOMapper {
         }
 
         if (computer.getCompany().isPresent()) {
-            computerDto.setCompany(CompanyDTOMapper.createCompanyDTO(computer.getCompany().get()));
+            computerDto.setCompanyDTO(CompanyDTOMapper.createCompanyDTO(computer.getCompany().get()));
         }
 
         return computerDto;
+    }
+
+    public static Computer createComputerFromDto(ComputerDTO computerDto) throws InvalidDatesException {
+        ComputerBuilder computerBuilder = new ComputerBuilder();
+
+        computerBuilder.withId(computerDto.getId());
+        computerBuilder.withName(computerDto.getName());
+
+        if (StringUtils.isNotBlank(computerDto.getIntroduced())) {
+            try {
+                computerBuilder.withIntroduced(LocalDate.parse(computerDto.getIntroduced()));
+                computerBuilder.withDiscontinued(LocalDate.parse(computerDto.getDiscontinued()));
+            } catch (DateTimeParseException e) {
+                throw new InvalidDatesException("Incorrect Date Format");
+            }
+        }
+
+        if (computerDto.getCompanyDTO() != null && computerDto.getCompanyDTO().getId() != 0) {
+            computerBuilder.withCompany(CompanyDTOMapper.createCompanyFromDto(computerDto.getCompanyDTO()));
+        }
+
+        return computerBuilder.build();
     }
 }

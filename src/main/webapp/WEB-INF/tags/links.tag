@@ -10,7 +10,7 @@
 <%@attribute name="oldSort" required="false"%>
 <%@attribute name="ascending" required="false"%>
 
-<c:set var="path" value="/ComputerDatabase/" />
+<c:set var="path" value="/ComputerDatabase/computer/" />
 
 <c:choose>
 	<c:when test="${not empty target}">
@@ -38,11 +38,11 @@
 			</c:when>
 
 			<c:when test="${target.equals('addComputer')}">
-				<c:set var="path" value="${path.concat('addComputer?')}" />
+				<c:set var="path" value="${path.concat('add?')}" />
 			</c:when>
 
 			<c:when test="${target.equals('editComputer')}">
-				<c:set var="path" value="${path.concat('editComputer?')}" />
+				<c:set var="path" value="${path.concat('edit?')}" />
 
 				<c:if test="${(computerId != null) && computerId.matches('[0-9]+')}">
 					<c:set var="path"
@@ -51,7 +51,7 @@
 			</c:when>
 
 			<c:when test="${target.equals('delete')}">
-				<c:set var="path" value="${path.concat('deleteComputer?')}" />
+				<c:set var="path" value="${path.concat('delete?')}" />
 			</c:when>
 		</c:choose>
 	</c:when>

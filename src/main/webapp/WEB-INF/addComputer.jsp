@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="tags"%>
 <!DOCTYPE html>
 <html>
@@ -14,7 +15,7 @@
 <link href="<spring:url value="/static/css/font-awesome.css"/>"
 	rel="stylesheet" media="screen">
 <link href="<spring:url value="/static/css/main.css"/>" rel="stylesheet"
-	media="screen">	
+	media="screen">
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
@@ -31,40 +32,40 @@
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<tags:addErrors />
 					<h1>Add Computer</h1>
-					<form
-						action="<tags:links target="addComputer" itemsPerPage="${itemsPerPage}"/>"
-						method="POST" id="createComputerForm" name="createComputerForm">
+					<form:form action="/ComputerDatabase/computer/add" method="POST"
+						modelAttribute="computerDTO" id="createComputerForm"
+						name="createComputerForm">
 						<fieldset>
 							<div class="form-group">
-								<label for="computerName">Computer name</label> <input
-									type="text" class="form-control" name="computerName"
-									id="computerName" placeholder="Computer name"
-									pattern="^[\wÀ-ÿ]+[\wÀ-ÿ_\-'\+\* ]+$" required="required">
+								<form:label for="computerName" path="name">Computer name</form:label>
+								<form:input type="text" class="form-control" path="name"
+									name="computerName" id="computerName"
+									placeholder="Computer name"
+									pattern="^[\wÀ-ÿ]+[\wÀ-ÿ_\-'\+\* ]+$" required="required" />
 							</div>
 							<div class="form-group">
-								<label for="introduced">Introduced date</label> <input
-									type="date" class="form-control" name="introduced"
-									data-validation-optional="true" data-validation="date"
-									data-validation-format="yyyy-mm-dd" id="introduced"
-									placeholder="Introduced date">
+								<form:label for="introduced" path="introduced">Introduced date</form:label>
+								<form:input type="date" class="form-control" path="introduced"
+									name="introduced" data-validation-optional="true"
+									data-validation="date" data-validation-format="yyyy-mm-dd"
+									id="introduced" placeholder="Introduced date" />
 							</div>
 							<div class="form-group">
-								<label for="discontinued">Discontinued date</label> <input
-									type="date" class="form-control" name="discontinued"
-									id="discontinued" data-validation="date"
+								<form:label for="discontinued" path="discontinued">Discontinued
+									date</form:label>
+								<form:input type="date" class="form-control" path="discontinued"
+									name="discontinued" id="discontinued" data-validation="date"
 									data-validation-optional="true"
 									data-validation-format="yyyy-mm-dd"
-									placeholder="Discontinued date">
+									placeholder="Discontinued date" />
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label> <select
-									class="form-control" name="companyId" id="companyId">
-									<option value="0" selected>None</option>
-									<c:forEach var="company" items="${companies}">
-										<option value="<c:out value="${company.id}"/>">
-											<c:out value="${company.name}" />
-									</c:forEach>
-								</select>
+								<form:label for="companyId" path="companyDTO">Company</form:label>
+								<form:select class="form-control" name="companyId"
+									id="companyId" path="companyDTO.id">
+									<form:option value="0" label="None" />
+									<form:options items="${companies}" itemValue="id"/>
+								</form:select>
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
@@ -73,7 +74,7 @@
 								href="<tags:links target="dashboard" itemsPerPage="${itemsPerPage}"/>"
 								class="btn btn-default">Cancel</a>
 						</div>
-					</form>
+					</form:form>
 				</div>
 			</div>
 		</div>

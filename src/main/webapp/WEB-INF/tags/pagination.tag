@@ -50,7 +50,7 @@
 </li>
 
 <c:if test="${start < 0}">
-	<c:set var="stop" value="0"/>
+	<c:set var="start" value="0"/>
 </c:if>
 
 <c:if test="${stop < 0}">

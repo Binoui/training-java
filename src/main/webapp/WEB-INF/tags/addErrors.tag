@@ -6,3 +6,9 @@
 		<strong>Error ! </strong><c:out value="${error}"/>
 	</div>
 </c:if>
+
+<c:if test="${success != null && not empty success}">
+	<div class="alert alert-success">
+		<strong><c:out value="${success}"/></strong>
+	</div>
+</c:if>
