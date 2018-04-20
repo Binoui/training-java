@@ -77,7 +77,7 @@
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="<spring code="edit.editButton"/>" class="btn btn-primary">
+							<input type="submit" value="Edit" class="btn btn-primary"><spring code="edit.editButton"/></input>
 							or <a
 								href="<tags:links target="dashboard" itemsPerPage="${itemsPerPage}"/>"
 								class="btn btn-default"><spring:message code="addedit.cancel"/></a>
