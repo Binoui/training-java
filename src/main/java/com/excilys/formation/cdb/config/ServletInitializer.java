@@ -8,17 +8,17 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 public class ServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
-    protected WebApplicationContext createRootApplicationContext() {
-        WebApplicationContext context = super.createRootApplicationContext();
-        ((ConfigurableEnvironment) context.getEnvironment()).setActiveProfiles("web");
-        return context;
-    }
-
-    @Override
     protected DispatcherServlet createDispatcherServlet(WebApplicationContext servletAppContext) {
         DispatcherServlet ds = new DispatcherServlet(servletAppContext);
         ds.setThrowExceptionIfNoHandlerFound(true);
         return ds;
+    }
+
+    @Override
+    protected WebApplicationContext createRootApplicationContext() {
+        WebApplicationContext context = super.createRootApplicationContext();
+        ((ConfigurableEnvironment) context.getEnvironment()).setActiveProfiles("web");
+        return context;
     }
 
     @Override
