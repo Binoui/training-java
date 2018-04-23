@@ -45,16 +45,21 @@ public class ComputerDTOMapper {
         computerBuilder.withId(computerDto.getId());
         computerBuilder.withName(computerDto.getName());
 
-        if (StringUtils.isNotBlank(computerDto.getIntroduced())) {
-            try {
+        try {
+            if (StringUtils.isNotBlank(computerDto.getIntroduced())) {
                 computerBuilder.withIntroduced(LocalDate.parse(computerDto.getIntroduced()));
-                computerBuilder.withDiscontinued(LocalDate.parse(computerDto.getDiscontinued()));
-            } catch (DateTimeParseException e) {
-                throw new InvalidDatesException("Incorrect Date Format");
             }
+
+            if (StringUtils.isNotBlank(computerDto.getDiscontinued())) {
+                computerBuilder.withDiscontinued(LocalDate.parse(computerDto.getDiscontinued()));
+            }
+        } catch (DateTimeParseException e) {
+            throw new InvalidDatesException("Incorrect Date Format");
         }
 
-        if ((computerDto.getCompanyDTO() != null) && (computerDto.getCompanyDTO().getId() != 0)) {
+        if ((computerDto.getCompanyDTO() != null) && (computerDto.getCompanyDTO().getId() != 0))
+
+        {
             computerBuilder.withCompany(CompanyDTOMapper.createCompanyFromDto(computerDto.getCompanyDTO()));
         }
 
