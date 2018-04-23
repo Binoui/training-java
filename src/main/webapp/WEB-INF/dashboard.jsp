@@ -78,7 +78,7 @@
 								class="fa fa-trash-o fa-lg"></i>
 						</a>
 					</span></th>
-					<th><a
+					<th><aLogger
 						href="<tags:links target="dashboard" sortBy="name" oldSort="${param.sortBy}" ascending="${param.ascending}" search="${param.search}" itemsPerPage="${itemsPerPage}"/>">
 							<spring:message code="computerName" />
 					</a></th>

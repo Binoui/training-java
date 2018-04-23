@@ -77,13 +77,6 @@ public class ComputerController {
             RedirectAttributes attributes) {
 
         modelAndView.setViewName("redirect:/computer/add");
-//
-//        if (errors.hasErrors()) {
-//            Logger.debug("error in computer DTO");
-//            attributes.addFlashAttribute("error", "test");
-//            return new ModelAndView("redirect:/computer/add");
-//        }
-//        
 
         try {
             Computer newComputer = ComputerDTOMapper.createComputerFromDto(newComputerDto);
