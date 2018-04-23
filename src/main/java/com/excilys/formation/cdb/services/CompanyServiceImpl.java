@@ -17,7 +17,6 @@ public class CompanyServiceImpl implements CompanyService {
 
     private CompanyDAO companyDAO;
 
-    @Autowired
     public CompanyServiceImpl(CompanyDAO companyDAO) {
         this.companyDAO = companyDAO;
     }

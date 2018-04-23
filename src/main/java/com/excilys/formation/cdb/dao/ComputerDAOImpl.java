@@ -13,7 +13,6 @@ import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -41,6 +40,10 @@ public class ComputerDAOImpl implements ComputerDAO {
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
     private JdbcTemplate jdbcTemplate;
+
+    public ComputerDAOImpl(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+    }
 
     @Override
     public Long createComputer(Computer computer) throws DAOException {
@@ -185,11 +188,6 @@ public class ComputerDAOImpl implements ComputerDAO {
         } else {
             statement.setNull(4, java.sql.Types.BIGINT);
         }
-    }
-
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override

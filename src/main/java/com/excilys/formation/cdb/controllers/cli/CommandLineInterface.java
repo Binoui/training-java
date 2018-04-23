@@ -41,16 +41,16 @@ public class CommandLineInterface {
         }
     }
 
-    @Autowired
     private CompanyService companyService;
 
-    @Autowired
     private ComputerService computerService;
 
     private Scanner scanner;
 
-    public CommandLineInterface() {
+    public CommandLineInterface(CompanyService companyService, ComputerService computerService) {
         scanner = new Scanner(System.in);
+        this.companyService = companyService;
+        this.computerService = computerService;
     }
 
     private void closeScanner() {

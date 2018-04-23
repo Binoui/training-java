@@ -3,15 +3,22 @@ package com.excilys.formation.cdb.dto;
 import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class ComputerDTO implements Serializable {
 
     private static final long serialVersionUID = 7703775467384326831L;
     private long id;
     @NotNull
+    @Size(min=2, max=40)
     private String name;
     private CompanyDTO companyDTO;
+    
+    @DateTimeFormat(pattern="dd/MM/yyyy")
     private String introduced;
+    @DateTimeFormat(pattern="dd/MM/yyyy")
     private String discontinued;
 
     public CompanyDTO getCompanyDTO() {

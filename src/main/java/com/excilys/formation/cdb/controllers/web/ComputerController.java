@@ -1,15 +1,20 @@
 package com.excilys.formation.cdb.controllers.web;
 
+import java.net.BindException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,16 +40,16 @@ import com.excilys.formation.cdb.validators.IncorrectValidationException;
 @RequestMapping(value = "/computer")
 public class ComputerController {
 
-    private static final Logger Logger = LoggerFactory.getLogger(ComputerController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerController.class);
 
-    @Autowired
     private ComputerService computerService;
 
-    @Autowired
     private CompanyService companyService;
 
-    public ComputerController() {
+    public ComputerController(CompanyService companyService, ComputerService computerService) {
         super();
+        this.computerService = computerService;
+        this.companyService = companyService;
     }
 
     @GetMapping(value = "/add")
@@ -56,7 +61,7 @@ public class ComputerController {
             companyService.getListCompanies()
                     .forEach(company -> listCompanies.add(CompanyDTOMapper.createCompanyDTO(company)));
         } catch (ServiceException e) {
-            Logger.debug("Cannot list companies {}", e);
+            LOGGER.debug("Cannot list companies {}", e);
         }
 
         modelAndView.addObject("computerDTO", new ComputerDTO());
@@ -67,18 +72,25 @@ public class ComputerController {
     }
 
     @PostMapping(value = "/add")
+    @ExceptionHandler(BindException.class)
     private ModelAndView addComputerPost(ComputerDTO newComputerDto, ModelAndView modelAndView,
             RedirectAttributes attributes) {
 
-        Computer newComputer;
         modelAndView.setViewName("redirect:/computer/add");
+//
+//        if (errors.hasErrors()) {
+//            Logger.debug("error in computer DTO");
+//            attributes.addFlashAttribute("error", "test");
+//            return new ModelAndView("redirect:/computer/add");
+//        }
+//        
 
         try {
-            newComputer = ComputerDTOMapper.createComputerFromDto(newComputerDto);
+            Computer newComputer = ComputerDTOMapper.createComputerFromDto(newComputerDto);
             computerService.createComputer(newComputer);
             attributes.addFlashAttribute("success", "Computer added !");
         } catch (ServiceException | IncorrectValidationException e) {
-            Logger.debug("Cannot create computer {}", e);
+            LOGGER.debug("Cannot create computer {}", e);
             attributes.addFlashAttribute("error", e.getMessage());
         }
 
@@ -109,7 +121,7 @@ public class ComputerController {
             putOrderByOnPage(page, sortBy, ascending);
             fillModelAndViewWithPageArgs(modelAndView, page);
         } catch (ServiceException e) {
-            Logger.error("Error creating page{}", e);
+            LOGGER.error("Error creating page{}", e);
         }
 
         return modelAndView;
@@ -153,7 +165,7 @@ public class ComputerController {
                     .forEach(company -> listCompanies.add(CompanyDTOMapper.createCompanyDTO(company)));
 
         } catch (ServiceException e) {
-            Logger.error("error accessing service {}", e);
+            LOGGER.error("error accessing service {}", e);
             e.printStackTrace();
         }
 
@@ -163,7 +175,7 @@ public class ComputerController {
     }
 
     @PostMapping(value = "/edit")
-    private ModelAndView editComputerPost(ComputerDTO computerDto, ModelAndView modelAndView,
+    private ModelAndView editComputerPost(@Valid ComputerDTO computerDto, ModelAndView modelAndView,
             RedirectAttributes attributes) {
 
         try {
@@ -171,7 +183,7 @@ public class ComputerController {
             attributes.addFlashAttribute("computerId", computerDto.getId());
             attributes.addFlashAttribute("success", "Computer updated !");
         } catch (ServiceException | IncorrectValidationException e) {
-            Logger.debug("Cannot edit computer {}", e);
+            LOGGER.debug("Cannot edit computer {}", e);
             attributes.addFlashAttribute("error", e.getMessage());
         }
 
@@ -187,7 +199,7 @@ public class ComputerController {
         try {
             page.getPage().forEach(computer -> listComputers.add(ComputerDTOMapper.createComputerDTO(computer)));
         } catch (ServiceException e) {
-            Logger.error("Error creaing page{}", e);
+            LOGGER.error("Error creaing page{}", e);
             return;
         }
 
@@ -198,7 +210,7 @@ public class ComputerController {
             argsMap.put("pageCount", page.getListComputersPageCount(page.getPageSize()));
             argsMap.put("computerCount", page.getComputerCount());
         } catch (ServiceException e) {
-            Logger.error("Error accessing service {}", e);
+            LOGGER.error("Error accessing service {}", e);
             return;
         }
     }
@@ -212,7 +224,7 @@ public class ComputerController {
                 page.setAscendingSort(ascending);
 
             } catch (IllegalArgumentException e) {
-                Logger.debug("wrong computercolumn given, cannot parse into enum {}", e);
+                LOGGER.debug("wrong computercolumn given, cannot parse into enum {}", e);
             }
         }
     }

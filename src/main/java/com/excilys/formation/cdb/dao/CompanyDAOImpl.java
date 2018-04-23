@@ -29,6 +29,10 @@ public class CompanyDAOImpl implements CompanyDAO {
 
     private JdbcTemplate jdbcTemplate;
 
+    public CompanyDAOImpl(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
     @Override
     public void deleteCompany(long id) throws DAOException {
         Logger.info("DAO : Delete Company");
@@ -75,8 +79,4 @@ public class CompanyDAOImpl implements CompanyDAO {
         return jdbcTemplate.queryForObject(SELECT_COUNT_COMPANIES, Integer.class) / pageSize;
     }
 
-    @Autowired
-    public void setDataSource(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
-    }
 }
