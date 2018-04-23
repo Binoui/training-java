@@ -1,6 +1,7 @@
 package com.excilys.formation.cdb.config;
 
 import java.util.Locale;
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
@@ -16,6 +17,9 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -29,6 +33,7 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @EnableWebMvc
 @Profile("web")
+@EnableTransactionManagement
 @PropertySource("classpath:connection.properties")
 @ComponentScan(basePackages = { "com.excilys.formation.cdb.dao", "com.excilys.formation.cdb.controllers.web",
         "com.excilys.formation.cdb.services" })
@@ -53,6 +58,15 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${jdbc.pass}")
     private String pass;
 
+    @Value("${hibernate.show_sql}")
+    private String hibernateShowSql;
+
+    @Value("${hibernate.hbm2ddl.auto}")
+    private String hibernateHbm2Ddl;
+    
+    @Value("${hibernate.dialect}")
+    private String hibernateDialect;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeInterceptor());
@@ -64,7 +78,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl(url);
         dataSource.setUsername(user);
@@ -98,11 +112,6 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public DataSourceTransactionManager txManager() {
-        return new DataSourceTransactionManager(dataSource());
-    }
-
-    @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
         viewResolver.setViewClass(JstlView.class);
@@ -111,4 +120,27 @@ public class WebConfig implements WebMvcConfigurer {
 
         return viewResolver;
     }
+
+    @Bean
+    public LocalSessionFactoryBean getSessionFactory() {
+        LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
+        factoryBean.setDataSource(getDataSource());
+
+        Properties props = new Properties();
+        props.put("hibernate.show_sql", hibernateShowSql);
+        props.put("hibernate.hbm2ddl.auto", hibernateHbm2Ddl);
+        props.put("hibernate.dialect", hibernateDialect);
+
+        factoryBean.setHibernateProperties(props);
+        factoryBean.setAnnotatedPackages("com.excilys.formation.cdb.model");
+        return factoryBean;
+    }
+
+    @Bean
+    public HibernateTransactionManager getTransactionManager() {
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        transactionManager.setSessionFactory(getSessionFactory().getObject());
+        return transactionManager;
+    }
+
 }

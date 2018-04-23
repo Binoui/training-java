@@ -1,8 +1,17 @@
 package com.excilys.formation.cdb.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Company")
 public class Company {
     public static class CompanyBuilder {
+
         private Long id;
+
         private String name;
 
         public Company build() {
@@ -37,10 +46,13 @@ public class Company {
         this.ca_name = name;
     }
 
+    @Id
+    @Column(name = "ca_id")
     public Long getId() {
         return ca_id;
     }
 
+    @Column(name = "ca_name")
     public String getName() {
         return ca_name;
     }

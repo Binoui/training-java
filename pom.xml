@@ -41,6 +41,7 @@
 		<tomcat7.version>2.2</tomcat7.version>
 		<spring.version>5.0.5.RELEASE</spring.version>
 		<aspectj.version>1.9.0</aspectj.version>
+		<hibernate.version>5.2.16.Final</hibernate.version>
 
 	</properties>
 
@@ -252,6 +253,13 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
 
 	</dependencies>
 	<reporting>

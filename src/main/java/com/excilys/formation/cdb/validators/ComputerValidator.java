@@ -16,11 +16,8 @@ public class ComputerValidator {
         validateDates(c.getIntroduced(), c.getDiscontinued());
     }
 
-    private static void validateDates(Optional<LocalDate> optionalIntroduced, Optional<LocalDate> optionalDiscontinued)
+    private static void validateDates(LocalDate introduced, LocalDate discontinued)
             throws InvalidDatesException {
-        LocalDate introduced = optionalIntroduced.orElse(null);
-        LocalDate discontinued = optionalDiscontinued.orElse(null);
-
         if ((introduced != null) && (discontinued != null) && !introduced.isBefore(discontinued)) {
             throw new InvalidDatesException("Discontinued date cannot be before introducted date.");
         }

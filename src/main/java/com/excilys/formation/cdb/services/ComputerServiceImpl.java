@@ -65,7 +65,7 @@ public class ComputerServiceImpl implements ComputerService {
     }
 
     @Override
-    @Transactional(value = "txManager", rollbackFor = ServiceException.class)
+    @Transactional(rollbackFor = ServiceException.class)
     public void deleteComputers(List<Long> idsToDelete) throws ServiceException {
         try {
             computerDAO.deleteComputers(idsToDelete);
@@ -168,13 +168,12 @@ public class ComputerServiceImpl implements ComputerService {
         }
     }
 
-    private void validateCompany(Optional<Company> optionalCompany) throws UnknownCompanyIdException {
+    private void validateCompany(Company company) throws UnknownCompanyIdException {
 
-        if (!optionalCompany.isPresent()) {
+        if (company == null) {
             return;
         }
 
-        Company company = optionalCompany.get();
         try {
             if ((company.getId() != null) && !(companyDAO.getCompany(company).isPresent())) {
                 throw new UnknownCompanyIdException("Cannot find given company.");

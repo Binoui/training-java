@@ -3,23 +3,34 @@ package com.excilys.formation.cdb.model;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name = "Computer")
 public class Computer {
 
     public static class ComputerBuilder {
+
         private Long id;
 
         private String name;
 
-        private Optional<Company> company;
+        private Company company;
 
-        private Optional<LocalDate> introduced;
+        private LocalDate introduced;
 
-        private Optional<LocalDate> discontinued;
+        private LocalDate discontinued;
 
         public ComputerBuilder() {
-            introduced = Optional.empty();
-            discontinued = Optional.empty();
-            company = Optional.empty();
         }
 
         public Computer build() {
@@ -27,12 +38,12 @@ public class Computer {
         }
 
         public ComputerBuilder withCompany(Company company) {
-            this.company = Optional.ofNullable(company);
+            this.company = company;
             return this;
         }
 
         public ComputerBuilder withDiscontinued(LocalDate discontinued) {
-            this.discontinued = Optional.ofNullable(discontinued);
+            this.discontinued = discontinued;
             return this;
         }
 
@@ -42,7 +53,7 @@ public class Computer {
         }
 
         public ComputerBuilder withIntroduced(LocalDate introduced) {
-            this.introduced = Optional.ofNullable(introduced);
+            this.introduced = introduced;
             return this;
         }
 
@@ -54,10 +65,10 @@ public class Computer {
 
     private Long id;
     private String name;
-    private Optional<Company> company;
-    private Optional<LocalDate> introduced;
+    private Company company;
+    private LocalDate introduced;
 
-    private Optional<LocalDate> discontinued;
+    private LocalDate discontinued;
 
     public Computer() {
     }
@@ -70,40 +81,49 @@ public class Computer {
         this.company = builder.company;
     }
 
-    public Computer(String name, Optional<LocalDate> introduced, Optional<LocalDate> discontinued,
-            Optional<Company> company) {
+    public Computer(String name, LocalDate introduced, LocalDate discontinued,
+            Company company) {
         this.name = name;
         this.introduced = introduced;
         this.discontinued = discontinued;
         this.company = company;
     }
 
-    public Optional<Company> getCompany() {
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ca_id")
+    public Company getCompany() {
         return company;
     }
 
-    public Optional<LocalDate> getDiscontinued() {
+    @Column(name = "cu_discontinued")
+    public LocalDate getDiscontinued() {
         return discontinued;
     }
 
+    @Id
+    @Column(name = "cu_id")
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     public Long getId() {
         return id;
     }
 
-    public Optional<LocalDate> getIntroduced() {
+    @Column(name = "cu_introduced")
+    public LocalDate getIntroduced() {
         return introduced;
     }
 
+    @Column(name = "cu_name")
     public String getName() {
         return name;
     }
 
     public void setCompany(Company company) {
-        this.company = Optional.ofNullable(company);
+        this.company = company;
     }
 
     public void setDiscontinued(LocalDate discontinued) {
-        this.discontinued = Optional.ofNullable(discontinued);
+        this.discontinued = discontinued;
     }
 
     public void setId(long id) {
@@ -111,7 +131,7 @@ public class Computer {
     }
 
     public void setIntroduced(LocalDate introduced) {
-        this.introduced = Optional.ofNullable(introduced);
+        this.introduced = introduced;
     }
 
     public void setName(String name) {
@@ -121,8 +141,8 @@ public class Computer {
     @Override
     public String toString() {
         return new StringBuilder().append("Computer ").append(id).append(" : ").append(name).append(" (")
-                .append(introduced.map(LocalDate::toString).orElse("[no introduced date]")).append(" - ")
-                .append(discontinued.map(LocalDate::toString).orElse("[no discontinued date]")).append(") from ")
-                .append(company.map(Company::toString).orElse("[no company]")).toString();
+                .append(introduced).append(" - ")
+                .append(discontinued).append(") from ")
+                .append(company).toString();
     }
 }

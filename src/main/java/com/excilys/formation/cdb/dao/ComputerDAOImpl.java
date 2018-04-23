@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,25 +36,24 @@ public class ComputerDAOImpl implements ComputerDAO {
     private static final String SELECT_COUNT_COMPUTERS = "select count(cu_id) from computer;";
     private static final String SELECT_COUNT_COMPUTERS_WITH_SEARCH = "select count(cu_id) from computer left join company on computer.ca_id = company.ca_id where ca_name LIKE ? or cu_name LIKE ?;";
     private static final String SELECT_COMPUTER = "select cu_id, cu_name, cu_introduced, cu_discontinued, computer.ca_id, ca_name from computer left join company on computer.ca_id = company.ca_id where cu_id = ?;";
-    private static final String INSERT_COMPUTER = "insert into computer (cu_name, cu_introduced, cu_discontinued, ca_id) values (?, ?, ?, ?);";
     private static final String UPDATE_COMPUTER = "update computer set cu_name = ?, cu_introduced = ?, cu_discontinued = ?, ca_id = ? where cu_id = ?;";
     private static final String DELETE_COMPUTER = "delete from computer where cu_id in (?);";
 
     private static final Logger Logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
     private JdbcTemplate jdbcTemplate;
-
+    
+    private SessionFactory sessionFactory;
+    
+    public ComputerDAOImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+    
     @Override
+    @Transactional
     public Long createComputer(Computer computer) throws DAOException {
         Logger.info("create computer");
-        GeneratedKeyHolder holder = new GeneratedKeyHolder();
-        jdbcTemplate.update((conn) -> {
-            PreparedStatement statement = conn.prepareStatement(INSERT_COMPUTER, Statement.RETURN_GENERATED_KEYS);
-            populateStatementFromComputer(computer, statement);
-            return statement;
-        }, holder);
-
-        return holder.getKey().longValue();
+        return (Long) sessionFactory.getCurrentSession().save(computer);
     }
 
     @Override
@@ -81,11 +82,13 @@ public class ComputerDAOImpl implements ComputerDAO {
     }
 
     @Override
+    @Transactional
     public Optional<Computer> getComputer(Computer computer) throws DAOException {
-        if ((computer == null) || (computer.getId() == null)) {
+        if (computer.getId() == null) {
             return Optional.empty();
         }
-        return getComputer(computer.getId());
+        
+        return Optional.of(sessionFactory.getCurrentSession().load(Computer.class, computer.getId()));
     }
 
     @Override
@@ -164,29 +167,6 @@ public class ComputerDAOImpl implements ComputerDAO {
         return pageCount;
     }
 
-    private void populateStatementFromComputer(Computer computer, PreparedStatement statement) throws SQLException {
-
-        statement.setString(1, computer.getName());
-
-        if (computer.getIntroduced().isPresent()) {
-            statement.setDate(2, Date.valueOf(computer.getIntroduced().get()));
-        } else {
-            statement.setNull(2, java.sql.Types.DATE);
-        }
-
-        if (computer.getDiscontinued().isPresent()) {
-            statement.setDate(3, Date.valueOf(computer.getDiscontinued().get()));
-        } else {
-            statement.setNull(3, java.sql.Types.DATE);
-        }
-
-        if ((computer.getCompany().isPresent()) && (computer.getCompany().get().getId() != null)) {
-            statement.setLong(4, computer.getCompany().get().getId());
-        } else {
-            statement.setNull(4, java.sql.Types.BIGINT);
-        }
-    }
-
     @Autowired
     public void setDataSource(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
@@ -195,12 +175,10 @@ public class ComputerDAOImpl implements ComputerDAO {
     @Override
     public void updateComputer(Computer computer) throws DAOException {
         Logger.info("update computer");
-        computer.getIntroduced().map(Date::valueOf).orElse(null);
-
         jdbcTemplate.update(UPDATE_COMPUTER,
-                new Object[] { computer.getName(), computer.getIntroduced().map(Date::valueOf).orElse(null),
-                        computer.getDiscontinued().map(Date::valueOf).orElse(null),
-                        computer.getCompany().map(Company::getId).orElse(null), computer.getId() });
+                new Object[] { computer.getName(), computer.getIntroduced(),
+                        computer.getDiscontinued(),
+                        computer.getCompany(), computer.getId() });
     }
 
 }

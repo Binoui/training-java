@@ -24,16 +24,16 @@ public class ComputerDTOMapper {
 
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        if (computer.getIntroduced().isPresent()) {
-            computerDto.setIntroduced(computer.getIntroduced().get().format(dateFormatter));
+        if (computer.getIntroduced() != null) {
+            computerDto.setIntroduced(computer.getIntroduced().format(dateFormatter));
         }
 
-        if (computer.getDiscontinued().isPresent()) {
-            computerDto.setDiscontinued(computer.getDiscontinued().get().format(dateFormatter));
+        if (computer.getDiscontinued() != null) {
+            computerDto.setDiscontinued(computer.getDiscontinued().format(dateFormatter));
         }
 
-        if (computer.getCompany().isPresent()) {
-            computerDto.setCompanyDTO(CompanyDTOMapper.createCompanyDTO(computer.getCompany().get()));
+        if (computer.getCompany() != null) {
+            computerDto.setCompanyDTO(CompanyDTOMapper.createCompanyDTO(computer.getCompany()));
         }
 
         return computerDto;
@@ -58,7 +58,6 @@ public class ComputerDTOMapper {
         }
 
         if ((computerDto.getCompanyDTO() != null) && (computerDto.getCompanyDTO().getId() != 0))
-
         {
             computerBuilder.withCompany(CompanyDTOMapper.createCompanyFromDto(computerDto.getCompanyDTO()));
         }
