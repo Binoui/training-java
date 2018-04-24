@@ -55,5 +55,4 @@ public class AppConfig {
     public DataSourceTransactionManager txManager() {
         return new DataSourceTransactionManager(dataSource());
     }
-
 }

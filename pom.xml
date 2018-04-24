@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>com.excilys.formation.cdb</groupId>
 	<artifactId>computer-database</artifactId>
 	<version>${cdb.version}</version>
 	<name>computer-database</name>
 	<url>https://github.com/Binoui/training-java</url>
 	<packaging>pom</packaging>
-
 	<modules>
 		<module>cdb-core</module>
 		<module>cdb-persistence</module>
@@ -19,16 +17,11 @@
 		<module>cdb-webapp</module>
 		<module>cdb-console</module>
 	</modules>
-
 	<properties>
-		<!-- sets the projects encoding to UTF-8 -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-
 		<cdb.version>0.6.1</cdb.version>
-
 		<common-lang3.version>3.0</common-lang3.version>
-
 		<!-- test -->
 		<junit.version>4.12</junit.version>
 		<hsqldb.version>2.4.0</hsqldb.version>
@@ -43,9 +36,7 @@
 		<checkstyle.version>3.0.0</checkstyle.version>
 		<mockito.version>2.16.0</mockito.version>
 		<hikaricp.version>2.7.8</hikaricp.version>
-
 		<myqsl-jdbc.version>8.0.8-dmr</myqsl-jdbc.version>
-
 		<!-- server -->
 		<jstl.version>1.2</jstl.version>
 		<javax.servlet.version>3.1.0</javax.servlet.version>
@@ -55,9 +46,7 @@
 		<aspectj.version>1.9.0</aspectj.version>
 		<hibernate.version>6.0.9.Final</hibernate.version>
 	</properties>
-
 	<build>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -76,7 +65,6 @@
 					<execution>
 						<goals>
 							<goal>java</goal>
-
 						</goals>
 						<!-- -->
 					</execution>
@@ -116,89 +104,108 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${common-lang3.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>${common-lang3.version}</version>
+				<groupId>com.excilys.formation.cdb</groupId>
+				<artifactId>cdb-console</artifactId>
+				<version>${cdb.version}</version>
 			</dependency>
-
 			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
-				<scope>test</scope>
+				<groupId>com.excilys.formation.cdb</groupId>
+				<artifactId>cdb-core</artifactId>
+				<version>${cdb.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>com.excilys.formation.cdb</groupId>
+				<artifactId>cdb-binding</artifactId>
+				<version>${cdb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.excilys.formation.cdb</groupId>
+				<artifactId>cdb-persistence</artifactId>
+				<version>${cdb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.excilys.formation.cdb</groupId>
+				<artifactId>cdb-service</artifactId>
+				<version>${cdb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.excilys.formation.cdb</groupId>
+				<artifactId>cdb-webapp</artifactId>
+				<version>${cdb.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
 				<version>${myqsl-jdbc.version}</version>
 				<scope>compile</scope>
 			</dependency>
-
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.version}</version>
-				<scope>compile</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>jcl-over-slf4j</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>${logback.version}</version>
-				<scope>compile</scope>
-			</dependency>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-core</artifactId>
-				<version>${logback.version}</version>
-				<scope>compile</scope>
-			</dependency>
-
 			<dependency>
 				<groupId>jstl</groupId>
 				<artifactId>jstl</artifactId>
 				<version>${jstl.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>javax.servlet-api</artifactId>
 				<version>${javax.servlet.version}</version>
 				<scope>provided</scope>
 			</dependency>
-
 			<dependency>
 				<groupId>javax.validation</groupId>
 				<artifactId>validation-api</artifactId>
 				<version>${javax-validation.version}</version>
 			</dependency>
-
-
 			<dependency>
 				<groupId>org.hsqldb</groupId>
 				<artifactId>hsqldb</artifactId>
 				<version>${hsqldb.version}</version>
 				<scope>test</scope>
 			</dependency>
-
 			<dependency>
 				<groupId>org.hsqldb</groupId>
 				<artifactId>sqltool</artifactId>
 				<version>${sqltool.version}</version>
 				<scope>test</scope>
 			</dependency>
-
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
@@ -210,7 +217,11 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-
+			<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>${spring.version}</version>
+</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-core</artifactId>
@@ -222,7 +233,6 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-tx</artifactId>
@@ -234,7 +244,6 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-orm</artifactId>
@@ -246,26 +255,22 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-web</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-test</artifactId>
 				<version>${spring.version}</version>
 				<scope>test</scope>
 			</dependency>
-
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
