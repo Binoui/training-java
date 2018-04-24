@@ -15,14 +15,9 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Configuration
-@Profile("cli")
 @PropertySource("classpath:connection.properties")
-@ComponentScan({ "com.excilys.formation.cdb.dao", "com.excilys.formation.cdb.services",
-        "com.excilys.formation.cdb.controllers.cli", "com.excilys.formation.cdb.config",
-        "com.excilys.formation.cdb.utils" })
-public class AppConfig {
-
-    private static final Logger Logger = LoggerFactory.getLogger(AppConfig.class);
+@ComponentScan({ "com.excilys.formation.cdb.dao", "com.excilys.formation.cdb.utils" })
+public class PersistenceConfig {
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -49,10 +44,5 @@ public class AppConfig {
         dataSource.setPassword(pass);
         dataSource.setDriverClassName(driver);
         return dataSource;
-    }
-
-    @Bean
-    public DataSourceTransactionManager txManager() {
-        return new DataSourceTransactionManager(dataSource());
     }
 }

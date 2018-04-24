@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Controller;
 
-import com.excilys.formation.cdb.config.AppConfig;
+import com.excilys.formation.cdb.config.ConsoleConfig;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer;
@@ -33,7 +33,7 @@ public class CommandLineInterface {
 
     public static void main(String[] arg) {
         @SuppressWarnings("resource")
-        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(ConsoleConfig.class);
 
         CommandLineInterface cli = context.getBean(CommandLineInterface.class);
         System.out.println("******** Computer Database ********\n");

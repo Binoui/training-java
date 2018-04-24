@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -29,29 +30,9 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @EnableWebMvc
 @Profile("web")
-@PropertySource("classpath:connection.properties")
-@ComponentScan(basePackages = { "com.excilys.formation.cdb.dao", "com.excilys.formation.cdb.controllers.web",
-        "com.excilys.formation.cdb.services" })
+@Import(ServiceConfig.class)
+@ComponentScan(basePackages = {"com.excilys.formation.cdb.controllers.web" })
 public class WebConfig implements WebMvcConfigurer {
-
-    private static final Logger Logger = LoggerFactory.getLogger(WebConfig.class);
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
-
-    @Value("${jdbc.url}")
-    private String url;
-
-    @Value("${jdbc.driver}")
-    private String driver;
-
-    @Value("${jdbc.user}")
-    private String user;
-
-    @Value("${jdbc.pass}")
-    private String pass;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -61,16 +42,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("/static/");
-    }
-
-    @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(url);
-        dataSource.setUsername(user);
-        dataSource.setPassword(pass);
-        dataSource.setDriverClassName(driver);
-        return dataSource;
     }
 
     @Bean
@@ -95,11 +66,6 @@ public class WebConfig implements WebMvcConfigurer {
         messageSource.setBasename("classpath:messages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
-    }
-
-    @Bean
-    public DataSourceTransactionManager txManager() {
-        return new DataSourceTransactionManager(dataSource());
     }
 
     @Bean

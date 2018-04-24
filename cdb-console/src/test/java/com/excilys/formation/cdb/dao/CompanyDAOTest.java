@@ -18,13 +18,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import com.excilys.formation.cdb.config.AppConfig;
+import com.excilys.formation.cdb.config.ConsoleConfig;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.utils.HSQLDatabase;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = ConsoleConfig.class, loader = AnnotationConfigContextLoader.class)
 @ActiveProfiles("cli")
 public class CompanyDAOTest {
 

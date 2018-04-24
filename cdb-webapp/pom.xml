@@ -15,6 +15,16 @@
 	<packaging>war</packaging>
 
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+			</plugin>
+		</plugins>
 	</build>
 
 	<dependencies>
@@ -23,7 +33,7 @@
 			<groupId>com.excilys.formation.cdb</groupId>
 			<artifactId>cdb-service</artifactId>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
@@ -44,8 +54,4 @@
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 	</dependencies>
-	<reporting>
-		<plugins>
-		</plugins>
-	</reporting>
 </project>
