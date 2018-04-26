@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.excilys.formation.cdb.model.Company;
 
 public interface CompanyDAO {
-    void deleteCompany(long id);
+    void deleteCompany(Long id);
 
     Optional<Company> getCompany(Company c);
 

@@ -20,7 +20,8 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.excilys.formation.cdb.config.ConsoleConfig;
 import com.excilys.formation.cdb.model.Company;
-import com.excilys.formation.cdb.model.Company.CompanyBuilder;
+import com.excilys.formation.cdb.services.CompanyService;
+import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.utils.HSQLDatabase;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -29,9 +30,9 @@ import com.excilys.formation.cdb.utils.HSQLDatabase;
 public class CompanyDAOTest {
 
     @Autowired
-    private CompanyDAO companyDAO;
+    private CompanyService companyService;
     @Autowired
-    private ComputerDAO computerDAO;
+    private ComputerService computerService;
     @Autowired
     private HSQLDatabase hSqlDatabase;
 
@@ -47,29 +48,19 @@ public class CompanyDAOTest {
 
     @Test
     public void testDeleteCompany() {
-        companyDAO.deleteCompany(1);
-        assertFalse(companyDAO.getCompany((long) 1).isPresent());
-        assertFalse(computerDAO.getComputer(1).isPresent());
-    }
-
-    @Test
-    public void testGetCompanyCompany() {
-        assertNotNull(companyDAO.getCompany(new CompanyBuilder().withId((long) 1).build()));
+        companyService.deleteCompany((long) 1);
+        assertFalse(companyService.getCompany((long) 1).isPresent());
+        assertFalse(computerService.getComputer((long) 1).isPresent());
     }
 
     @Test
     public void testGetCompanyLong() {
-        assertNotNull(companyDAO.getCompany((long) 1));
-    }
-
-    @Test
-    public void testGetCompanyWithIdNull() {
-        companyDAO.getCompany(new CompanyBuilder().build());
+        assertNotNull(companyService.getCompany((long) 1));
     }
 
     @Test
     public void testGetListCompanies() {
-        List<Company> companies = companyDAO.getListCompanies();
+        List<Company> companies = companyService.getListCompanies();
         assertNotNull(companies);
         assertEquals(3, companies.size());
         assertEquals("Company 2", companies.get(1).getName());
@@ -77,7 +68,7 @@ public class CompanyDAOTest {
 
     @Test
     public void testGetListCompaniesPageCount() {
-        assertEquals(1, companyDAO.getListCompaniesPageCount(10));
+        assertEquals(1, companyService.getListCompaniesPageCount(10));
     }
 
     // @Test

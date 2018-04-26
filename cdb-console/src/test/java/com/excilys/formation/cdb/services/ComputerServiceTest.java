@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,8 +23,6 @@ import com.excilys.formation.cdb.config.ConsoleConfig;
 import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
-import com.excilys.formation.cdb.services.ComputerService;
-import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.utils.HSQLDatabase;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 
@@ -50,8 +47,36 @@ public class ComputerServiceTest {
     }
 
     @Test
+    public void testCreateComputer() throws ServiceException, IncorrectValidationException {
+        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null)
+                .withDiscontinued(LocalDate.parse("0002-02-02")).build();
+        c.setId(computerService.createComputer(c));
+        assertTrue(computerService.getComputer(c).isPresent());
+        computerService.deleteComputer(c);
+    }
+
+    @Test
+    public void testDeleteComputer() throws ServiceException, IncorrectValidationException {
+        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null)
+                .withDiscontinued(LocalDate.parse("0002-02-02")).build();
+        c.setId(computerService.createComputer(c));
+        computerService.deleteComputer(c);
+        assertFalse(computerService.getComputer(c).isPresent());
+    }
+
+    @Test
     public void testDeleteComputers() {
         computerService.deleteComputers(Arrays.asList(1L, 3L));
+    }
+
+    @Test
+    public void testGetCompanyWithIdNull() throws ServiceException {
+        computerService.getComputer(new ComputerBuilder().build());
+    }
+
+    @Test
+    public void testGetComputer() throws ServiceException {
+        assertTrue(computerService.getComputer(new ComputerBuilder().withId((long) 1).build()).isPresent());
     }
 
     @Test
@@ -78,10 +103,10 @@ public class ComputerServiceTest {
 
     @Test
     public void testGetListComputersSorted() {
-        assertEquals(2,
-                (long) computerService.getListComputers(0, 10, SortableComputerColumn.INTRODUCED, false).get(0).getId());
-        assertEquals(1,
-                (long) computerService.getListComputers(0, 10, SortableComputerColumn.INTRODUCED, false).get(2).getId());
+        assertEquals(2, (long) computerService.getListComputers(0, 10, SortableComputerColumn.INTRODUCED, false).get(0)
+                .getId());
+        assertEquals(1, (long) computerService.getListComputers(0, 10, SortableComputerColumn.INTRODUCED, false).get(2)
+                .getId());
     }
 
     @Test
@@ -91,38 +116,10 @@ public class ComputerServiceTest {
 
     @Test
     public void testUpdateComputer() throws IncorrectValidationException, ServiceException {
-        Computer c = new ComputerBuilder().withName("Computer 2").withId((long) 2).withIntroduced(LocalDate.parse("0001-01-01")).build();
+        Computer c = new ComputerBuilder().withName("Computer 2").withId((long) 2)
+                .withIntroduced(LocalDate.parse("0001-01-01")).build();
         computerService.updateComputer(c);
         assertEquals(LocalDate.parse("0001-01-01"), computerService.getComputer(c).get().getIntroduced().orElse(null));
-    }
-
-
-    @Test
-    public void testCreateComputer() throws ServiceException, IncorrectValidationException {
-        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null)
-                .withDiscontinued(LocalDate.parse("0002-02-02")).build();
-        c.setId(computerService.createComputer(c));
-        assertTrue(computerService.getComputer(c).isPresent());
-        computerService.deleteComputer(c);
-    }
-
-    @Test
-    public void testDeleteComputer() throws ServiceException, IncorrectValidationException {
-        Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null)
-                .withDiscontinued(LocalDate.parse("0002-02-02")).build();
-        c.setId(computerService.createComputer(c));
-        computerService.deleteComputer(c);
-        assertFalse(computerService.getComputer(c).isPresent());
-    }
-
-    @Test
-    public void testGetCompanyWithIdNull() throws ServiceException {
-        computerService.getComputer(new ComputerBuilder().build());
-    }
-
-    @Test
-    public void testGetComputer() throws ServiceException {
-        assertTrue(computerService.getComputer(new ComputerBuilder().withId((long) 1).build()).isPresent());
     }
 
 }

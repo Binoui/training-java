@@ -11,9 +11,7 @@ import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,12 +55,8 @@ public class ComputerController {
 
         List<CompanyDTO> listCompanies = new LinkedList<>();
 
-        try {
-            companyService.getListCompanies()
-                    .forEach(company -> listCompanies.add(CompanyDTOMapper.createCompanyDTO(company)));
-        } catch (ServiceException e) {
-            LOGGER.debug("Cannot list companies {}", e);
-        }
+        companyService.getListCompanies()
+                .forEach(company -> listCompanies.add(CompanyDTOMapper.createCompanyDTO(company)));
 
         modelAndView.addObject("computerDTO", new ComputerDTO());
         modelAndView.addObject("companies", listCompanies);
@@ -138,24 +132,18 @@ public class ComputerController {
         List<CompanyDTO> listCompanies = new LinkedList<>();
         Optional<Computer> optionalComputer;
 
-        try {
-            optionalComputer = computerService.getComputer(new ComputerBuilder().withId(computerId).build());
+        optionalComputer = computerService.getComputer(new ComputerBuilder().withId(computerId).build());
 
-            if (!optionalComputer.isPresent()) {
-                attributes.addFlashAttribute("error", "Cannot delete computers, wrong selection");
-                modelAndView.setViewName("redirect:/computer/dashboard");
-                return modelAndView;
-            }
-
-            modelAndView.addObject("computerDTO", ComputerDTOMapper.createComputerDTO(optionalComputer.get()));
-
-            companyService.getListCompanies()
-                    .forEach(company -> listCompanies.add(CompanyDTOMapper.createCompanyDTO(company)));
-
-        } catch (ServiceException e) {
-            LOGGER.error("error accessing service {}", e);
-            e.printStackTrace();
+        if (!optionalComputer.isPresent()) {
+            attributes.addFlashAttribute("error", "Cannot delete computers, wrong selection");
+            modelAndView.setViewName("redirect:/computer/dashboard");
+            return modelAndView;
         }
+
+        modelAndView.addObject("computerDTO", ComputerDTOMapper.createComputerDTO(optionalComputer.get()));
+
+        companyService.getListCompanies()
+                .forEach(company -> listCompanies.add(CompanyDTOMapper.createCompanyDTO(company)));
 
         modelAndView.setViewName("editComputer");
         modelAndView.addObject("companies", listCompanies);

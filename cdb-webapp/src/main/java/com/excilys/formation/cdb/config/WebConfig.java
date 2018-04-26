@@ -22,7 +22,7 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableWebMvc
 @Profile("web")
 @Import(ServiceConfig.class)
-@ComponentScan(basePackages = {"com.excilys.formation.cdb.controllers.web" })
+@ComponentScan(basePackages = { "com.excilys.formation.cdb.controllers.web" })
 public class WebConfig implements WebMvcConfigurer {
 
     @Override

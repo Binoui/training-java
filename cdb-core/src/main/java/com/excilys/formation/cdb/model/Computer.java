@@ -12,11 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="computer")
+@Table(name = "computer")
 public class Computer {
 
     public static class ComputerBuilder {
@@ -63,21 +62,22 @@ public class Computer {
         }
     }
 
-    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cu_id")
     private Long id;
 
     @Column(name = "cu_name")
     private String name;
-    
-    @ManyToOne(optional = true, fetch=FetchType.EAGER)
+
+    @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "ca_id")
     private Company company;
-    
+
     @Column(name = "cu_introduced")
     @Basic(optional = true)
     private LocalDate introduced;
-    
+
     @Column(name = "cu_discontinued")
     @Basic(optional = true)
     private LocalDate discontinued;
@@ -93,8 +93,7 @@ public class Computer {
         this.company = builder.company;
     }
 
-    public Computer(String name, LocalDate introduced, LocalDate discontinued,
-            Company company) {
+    public Computer(String name, LocalDate introduced, LocalDate discontinued, Company company) {
         this.name = name;
         this.introduced = introduced;
         this.discontinued = discontinued;
@@ -129,7 +128,7 @@ public class Computer {
         this.discontinued = discontinued;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -144,8 +143,6 @@ public class Computer {
     @Override
     public String toString() {
         return new StringBuilder().append("Computer ").append(id).append(" : ").append(name).append(" (")
-                .append(introduced).append(" - ")
-                .append(discontinued).append(") from ")
-                .append(company).toString();
+                .append(introduced).append(" - ").append(discontinued).append(") from ").append(company).toString();
     }
 }

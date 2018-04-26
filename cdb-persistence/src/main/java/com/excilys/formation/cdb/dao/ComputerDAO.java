@@ -24,7 +24,8 @@ public interface ComputerDAO {
 
     List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending);
 
-    List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending, String searchWord);
+    List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending,
+            String searchWord);
 
     int getListComputersPageCount(int pageSize);
 

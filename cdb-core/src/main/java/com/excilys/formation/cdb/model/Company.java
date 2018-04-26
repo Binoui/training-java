@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="company")
+@Table(name = "company")
 public class Company {
     public static class CompanyBuilder {
         private Long id;
@@ -29,10 +29,11 @@ public class Company {
         }
     }
 
-    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ca_id;
 
-    @Column(name="ca_name")
+    @Column(name = "ca_name")
     private String ca_name;
 
     public Company() {

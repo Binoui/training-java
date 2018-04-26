@@ -17,7 +17,6 @@ import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.validators.ComputerValidator;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 import com.excilys.formation.cdb.validators.UnknownCompanyIdException;
-import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
 @Service("ComputerService")
 @EnableTransactionManagement
@@ -39,7 +38,6 @@ public class ComputerServiceImpl implements ComputerService {
     public Long createComputer(Computer c) throws IncorrectValidationException {
         ComputerValidator.validateComputer(c);
         validateCompany(c.getCompany());
-
         return computerDAO.createComputer(c);
     }
 
@@ -63,6 +61,11 @@ public class ComputerServiceImpl implements ComputerService {
     @Override
     public Optional<Computer> getComputer(Computer computer) {
         return computerDAO.getComputer(computer);
+    }
+
+    @Override
+    public Optional<Computer> getComputer(Long id) {
+        return computerDAO.getComputer(id);
     }
 
     @Override

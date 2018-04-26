@@ -1,17 +1,23 @@
 package com.excilys.formation.cdb.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.excilys.formation.cdb.model.Company;
+import com.excilys.formation.cdb.model.Computer;
 
 public interface CompanyService {
 
-    void deleteCompany(Long id) throws ServiceException;
+    void deleteCompany(Long id);
 
-    List<Company> getListCompanies() throws ServiceException;
+    Optional<Company> getCompany(Long l);
 
-    List<Company> getListCompanies(int pageNumber, int pageSize) throws ServiceException;
+    List<Company> getListCompanies();
 
-    int getListCompaniesPageCount(int pageSize) throws ServiceException;
+    List<Company> getListCompanies(int pageNumber, int pageSize);
+
+    int getListCompaniesPageCount(int pageSize);
+
+    Optional<Company> getCompany(Company c);
 
 }

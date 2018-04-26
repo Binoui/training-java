@@ -16,6 +16,7 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +38,10 @@ public class ComputerDAOImpl implements ComputerDAO {
 
     private CriteriaBuilder criteriaBuilder;
 
-    @PostConstruct
-    public void init() {
-        criteriaBuilder = entityManager.getCriteriaBuilder();
-    }
-
     @Override
     public Long createComputer(Computer computer) {
-        Logger.info("create computer");
+        Logger.info("create computer  :  " + computer);
+        computer.setId(null);
         entityManager.persist(computer);
         entityManager.flush();
         return computer.getId();
@@ -140,11 +137,31 @@ public class ComputerDAOImpl implements ComputerDAO {
         return getPageFromQuery(pageNumber, pageSize, criteriaQuery);
     }
 
+    @Override
+    public int getListComputersPageCount(int pageSize) {
+        return (int) Math.ceil(getComputerCount() / (double) pageSize);
+    }
+
+    @Override
+    public int getListComputersPageCount(int pageSize, String searchWord) {
+        int pageCount = 0;
+
+        int computerCount = getComputerCount(searchWord);
+        pageCount = ((computerCount + pageSize) - 1) / pageSize;
+
+        return pageCount;
+    }
+
     private List<Computer> getPageFromQuery(int pageNumber, int pageSize, CriteriaQuery<Computer> criteriaQuery) {
         TypedQuery<Computer> typedQuery = entityManager.createQuery(criteriaQuery);
         typedQuery.setFirstResult(pageSize * pageNumber);
         typedQuery.setMaxResults(pageSize);
         return typedQuery.getResultList();
+    }
+
+    @PostConstruct
+    public void init() {
+        criteriaBuilder = entityManager.getCriteriaBuilder();
     }
 
     private void putLikeOnQuery(String searchWord, CriteriaQuery<?> criteriaQuery, Root<Computer> root,
@@ -167,21 +184,6 @@ public class ComputerDAOImpl implements ComputerDAO {
         }
 
         criteriaQuery.orderBy(orderBy);
-    }
-
-    @Override
-    public int getListComputersPageCount(int pageSize) {
-        return (int) Math.ceil(getComputerCount() / (double) pageSize);
-    }
-
-    @Override
-    public int getListComputersPageCount(int pageSize, String searchWord) {
-        int pageCount = 0;
-
-        int computerCount = getComputerCount(searchWord);
-        pageCount = ((computerCount + pageSize) - 1) / pageSize;
-
-        return pageCount;
     }
 
     @Override

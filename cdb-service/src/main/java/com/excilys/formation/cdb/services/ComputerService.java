@@ -18,6 +18,8 @@ public interface ComputerService {
 
     Optional<Computer> getComputer(Computer computer);
 
+    Optional<Computer> getComputer(Long id);
+
     int getComputerCount();
 
     int getComputerCount(String searchWord);
@@ -26,8 +28,7 @@ public interface ComputerService {
 
     List<Computer> getListComputers();
 
-    List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending)
-           ;
+    List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending);
 
     List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending,
             String searchWord);

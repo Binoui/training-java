@@ -7,7 +7,6 @@ import java.util.Scanner;
 import java.util.stream.Stream;
 
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Controller;
@@ -71,11 +70,7 @@ public class CommandLineInterface {
 
     private void deleteCompany() {
         Long id = readNotNullId();
-        try {
-            companyService.deleteCompany(id);
-        } catch (ServiceException e) {
-            System.out.println(e.getMessage());
-        }
+        companyService.deleteCompany(id);
     }
 
     private void deleteComputer() {

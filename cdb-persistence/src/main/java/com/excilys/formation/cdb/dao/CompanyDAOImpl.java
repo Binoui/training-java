@@ -18,8 +18,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.cdb.model.Company;
-import com.excilys.formation.cdb.model.Company_;
 import com.excilys.formation.cdb.model.Computer;
+
+import com.excilys.formation.cdb.model.Company_;
 import com.excilys.formation.cdb.model.Computer_;
 
 @Repository("CompanyDAO")
@@ -32,13 +33,8 @@ public class CompanyDAOImpl implements CompanyDAO {
 
     private CriteriaBuilder criteriaBuilder;
 
-    @PostConstruct
-    public void init() {
-        criteriaBuilder = entityManager.getCriteriaBuilder();
-    }
-
     @Override
-    public void deleteCompany(long id) {
+    public void deleteCompany(Long id) {
         Logger.info("DAO : Delete Company");
 
         CriteriaDelete<Computer> deleteComputerQuery = criteriaBuilder.createCriteriaDelete(Computer.class);
@@ -102,4 +98,8 @@ public class CompanyDAOImpl implements CompanyDAO {
         return (int) Math.ceil(entityManager.createQuery(cq).getSingleResult() / (double) pageSize);
     }
 
+    @PostConstruct
+    public void init() {
+        criteriaBuilder = entityManager.getCriteriaBuilder();
+    }
 }
