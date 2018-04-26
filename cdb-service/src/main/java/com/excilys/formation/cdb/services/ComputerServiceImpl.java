@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.cdb.dao.CompanyDAO;
 import com.excilys.formation.cdb.dao.ComputerDAO;
-import com.excilys.formation.cdb.dao.DAOException;
 import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
@@ -36,67 +35,44 @@ public class ComputerServiceImpl implements ComputerService {
     }
 
     @Override
-    public Long createComputer(Computer c) throws IncorrectValidationException, ServiceException {
+    @Transactional
+    public Long createComputer(Computer c) throws IncorrectValidationException {
         ComputerValidator.validateComputer(c);
         validateCompany(c.getCompany());
 
-        try {
-            return computerDAO.createComputer(c);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
+        return computerDAO.createComputer(c);
+    }
+
+    @Override
+    @Transactional
+    public void deleteComputer(Computer c) throws ServiceException {
+
+        if ((c.getId() != null) && computerDAO.getComputer(c).isPresent()) {
+            computerDAO.deleteComputer(c);
+        } else {
+            throw new ServiceException("cannot find computer");
         }
     }
 
     @Override
-    public void deleteComputer(Computer c) throws UnknownComputerIdException, ServiceException {
-
-        try {
-            if ((c.getId() != null) && computerDAO.getComputer(c).isPresent()) {
-                computerDAO.deleteComputer(c);
-            } else {
-                throw new ServiceException("cannot find computer");
-            }
-
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+    @Transactional
+    public void deleteComputers(List<Long> idsToDelete) {
+        computerDAO.deleteComputers(idsToDelete);
     }
 
     @Override
-    @Transactional(value = "txManager", rollbackFor = ServiceException.class)
-    public void deleteComputers(List<Long> idsToDelete) throws ServiceException {
-        try {
-            computerDAO.deleteComputers(idsToDelete);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+    public Optional<Computer> getComputer(Computer computer) {
+        return computerDAO.getComputer(computer);
     }
 
     @Override
-    public Optional<Computer> getComputer(Computer computer) throws ServiceException {
-        try {
-            return computerDAO.getComputer(computer);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+    public int getComputerCount() {
+        return computerDAO.getComputerCount();
     }
 
     @Override
-    public int getComputerCount() throws ServiceException {
-        try {
-            return computerDAO.getComputerCount();
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
-    }
-
-    @Override
-    public int getComputerCount(String searchWord) throws ServiceException {
-        try {
-            return computerDAO.getComputerCount(searchWord);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+    public int getComputerCount(String searchWord) {
+        return computerDAO.getComputerCount(searchWord);
     }
 
     @Override
@@ -105,64 +81,41 @@ public class ComputerServiceImpl implements ComputerService {
     }
 
     @Override
-    public List<Computer> getListComputers() throws ServiceException {
-        try {
-            return computerDAO.getListComputers();
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+    public List<Computer> getListComputers() {
+        return computerDAO.getListComputers();
     }
 
     @Override
     public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column,
-            boolean ascending) throws ServiceException {
-        try {
-            return computerDAO.getListComputers(pageNumber, pageSize, column, ascending);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+            boolean ascending) {
+        return computerDAO.getListComputers(pageNumber, pageSize, column, ascending);
     }
 
     @Override
     public List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column,
-            boolean ascending, String searchWord) throws ServiceException {
-        try {
-            return computerDAO.getListComputers(pageNumber, pageSize, column, ascending, searchWord);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+            boolean ascending, String searchWord) {
+        return computerDAO.getListComputers(pageNumber, pageSize, column, ascending, searchWord);
     }
 
     @Override
-    public int getListComputersPageCount(int pageSize) throws ServiceException {
-        try {
-            return computerDAO.getListComputersPageCount(pageSize);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+    public int getListComputersPageCount(int pageSize) {
+        return computerDAO.getListComputersPageCount(pageSize);
     }
 
     @Override
-    public int getListComputersPageCount(int pageSize, String searchWord) throws ServiceException {
-        try {
-            return computerDAO.getListComputersPageCount(pageSize, searchWord);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+    public int getListComputersPageCount(int pageSize, String searchWord) {
+        return computerDAO.getListComputersPageCount(pageSize, searchWord);
     }
 
     @Override
+    @Transactional
     public void updateComputer(Computer c) throws IncorrectValidationException, ServiceException {
-        try {
-            if ((c.getId() != null) && computerDAO.getComputer(c).isPresent()) {
-                ComputerValidator.validateComputer(c);
-                validateCompany(c.getCompany());
-                computerDAO.updateComputer(c);
-            } else {
-                throw new ServiceException("cannot find computer");
-            }
-        } catch (DAOException e) {
-            throw new ServiceException("Couldn't update computer " + c.getName());
+        if ((c.getId() != null) && computerDAO.getComputer(c).isPresent()) {
+            ComputerValidator.validateComputer(c);
+            validateCompany(c.getCompany());
+            computerDAO.updateComputer(c);
+        } else {
+            throw new ServiceException("cannot find computer");
         }
     }
 
@@ -173,11 +126,7 @@ public class ComputerServiceImpl implements ComputerService {
         }
 
         Company company = optionalCompany.get();
-        try {
-            if ((company.getId() != null) && !(companyDAO.getCompany(company).isPresent())) {
-                throw new UnknownCompanyIdException("Cannot find given company.");
-            }
-        } catch (DAOException e) {
+        if ((company.getId() != null) && !(companyDAO.getCompany(company).isPresent())) {
             throw new UnknownCompanyIdException("Cannot find given company.");
         }
     }

@@ -2,6 +2,7 @@ package com.excilys.formation.cdb.config;
 
 import java.util.Properties;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 @PropertySource("classpath:connection.properties")
@@ -36,7 +40,7 @@ public class PersistenceConfig {
     private String pass;
 
     @Bean
-    public DataSource dataSource() {
+    public DriverManagerDataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl(url);
         dataSource.setUsername(user);
@@ -46,13 +50,18 @@ public class PersistenceConfig {
     }
 
     @Bean
-    public LocalSessionFactoryBean hibernateSessionFactory(DataSource dataSource) {
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource);
-        sessionFactory.setPackagesToScan(new String[] { "com.excilys.formation.cdb.model" });
-        sessionFactory.setHibernateProperties(additionalProperties());
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DriverManagerDataSource dataSource) {
+        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
+        emf.setDataSource(dataSource);
+        emf.setPackagesToScan("com.excilys.formation.cdb.model");
+        emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 
-        return sessionFactory;
+        return emf;
+    }
+    
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+        return new JpaTransactionManager(emf);
     }
 
     Properties additionalProperties() {

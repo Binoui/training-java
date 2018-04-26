@@ -14,27 +14,27 @@ public interface ComputerService {
 
     void deleteComputer(Computer c) throws UnknownComputerIdException, ServiceException;
 
-    void deleteComputers(List<Long> idsToDelete) throws ServiceException;
+    void deleteComputers(List<Long> idsToDelete);
 
-    Optional<Computer> getComputer(Computer computer) throws ServiceException;
+    Optional<Computer> getComputer(Computer computer);
 
-    int getComputerCount() throws ServiceException;
+    int getComputerCount();
 
-    int getComputerCount(String searchWord) throws ServiceException;
+    int getComputerCount(String searchWord);
 
     List<Computer> getComputerPage();
 
-    List<Computer> getListComputers() throws ServiceException;
+    List<Computer> getListComputers();
 
     List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending)
-            throws ServiceException;
+           ;
 
     List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending,
-            String searchWord) throws ServiceException;
+            String searchWord);
 
-    int getListComputersPageCount(int pageSize) throws ServiceException;
+    int getListComputersPageCount(int pageSize);
 
-    int getListComputersPageCount(int pageSize, String searchWord) throws ServiceException;
+    int getListComputersPageCount(int pageSize, String searchWord);
 
     void updateComputer(Computer c) throws IncorrectValidationException, ServiceException;
 

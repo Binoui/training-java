@@ -6,31 +6,29 @@ import java.util.Optional;
 import com.excilys.formation.cdb.model.Computer;
 
 public interface ComputerDAO {
-    Long createComputer(Computer c) throws DAOException;
+    Long createComputer(Computer c);
 
-    void deleteComputer(Computer c) throws DAOException;
+    void deleteComputer(Computer c);
 
-    void deleteComputers(List<Long> idsToDelete) throws DAOException;
+    void deleteComputers(List<Long> idsToDelete);
 
-    Optional<Computer> getComputer(Computer computer) throws DAOException;
+    Optional<Computer> getComputer(Computer computer);
 
-    Optional<Computer> getComputer(long id) throws DAOException;
+    Optional<Computer> getComputer(long id);
 
-    int getComputerCount() throws DAOException;
+    int getComputerCount();
 
-    int getComputerCount(String searchWord) throws DAOException;
+    int getComputerCount(String searchWord);
 
-    List<Computer> getListComputers() throws DAOException;
+    List<Computer> getListComputers();
 
-    List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending)
-            throws DAOException;
+    List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending);
 
-    List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending,
-            String searchWord) throws DAOException;
+    List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending, String searchWord);
 
-    int getListComputersPageCount(int pageSize) throws DAOException;
+    int getListComputersPageCount(int pageSize);
 
-    int getListComputersPageCount(int pageSize, String searchWord) throws DAOException;
+    int getListComputersPageCount(int pageSize, String searchWord);
 
-    void updateComputer(Computer c) throws DAOException;
+    void updateComputer(Computer c);
 }

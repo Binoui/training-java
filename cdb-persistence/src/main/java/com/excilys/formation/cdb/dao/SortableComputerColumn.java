@@ -1,15 +1,19 @@
 package com.excilys.formation.cdb.dao;
 
+import javax.persistence.metamodel.SingularAttribute;
+
+import com.excilys.formation.cdb.model.*;
+
 public enum SortableComputerColumn {
-    ID("cu_id"), NAME("cu_name"), INTRODUCED("cu_introduced"), DISCONTINUED("cu_discontinued"), COMPANY("ca_name");
+    ID(Computer_.id), NAME(Computer_.name), INTRODUCED(Computer_.introduced), DISCONTINUED(Computer_.discontinued), COMPANY(Computer_.company);
 
-    private String column;
+    private SingularAttribute column;
 
-    SortableComputerColumn(String column) {
+    SortableComputerColumn(SingularAttribute column) {
         this.column = column;
     }
 
-    public String getColumn() {
+    public SingularAttribute getColumn() {
         return column;
     }
 }

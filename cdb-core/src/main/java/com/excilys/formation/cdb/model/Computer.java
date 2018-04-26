@@ -3,10 +3,12 @@ package com.excilys.formation.cdb.model;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -61,18 +63,23 @@ public class Computer {
         }
     }
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "cu_id")
     private Long id;
+
     @Column(name = "cu_name")
     private String name;
     
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(optional = true, fetch=FetchType.EAGER)
     @JoinColumn(name = "ca_id")
     private Company company;
+    
     @Column(name = "cu_introduced")
+    @Basic(optional = true)
     private LocalDate introduced;
+    
     @Column(name = "cu_discontinued")
+    @Basic(optional = true)
     private LocalDate discontinued;
 
     public Computer() {

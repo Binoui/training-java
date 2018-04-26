@@ -111,13 +111,7 @@ public class CommandLineInterface {
     private void getDetailsComputer() {
         Long id = readNotNullId();
         Optional<Computer> c = null;
-        try {
-            c = computerService.getComputer(new ComputerBuilder().withId(id).build());
-        } catch (ServiceException e) {
-            Logger.error("couldnt get computer {}", e);
-            System.out.println("error cannot find computer with id " + id);
-            return;
-        }
+        c = computerService.getComputer(new ComputerBuilder().withId(id).build());
         if (c.isPresent()) {
             System.out.println(c.get());
         } else {

@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.cdb.dao.CompanyDAO;
-import com.excilys.formation.cdb.dao.DAOException;
 import com.excilys.formation.cdb.model.Company;
 
 @Service("CompanyService")
@@ -24,37 +23,21 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     @Transactional(rollbackFor = ServiceException.class)
     public void deleteCompany(Long id) throws ServiceException {
-        try {
-            companyDAO.deleteCompany(id);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+        companyDAO.deleteCompany(id);
     }
 
     @Override
     public List<Company> getListCompanies() throws ServiceException {
-        try {
-            return companyDAO.getListCompanies();
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+        return companyDAO.getListCompanies();
     }
 
     @Override
     public List<Company> getListCompanies(int pageNumber, int pageSize) throws ServiceException {
-        try {
-            return companyDAO.getListCompanies(pageNumber, pageSize);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+        return companyDAO.getListCompanies(pageNumber, pageSize);
     }
 
     @Override
     public int getListCompaniesPageCount(int pageSize) throws ServiceException {
-        try {
-            return companyDAO.getListCompaniesPageCount(pageSize);
-        } catch (DAOException e) {
-            throw new ServiceException(e.getMessage());
-        }
+        return companyDAO.getListCompaniesPageCount(pageSize);
     }
 }

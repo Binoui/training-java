@@ -46,29 +46,29 @@ public class CompanyDAOTest {
     }
 
     @Test
-    public void testDeleteCompany() throws DAOException {
+    public void testDeleteCompany() {
         companyDAO.deleteCompany(1);
         assertFalse(companyDAO.getCompany((long) 1).isPresent());
         assertFalse(computerDAO.getComputer(1).isPresent());
     }
 
     @Test
-    public void testGetCompanyCompany() throws DAOException {
+    public void testGetCompanyCompany() {
         assertNotNull(companyDAO.getCompany(new CompanyBuilder().withId((long) 1).build()));
     }
 
     @Test
-    public void testGetCompanyLong() throws DAOException {
+    public void testGetCompanyLong() {
         assertNotNull(companyDAO.getCompany((long) 1));
     }
 
     @Test
-    public void testGetCompanyWithIdNull() throws DAOException {
+    public void testGetCompanyWithIdNull() {
         companyDAO.getCompany(new CompanyBuilder().build());
     }
 
     @Test
-    public void testGetListCompanies() throws DAOException {
+    public void testGetListCompanies() {
         List<Company> companies = companyDAO.getListCompanies();
         assertNotNull(companies);
         assertEquals(3, companies.size());
@@ -77,10 +77,11 @@ public class CompanyDAOTest {
 
     @Test
     public void testGetListCompaniesPageCount() {
+        assertEquals(1, companyDAO.getListCompaniesPageCount(10));
     }
 
     // @Test
-    // public void testGetListCompaniesPageOutOfBounds() throws DAOException {
+    // public void testGetListCompaniesPageOutOfBounds() {
     // try {
     // companyDAO.getListCompanies(999999, 10);
     // fail("should throw exception");

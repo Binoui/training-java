@@ -1,4 +1,4 @@
-package com.excilys.formation.cdb.service;
+package com.excilys.formation.cdb.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.After;
@@ -49,6 +50,54 @@ public class ComputerServiceTest {
     }
 
     @Test
+    public void testDeleteComputers() {
+        computerService.deleteComputers(Arrays.asList(1L, 3L));
+    }
+
+    @Test
+    public void testGetComputerCount() {
+        assertEquals(3, computerService.getComputerCount());
+    }
+
+    @Test
+    public void testGetComputerCountSearch() {
+        assertEquals(2, computerService.getComputerCount("Computer"));
+        assertEquals(1, computerService.getComputerCount("Computer 1"));
+        assertEquals(0, computerService.getComputerCount("zepc,pfz,^^$efze"));
+    }
+
+    @Test
+    public void testGetListComputers() {
+        assertEquals((long) computerService.getListComputers().get(1).getId(), (long) 2);
+    }
+
+    @Test
+    public void testGetListComputersPageCount() {
+        assertEquals(computerService.getListComputersPageCount(10), 1);
+    }
+
+    @Test
+    public void testGetListComputersSorted() {
+        assertEquals(2,
+                (long) computerService.getListComputers(0, 10, SortableComputerColumn.INTRODUCED, false).get(0).getId());
+        assertEquals(1,
+                (long) computerService.getListComputers(0, 10, SortableComputerColumn.INTRODUCED, false).get(2).getId());
+    }
+
+    @Test
+    public void testSearch() throws IndexOutOfBoundsException {
+        assertEquals(computerService.getListComputers(0, 10, SortableComputerColumn.ID, true, "Computer").size(), 2);
+    }
+
+    @Test
+    public void testUpdateComputer() throws IncorrectValidationException, ServiceException {
+        Computer c = new ComputerBuilder().withName("Computer 2").withId((long) 2).withIntroduced(LocalDate.parse("0001-01-01")).build();
+        computerService.updateComputer(c);
+        assertEquals(LocalDate.parse("0001-01-01"), computerService.getComputer(c).get().getIntroduced().orElse(null));
+    }
+
+
+    @Test
     public void testCreateComputer() throws ServiceException, IncorrectValidationException {
         Computer c = new ComputerBuilder().withName("testComputer").withIntroduced(null)
                 .withDiscontinued(LocalDate.parse("0002-02-02")).build();
@@ -74,34 +123,6 @@ public class ComputerServiceTest {
     @Test
     public void testGetComputer() throws ServiceException {
         assertTrue(computerService.getComputer(new ComputerBuilder().withId((long) 1).build()).isPresent());
-    }
-
-    @Test
-    public void testGetComputerCount() throws ServiceException {
-        assertEquals(computerService.getComputerCount(), 3);
-    }
-
-    @Test
-    public void testGetListComputers() throws ServiceException {
-        assertEquals((long) computerService.getListComputers().get(1).getId(), (long) 2);
-    }
-
-    @Test
-    public void testGetListComputersPageCount() throws ServiceException {
-        assertEquals(computerService.getListComputersPageCount(10), 1);
-    }
-
-    @Test
-    public void testSearch() throws IndexOutOfBoundsException, ServiceException {
-        assertEquals(computerService.getListComputers(0, 10, SortableComputerColumn.ID, true, "Computer").size(), 2);
-    }
-
-    @Test
-    public void testUpdateComputer() throws ServiceException, IncorrectValidationException {
-        Computer c = new ComputerBuilder().withId((long) 2).withName("Computer 2")
-                .withIntroduced(LocalDate.parse("0001-01-01")).withDiscontinued(null).build();
-        computerService.updateComputer(c);
-        assertEquals(Optional.of(LocalDate.parse("0001-01-01")), computerService.getComputer(c).get().getIntroduced());
     }
 
 }

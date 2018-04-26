@@ -93,7 +93,7 @@ public class ComputerController {
     @GetMapping(value = "/dashboard")
     private ModelAndView dashboardGet(@RequestParam(value = "sortBy", required = false) String sortBy,
             @RequestParam(value = "ascending", required = false) boolean ascending,
-            @RequestParam(value = "searchWord", required = false) String searchWord,
+            @RequestParam(value = "search", required = false) String searchWord,
             @RequestParam(value = "pageNumber", required = false, defaultValue = "0") int pageNumber,
             @RequestParam(value = "itemsPerPage", required = false, defaultValue = "10") int itemsPerPage,
             ModelAndView modelAndView) {
@@ -125,13 +125,8 @@ public class ComputerController {
             ModelAndView modelAndView, RedirectAttributes attributes) {
 
         modelAndView.setViewName("redirect:/computer/dashboard");
-
-        try {
-            computerService.deleteComputers(idsToDelete);
-            attributes.addFlashAttribute("success", "Computers deleted !");
-        } catch (ServiceException e) {
-            attributes.addFlashAttribute("error", "Cannot delete computers, wrong selection");
-        }
+        computerService.deleteComputers(idsToDelete);
+        attributes.addFlashAttribute("success", "Computers deleted !");
 
         return modelAndView;
     }

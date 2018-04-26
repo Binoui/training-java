@@ -12,13 +12,13 @@ public class ComputerDTO implements Serializable {
     private static final long serialVersionUID = 7703775467384326831L;
     private long id;
     @NotNull
-    @Size(min=2, max=40)
+    @Size(min = 2, max = 40)
     private String name;
     private CompanyDTO companyDTO;
-    
-    @DateTimeFormat(pattern="dd/MM/yyyy")
+
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private String introduced;
-    @DateTimeFormat(pattern="dd/MM/yyyy")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private String discontinued;
 
     public CompanyDTO getCompanyDTO() {
