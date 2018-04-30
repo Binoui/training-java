@@ -1,10 +1,20 @@
 package com.excilys.formation.cdb.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+public enum UserRole {
+    ROLE_USER("ROLE_USER"),
+    ROLE_ADMIN("ROLE_ADMIN");
 
-@Entity
-@Table(name = "user_role")
-public class UserRole {
+    private String label;
 
+    UserRole(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -22,7 +23,7 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableWebMvc
 @Profile("web")
 @Import(ServiceConfig.class)
-@ComponentScan(basePackages = { "com.excilys.formation.cdb.controllers.web" })
+@ComponentScan(basePackages = { "com.excilys.formation.cdb.config", "com.excilys.formation.cdb.controllers.web" })
 public class WebConfig implements WebMvcConfigurer {
 
     @Override

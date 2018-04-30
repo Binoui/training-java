@@ -19,34 +19,37 @@
 </head>
 <body onload='document.loginForm.username.focus();'>
 	<header class="navbar navbar-inverse navbar-fixed-top">
-	<div class="container">
-		<a class="navbar-brand"
-			href='<tags:links target="dashboard" ></tags:links>'> <spring:message code="dashboard.title"/> </a>
-	</div>
+		<div class="container">
+			<a class="navbar-brand"
+				href='<tags:links target="dashboard" ></tags:links>'> <spring:message
+					code="dashboard.title" />
+			</a>
+		</div>
 	</header>
 	<section id="main">
 		<div class="container">
-		
-			<tags:addErrors/>
-		
+
+			<tags:addErrors />
+
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>
 						<spring:message code="login.header" text="Login" />
 					</h1>
-					<c:url var="loginUrl" value="/login" />
-					<form action="${loginUrl}" method="post" class="form-horizontal">
+					<form:form action="${loginUrl}" modelAttribute="user" method="post" class="form-horizontal">
 						<fieldset>
 							<div class="form-group">
-								<label for="username"><spring:message code="login.name"
-										text="Username" /></label> <input type="text" class="form-control"
-									id="username" name="username"
+								<label for="username"> <spring:message code="login.name"
+										text="Username" />
+								</label> <input type="text" class="form-control" id="username"
+									name="username"
 									placeholder="<spring:message code="login.name" text="" />">
 							</div>
 							<div class="form-group">
-								<label for="password"><spring:message code="login.pass"
-										text="Password" /></label> <input type="password"
-									class="form-control" id="password" name="password"
+								<label for="password"> <spring:message code="login.pass"
+										text="Password" />
+								</label> <input type="password" class="form-control" id="password"
+									name="password"
 									placeholder="<spring:message code="login.pass" text="" />">
 							</div>
 						</fieldset>
@@ -57,7 +60,7 @@
 						</div>
 						<input type="hidden" name="${_csrf.parameterName}"
 							value="${_csrf.token}" />
-					</form>
+					</form:form>
 				</div>
 			</div>
 		</div>

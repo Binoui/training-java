@@ -1,10 +1,9 @@
 package com.excilys.formation.cdb.model;
 
-import java.time.LocalDate;
-import java.util.Optional;
+import java.util.Collection;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,16 +13,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Entity
-@Table(name = "computer")
-public class User {
+@Table(name = "user")
+public class User implements UserDetails {
 
     public static class UserBuilder {
         private Long id;
 
-        private String name;
+        private String username;
 
-        private Company company;
+        private UserRole userRole;
 
         public UserBuilder() {
         }
@@ -32,8 +34,8 @@ public class User {
             return new User(this);
         }
 
-        public UserBuilder withCompany(Company company) {
-            this.company = company;
+        public UserBuilder withUserRole(UserRole userRole) {
+            this.userRole = userRole;
             return this;
         }
 
@@ -42,59 +44,95 @@ public class User {
             return this;
         }
 
-        public UserBuilder withName(String name) {
-            this.name = name;
+        public UserBuilder withUsername(String username) {
+            this.username = username;
             return this;
         }
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ur_id")
+    @Column(name = "us_id")
     private Long id;
 
     @Column(name = "us_username")
     private String username;
 
-    @ManyToOne(optional = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "ur_id")
     private UserRole userRole;
 
     public User() {
     }
 
-    public User(UserBuilder builder) {
-        this.id = builder.id;
-        this.username = builder.name;
+    public User(Long id, String username, UserRole userRole) {
+        this.id = id;
+        this.username = username;
+        this.userRole = userRole;
     }
 
-    public User(String name, String username, UserRole userRole) {
-        this.username = name;
+    public User(UserBuilder builder) {
+        this.id = builder.id;
+        this.username = builder.username;
+        this.userRole = builder.userRole;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
+    public String getUsername() {
         return username;
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
+    public UserRole getUserRole() {
+        return userRole;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.username = name;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 
     @Override
-    public String toString() {
-        return new StringBuilder().append("User ").append(id).append(" : ").append(username).append(" (")
-                .append(introduced).append(" - ").append(discontinued).append(") from ").append(company).toString();
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // TODO Auto-generated method stub
+        return null;
     }
+
+    @Override
+    public String getPassword() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

@@ -47,7 +47,7 @@
 		<aspectj.version>1.9.0</aspectj.version>
 		<hibernate.version>6.0.9.Final</hibernate.version>
 		<hibernate-core.version>5.2.16.Final</hibernate-core.version>
-		<spring-security.version>5.0.3.RELEASE</spring-security.version>
+		<spring-security.version>5.0.4.RELEASE</spring-security.version>
 
 	</properties>
 	<build>
@@ -174,6 +174,11 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
 			<version>${spring-security.version}</version>
 		</dependency>
 
@@ -311,6 +316,12 @@
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
 				<version>${hibernate-core.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>${hibernate.version}</version>
 			</dependency>
 
 			<dependency>
