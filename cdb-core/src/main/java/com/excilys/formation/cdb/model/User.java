@@ -5,9 +5,13 @@ import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -25,7 +29,7 @@ public class User implements UserDetails {
 
         private String password;
 
-        private String userRole;
+        private Collection<Role> roles;
 
         public UserBuilder() {
         }
@@ -34,23 +38,23 @@ public class User implements UserDetails {
             return new User(this);
         }
 
-        public UserBuilder withUserRole(String userRole) {
-            this.userRole = userRole;
-            return this;
-        }
-
         public UserBuilder withId(Long id) {
             this.id = id;
             return this;
         }
 
-        public UserBuilder withUsername(String username) {
-            this.username = username;
+        public UserBuilder withPassword(String password) {
+            this.password = password;
             return this;
         }
 
-        public UserBuilder withPassword(String password) {
-            this.password = password;
+        public UserBuilder withRoles(Collection<Role> roles) {
+            this.roles = roles;
+            return this;
+        }
+
+        public UserBuilder withUsername(String username) {
+            this.username = username;
             return this;
         }
     }
@@ -66,64 +70,52 @@ public class User implements UserDetails {
     @Column(name = "us_password")
     private String password;
 
-    @Column(name = "us_role")
-    private String userRole;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "us_id", referencedColumnName = "us_id"), inverseJoinColumns = @JoinColumn(name = "ro_id", referencedColumnName = "ro_id"))
+    private Collection<Role> roles;
 
     public User() {
     }
 
-    public User(Long id, String username, String userRole, String password) {
+    public User(Long id, String username, String userRole, String password, Collection<Role> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.userRole = userRole;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        this.roles = roles;
     }
 
     public User(UserBuilder builder) {
         this.id = builder.id;
         this.username = builder.username;
         this.password = builder.password;
-        this.userRole = builder.userRole;
+        this.roles = builder.roles;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getLabel()));
+        }
+        return authorities;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getUserRole() {
-        return userRole;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
-    }
-
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority(getUserRole()));
+    public String getPassword() {
+        return password;
+    }
+
+    public Collection<Role> getRoles() {
         return roles;
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return username;
     }
 
     @Override
@@ -144,6 +136,22 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }

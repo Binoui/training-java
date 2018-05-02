@@ -49,6 +49,7 @@
 		<hibernate-core.version>5.2.16.Final</hibernate-core.version>
 		<spring-security.version>5.0.4.RELEASE</spring-security.version>
 		<jjwt.version>0.9.0</jjwt.version>
+		<jackson.version>2.9.5</jackson.version>
 
 	</properties>
 	<build>
@@ -336,6 +337,12 @@
 				<groupId>io.jsonwebtoken</groupId>
 				<artifactId>jjwt</artifactId>
 				<version>${jjwt.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
 			</dependency>
 
 

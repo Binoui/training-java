@@ -53,6 +53,10 @@
 			<c:when test="${target.equals('delete')}">
 				<c:set var="path" value="${path.concat('delete?')}" />
 			</c:when>
+			
+			<c:when test="${target.equals('logout')}">
+				<c:set var="path" value="${path.concat('logout?')}" />
+			</c:when>
 		</c:choose>
 	</c:when>
 	<c:otherwise>

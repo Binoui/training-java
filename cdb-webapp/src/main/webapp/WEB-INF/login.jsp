@@ -24,13 +24,18 @@
 				href='<tags:links target="dashboard" ></tags:links>'> <spring:message
 					code="dashboard.title" />
 			</a>
+			<form action="/ComputerDatabase/logout" method="get">
+				<button type="submit" style="margin-top: 8px; float: right"
+					class="btn btn-default">Logout</button>
+			</form>
+
 		</div>
 	</header>
 	<section id="main">
 		<div class="container">
 
 			<tags:addErrors />
-			
+
 			<c:if test="${logout != null && not empty logout}">
 				<div class="alert alert-success">
 					<strong><spring:message code="logout.message"></spring:message></strong>
@@ -40,7 +45,7 @@
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>
-					<spring:message code="login.header" text="Login" />
+						<spring:message code="login.header" text="Login" />
 					</h1>
 					<form:form action="${loginUrl}" modelAttribute="user" method="post"
 						class="form-horizontal">

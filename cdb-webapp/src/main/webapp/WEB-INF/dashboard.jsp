@@ -23,7 +23,14 @@
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
 		<a class="navbar-brand"
-			href='<tags:links target="dashboard" ></tags:links>'> <spring:message code="dashboard.title"/> </a>
+			href='<tags:links target="dashboard" ></tags:links>'> <spring:message
+				code="dashboard.title" />
+		</a>
+
+		<form action="/ComputerDatabase/logout" method="get">
+			<button type="submit" style="margin-top: 8px; float: right" class="btn btn-default">Logout</button>
+		</form>
+
 	</div>
 	</header>
 
@@ -44,16 +51,21 @@
 					action="<tags:links target="dashboard" itemsPerPage="${itemsPerPage}" search="${search}" pageIndex="${pageNumber}"/>"
 					method="GET" class="form-inline">
 					<input type="search" id="searchbox" name="search"
-						class="form-control" placeholder="<spring:message code="dashboard.search"/>" /> <input
-						type="submit" id="searchsubmit" value="<spring:message code="dashboard.filter"/>"
+						class="form-control"
+						placeholder="<spring:message code="dashboard.search"/>" /> <input
+						type="submit" id="searchsubmit"
+						value="<spring:message code="dashboard.filter"/>"
 						class="btn btn-primary" />
 				</form>
 			</div>
 			<div class="pull-right">
 				<a class="btn btn-success" id="addComputer"
 					href="<tags:links target="addComputer" itemsPerPage="${itemsPerPage}"/>">
-					<spring:message code="dashboard.addComputer"/> </a> <a class="btn btn-default" id="editComputer" href="#"
-					onclick="$.fn.toggleEditMode();"> <spring:message code="dashboard.delete"/> </a>
+					<spring:message code="dashboard.addComputer" />
+				</a> <a class="btn btn-default" id="editComputer" href="#"
+					onclick="$.fn.toggleEditMode();"> <spring:message
+						code="dashboard.delete" />
+				</a>
 			</div>
 		</div>
 	</div>
