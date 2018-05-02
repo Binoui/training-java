@@ -30,13 +30,20 @@
 		<div class="container">
 
 			<tags:addErrors />
+			
+			<c:if test="${logout != null && not empty logout}">
+				<div class="alert alert-success">
+					<strong><spring:message code="logout.message"></spring:message></strong>
+				</div>
+			</c:if>
 
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<h1>
-						<spring:message code="login.header" text="Login" />
+					<spring:message code="login.header" text="Login" />
 					</h1>
-					<form:form action="${loginUrl}" modelAttribute="user" method="post" class="form-horizontal">
+					<form:form action="${loginUrl}" modelAttribute="user" method="post"
+						class="form-horizontal">
 						<fieldset>
 							<div class="form-group">
 								<label for="username"> <spring:message code="login.name"

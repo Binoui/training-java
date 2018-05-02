@@ -18,9 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.cdb.model.Company;
-import com.excilys.formation.cdb.model.Computer;
-
 import com.excilys.formation.cdb.model.Company_;
+import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.model.Computer_;
 
 @Repository("CompanyDAO")

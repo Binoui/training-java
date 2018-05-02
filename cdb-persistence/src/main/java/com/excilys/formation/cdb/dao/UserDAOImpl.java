@@ -2,6 +2,7 @@ package com.excilys.formation.cdb.dao;
 
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -16,11 +17,16 @@ import com.excilys.formation.cdb.model.User_;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
-    
+
     @PersistenceContext
     private EntityManager entityManager;
 
     private CriteriaBuilder criteriaBuilder;
+
+    @Override
+    public void addUser(User user) {
+        entityManager.persist(user);
+    }
 
     @Override
     public Optional<User> getUserByUsername(String username) {
@@ -31,10 +37,9 @@ public class UserDAOImpl implements UserDAO {
         return entityManager.createQuery(query).getResultList().stream().findFirst();
     }
 
-    @Override
-    public void addUser(User user) {
-        entityManager.persist(user);
+    @PostConstruct
+    public void init() {
+        criteriaBuilder = entityManager.getCriteriaBuilder();
     }
-    
-    
+
 }

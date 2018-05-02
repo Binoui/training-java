@@ -1,19 +1,17 @@
 package com.excilys.formation.cdb.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.Column;
-
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
@@ -25,7 +23,9 @@ public class User implements UserDetails {
 
         private String username;
 
-        private UserRole userRole;
+        private String password;
+
+        private String userRole;
 
         public UserBuilder() {
         }
@@ -34,7 +34,7 @@ public class User implements UserDetails {
             return new User(this);
         }
 
-        public UserBuilder withUserRole(UserRole userRole) {
+        public UserBuilder withUserRole(String userRole) {
             this.userRole = userRole;
             return this;
         }
@@ -48,6 +48,11 @@ public class User implements UserDetails {
             this.username = username;
             return this;
         }
+
+        public UserBuilder withPassword(String password) {
+            this.password = password;
+            return this;
+        }
     }
 
     @Id
@@ -58,20 +63,30 @@ public class User implements UserDetails {
     @Column(name = "us_username")
     private String username;
 
-    private UserRole userRole;
+    @Column(name = "us_password")
+    private String password;
+
+    @Column(name = "us_role")
+    private String userRole;
 
     public User() {
     }
 
-    public User(Long id, String username, UserRole userRole) {
+    public User(Long id, String username, String userRole, String password) {
         this.id = id;
         this.username = username;
+        this.password = password;
         this.userRole = userRole;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public User(UserBuilder builder) {
         this.id = builder.id;
         this.username = builder.username;
+        this.password = builder.password;
         this.userRole = builder.userRole;
     }
 
@@ -83,7 +98,7 @@ public class User implements UserDetails {
         return username;
     }
 
-    public UserRole getUserRole() {
+    public String getUserRole() {
         return userRole;
     }
 
@@ -95,44 +110,40 @@ public class User implements UserDetails {
         this.username = username;
     }
 
-    public void setUserRole(UserRole userRole) {
+    public void setUserRole(String userRole) {
         this.userRole = userRole;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
-        return null;
+        Collection<GrantedAuthority> roles = new ArrayList<>();
+        roles.add(new SimpleGrantedAuthority(getUserRole()));
+        return roles;
     }
 
     @Override
     public String getPassword() {
-        // TODO Auto-generated method stub
-        return null;
+        return password;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
 }

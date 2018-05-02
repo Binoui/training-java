@@ -6,7 +6,8 @@ import com.excilys.formation.cdb.model.User;
 
 public interface UserDAO {
 
-    Optional<User> getUserByUsername(String username);
     void addUser(User user);
+
+    Optional<User> getUserByUsername(String username);
 
 }

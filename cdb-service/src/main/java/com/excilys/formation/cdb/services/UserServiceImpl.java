@@ -1,9 +1,6 @@
 package com.excilys.formation.cdb.services;
 
-import java.util.Optional;
-
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +8,7 @@ import com.excilys.formation.cdb.dao.UserDAO;
 import com.excilys.formation.cdb.model.User;
 
 @Service
-public class UserServiceImpl implements UserDetailsService, UserService {
+public class UserServiceImpl implements UserService {
 
     private final AccountStatusUserDetailsChecker detailsChecker = new AccountStatusUserDetailsChecker();
     
@@ -23,12 +20,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public final User loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> optionalUser = userDAO.getUserByUsername(username);
-        
-        if (! optionalUser.isPresent()) {
-            throw new UsernameNotFoundException("user not found");
-        }
-        User user = optionalUser.get();
+        User user = userDAO.getUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("user not found"));
         detailsChecker.check(user);
         return user;
     }
