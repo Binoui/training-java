@@ -48,6 +48,7 @@
 		<hibernate.version>6.0.9.Final</hibernate.version>
 		<hibernate-core.version>5.2.16.Final</hibernate-core.version>
 		<spring-security.version>5.0.4.RELEASE</spring-security.version>
+		<jjwt.version>0.9.0</jjwt.version>
 
 	</properties>
 	<build>
@@ -330,6 +331,13 @@
 				<version>${hibernate-core.version}</version>
 				<scope>provided</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt</artifactId>
+				<version>${jjwt.version}</version>
+			</dependency>
+
 
 		</dependencies>
 	</dependencyManagement>
