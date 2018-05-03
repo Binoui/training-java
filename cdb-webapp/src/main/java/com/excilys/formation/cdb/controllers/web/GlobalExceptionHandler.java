@@ -1,5 +1,6 @@
 package com.excilys.formation.cdb.controllers.web;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -12,6 +13,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     public ModelAndView handle(NoHandlerFoundException exception) {
         ModelAndView model = new ModelAndView("404");
+        model.addObject(EXCEPTION_ATTRIBUTE_NAME, exception);
+        return model;
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ModelAndView handle(AccessDeniedException exception) {
+        ModelAndView model = new ModelAndView("403");
         model.addObject(EXCEPTION_ATTRIBUTE_NAME, exception);
         return model;
     }

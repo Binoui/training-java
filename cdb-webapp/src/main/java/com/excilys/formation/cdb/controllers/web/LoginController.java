@@ -3,8 +3,8 @@ package com.excilys.formation.cdb.controllers.web;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class LoginController {
@@ -16,11 +16,22 @@ public class LoginController {
     }
 
     @GetMapping(value = "/logout")
-    private ModelAndView logoutGet(ModelAndView modelAndView, RedirectAttributes attributes) {
+    private ModelAndView logoutGet(ModelAndView modelAndView) {
         SecurityContextHolder.getContext().setAuthentication(null);
-        attributes.addFlashAttribute("logout");
-        attributes.addFlashAttribute("error", "error!!!!");
+        modelAndView.addObject("logout", "Logout complete !");
         modelAndView.setViewName("login");
+        return modelAndView;
+    }
+
+    @GetMapping(value = "/403")
+    private ModelAndView handle403Get(ModelAndView modelAndView) {
+        modelAndView.setViewName("403");
+        return modelAndView;
+    }
+
+    @PostMapping(value = "/403")
+    private ModelAndView handle403Post(ModelAndView modelAndView) {
+        modelAndView.setViewName("403");
         return modelAndView;
     }
 
