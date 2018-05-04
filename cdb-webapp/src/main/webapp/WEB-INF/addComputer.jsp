@@ -25,7 +25,7 @@
 				href="<tags:links target="dashboard" itemsPerPage="${itemsPerPage}"/>">
 				<spring:message code="dashboard.title" />
 			</a>
-			<form action="/ComputerDatabase/logout" method="get">
+			<form action="<tags:links target="logout"/>" method="get">
 				<button type="submit" style="margin-top: 8px; float: right"
 					class="btn btn-default">Logout</button>
 			</form>
@@ -40,7 +40,7 @@
 					<h1>
 						<spring:message code="add.title" />
 					</h1>
-					<form:form action="/ComputerDatabase/computer/add" method="POST"
+					<form:form action="/cdb-webapp/computer/add" method="POST"
 						modelAttribute="computerDTO" id="createComputerForm"
 						name="createComputerForm">
 						<fieldset>

@@ -24,7 +24,7 @@
 				href='<tags:links target="dashboard" ></tags:links>'> <spring:message
 					code="dashboard.title" />
 			</a>
-			<form action="/ComputerDatabase/logout" method="get">
+			<form action="<tags:links target="logout"/>" method="get">
 				<button type="submit" style="margin-top: 8px; float: right"
 					class="btn btn-default">Logout</button>
 			</form>

@@ -26,7 +26,7 @@
 				<spring:message code="dashboard.title" />
 			</a>
 
-			<form action="/ComputerDatabase/logout" method="get">
+			<form action="<tags:links target="logout"/>" method="get">
 				<button type="submit" style="margin-top: 8px; float: right"
 					class="btn btn-default">Logout</button>
 			</form>
@@ -36,17 +36,18 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<div class="label label-default pull-right">
-						id:
-						<c:out value="${computer.id}" />
-					</div>
-					<tags:addErrors />
-					<h1>
-						<spring:message code="edit.title" />
-					</h1>
-					<form:form action="/ComputerDatabase/computer/edit" method="POST"
+					<form:form action="/cdb-webapp/computer/edit" method="POST"
 						modelAttribute="computerDTO" id="editComputerForm"
 						name="editComputerForm">
+						<div class="label label-default pull-right">
+							id:
+							<c:out value="${computerDTO.id}" />
+						</div>
+						<tags:addErrors />
+						<h1>
+							<spring:message code="edit.title" />
+						</h1>
+
 						<fieldset>
 							<form:input type="hidden" value="${computer.id}"
 								name="computerId" id="computerId" path="id" />

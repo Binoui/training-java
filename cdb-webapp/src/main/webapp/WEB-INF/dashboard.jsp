@@ -27,8 +27,9 @@
 				code="dashboard.title" />
 		</a>
 
-		<form action="/ComputerDatabase/logout" method="get">
-			<button type="submit" style="margin-top: 8px; float: right" class="btn btn-default">Logout</button>
+		<form action="<tags:links target="logout"/>" method="get">
+			<button type="submit" style="margin-top: 8px; float: right"
+				class="btn btn-default">Logout</button>
 		</form>
 
 	</div>
@@ -73,8 +74,8 @@
 	<form id="deleteForm"
 		action="<tags:links target="delete" pageIndex="${pageNumber}" search="${search}" itemsPerPage="${itemsPerPage}" />"
 		method="POST">
-		<input type="hidden" name="selection" value="">
-		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> 
+		<input type="hidden" name="selection" value=""> <input
+			type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	</form>
 
 	<div class="container" style="margin-top: 10px;">

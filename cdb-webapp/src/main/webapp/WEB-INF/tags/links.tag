@@ -10,7 +10,7 @@
 <%@attribute name="oldSort" required="false"%>
 <%@attribute name="ascending" required="false"%>
 
-<c:set var="path" value="/ComputerDatabase/computer/" />
+<c:set var="path" value="/cdb-webapp/computer/" />
 
 <c:choose>
 	<c:when test="${not empty target}">
