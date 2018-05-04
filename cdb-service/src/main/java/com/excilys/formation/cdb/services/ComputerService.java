@@ -12,7 +12,7 @@ public interface ComputerService {
 
     Long createComputer(Computer c) throws IncorrectValidationException, ServiceException;
 
-    void deleteComputer(Computer c) throws UnknownComputerIdException, ServiceException;
+    void deleteComputer(Computer c) throws ServiceException;
 
     void deleteComputers(List<Long> idsToDelete);
 
@@ -38,5 +38,7 @@ public interface ComputerService {
     int getListComputersPageCount(int pageSize, String searchWord);
 
     void updateComputer(Computer c) throws IncorrectValidationException, ServiceException;
+
+    void deleteComputer(long id) throws ServiceException;
 
 }

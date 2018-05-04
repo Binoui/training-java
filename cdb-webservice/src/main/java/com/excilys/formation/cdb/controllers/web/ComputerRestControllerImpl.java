@@ -22,6 +22,7 @@ import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
+import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
 @RestController
 public class ComputerRestControllerImpl implements ComputerRestController {
@@ -51,7 +52,8 @@ public class ComputerRestControllerImpl implements ComputerRestController {
     @Override
     @GetMapping(value = "/computers")
     public List<ComputerDTO> getComputers() {
-        return computerService.getListComputers().stream().map((Computer c) -> ComputerDTOMapper.createComputerDTO(c)).collect(Collectors.toList());
+        return computerService.getListComputers().stream().map((Computer c) -> ComputerDTOMapper.createComputerDTO(c))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -69,9 +71,9 @@ public class ComputerRestControllerImpl implements ComputerRestController {
 
         return response;
     }
-    
+
     @PutMapping(value = "/computer")
-    private ResponseEntity<String> editComputer(@RequestBody ComputerDTO computerDto) {
+    public ResponseEntity<String> editComputer(@RequestBody ComputerDTO computerDto) {
 
         ResponseEntity<String> response;
         try {
@@ -84,11 +86,19 @@ public class ComputerRestControllerImpl implements ComputerRestController {
 
         return response;
     }
-    
-    @DeleteMapping(value = "/delete")
-    private ResponseEntity<String> deleteComputer(@RequestBody List<Long> idsToDelete) {
 
-        computerService.deleteComputers(idsToDelete);
-        return modelAndView;
+    @DeleteMapping(value = "/delete")
+    public ResponseEntity<String> deleteComputer(@PathVariable long id) {
+        ResponseEntity<String> response;
+
+        try {
+            computerService.deleteComputer(id);
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } catch (ServiceException e) {
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        return response;
     }
+
 }

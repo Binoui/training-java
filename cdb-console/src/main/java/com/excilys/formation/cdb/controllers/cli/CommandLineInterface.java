@@ -78,7 +78,7 @@ public class CommandLineInterface {
         Computer c = new ComputerBuilder().withId(id).build();
         try {
             computerService.deleteComputer(c);
-        } catch (ServiceException | UnknownComputerIdException e) {
+        } catch (ServiceException e) {
             Logger.error("couldnt create computer {}", e.getMessage());
         }
     }

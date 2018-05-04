@@ -14,6 +14,7 @@ import com.excilys.formation.cdb.dao.ComputerDAO;
 import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.validators.ComputerValidator;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 import com.excilys.formation.cdb.validators.UnknownCompanyIdException;
@@ -50,6 +51,12 @@ public class ComputerServiceImpl implements ComputerService {
         } else {
             throw new ServiceException("cannot find computer");
         }
+    }
+    
+    @Override
+    @Transactional
+    public void deleteComputer(long id) throws ServiceException {
+        deleteComputer(new ComputerBuilder().withId(id).build());
     }
 
     @Override
