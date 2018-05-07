@@ -2,9 +2,13 @@ package com.excilys.formation.cdb.controllers.cli;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Stream;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -12,6 +16,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Controller;
 
 import com.excilys.formation.cdb.config.ConsoleConfig;
+import com.excilys.formation.cdb.dto.ComputerDTO;
+import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer;
@@ -23,7 +29,7 @@ import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
-import com.excilys.formation.cdb.validators.UnknownComputerIdException;
+import com.excilys.formation.cdb.validators.InvalidDatesException;
 
 @Controller
 public class CommandLineInterface {
@@ -40,16 +46,17 @@ public class CommandLineInterface {
         }
     }
 
+    private Client client;
     private CompanyService companyService;
-
     private ComputerService computerService;
-
     private Scanner scanner;
+    private static final String REST_URL = "http://localhost:8080/cdb-webservice/";
 
     public CommandLineInterface(CompanyService companyService, ComputerService computerService) {
         scanner = new Scanner(System.in);
         this.companyService = companyService;
         this.computerService = computerService;
+        this.client = ClientBuilder.newClient();
     }
 
     private void closeScanner() {
@@ -105,12 +112,14 @@ public class CommandLineInterface {
 
     private void getDetailsComputer() {
         Long id = readNotNullId();
-        Optional<Computer> c = null;
-        c = computerService.getComputer(new ComputerBuilder().withId(id).build());
-        if (c.isPresent()) {
-            System.out.println(c.get());
-        } else {
-            System.out.println("No computer found with id " + id);
+        ComputerDTO c = null;
+
+        c = client.target(REST_URL).path("computer").path("" + id).request(MediaType.APPLICATION_JSON)
+                .get(ComputerDTO.class);
+        try {
+            System.out.println(ComputerDTOMapper.createComputerFromDto(c));
+        } catch (InvalidDatesException e) {
+            Logger.error("Wrong dates {}", e);
         }
     }
 
@@ -285,10 +294,7 @@ public class CommandLineInterface {
         c.setId(readNotNullId());
         readComputer(c);
 
-        try {
-            computerService.updateComputer(c);
-        } catch (IncorrectValidationException | ServiceException e) {
-            System.out.println(e.getMessage());
-        }
+        client.target(REST_URL).path("computer").request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(ComputerDTOMapper.createComputerDTO(c), MediaType.APPLICATION_JSON));
     }
 }
