@@ -86,11 +86,6 @@ public class ComputerServiceImpl implements ComputerService {
     }
 
     @Override
-    public List<Computer> getComputerPage() {
-        return new LinkedList<>();
-    }
-
-    @Override
     public List<Computer> getListComputers() {
         return computerDAO.getListComputers();
     }

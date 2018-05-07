@@ -24,8 +24,6 @@ public interface ComputerService {
 
     int getComputerCount(String searchWord);
 
-    List<Computer> getComputerPage();
-
     List<Computer> getListComputers();
 
     List<Computer> getListComputers(int pageNumber, int pageSize, SortableComputerColumn column, boolean ascending);

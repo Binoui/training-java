@@ -14,7 +14,7 @@ public class ComputerDTO implements Serializable {
     @NotNull
     @Size(min = 2, max = 40)
     private String name;
-    private CompanyDTO companyDTO;
+    private CompanyDTO company;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private String introduced;
@@ -22,7 +22,7 @@ public class ComputerDTO implements Serializable {
     private String discontinued;
 
     public CompanyDTO getCompanyDTO() {
-        return companyDTO;
+        return company;
     }
 
     public String getDiscontinued() {
@@ -42,7 +42,7 @@ public class ComputerDTO implements Serializable {
     }
 
     public void setCompanyDTO(CompanyDTO company) {
-        this.companyDTO = company;
+        this.company = company;
     }
 
     public void setDiscontinued(String discontinued) {
