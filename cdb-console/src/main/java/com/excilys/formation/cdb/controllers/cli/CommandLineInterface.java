@@ -2,13 +2,17 @@ package com.excilys.formation.cdb.controllers.cli;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -16,20 +20,18 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Controller;
 
 import com.excilys.formation.cdb.config.ConsoleConfig;
+import com.excilys.formation.cdb.dto.CompanyDTO;
 import com.excilys.formation.cdb.dto.ComputerDTO;
+import com.excilys.formation.cdb.mapper.CompanyDTOMapper;
 import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer;
-import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
-import com.excilys.formation.cdb.pagination.CompanyListPage;
-import com.excilys.formation.cdb.pagination.ComputerListPage;
-import com.excilys.formation.cdb.pagination.Page;
-import com.excilys.formation.cdb.services.CompanyService;
-import com.excilys.formation.cdb.services.ComputerService;
-import com.excilys.formation.cdb.services.ServiceException;
-import com.excilys.formation.cdb.validators.IncorrectValidationException;
 import com.excilys.formation.cdb.validators.InvalidDatesException;
+
+interface DTOMapper {
+    Object FromDTO(Object a);
+}
 
 @Controller
 public class CommandLineInterface {
@@ -47,15 +49,11 @@ public class CommandLineInterface {
     }
 
     private Client client;
-    private CompanyService companyService;
-    private ComputerService computerService;
     private Scanner scanner;
     private static final String REST_URL = "http://localhost:8080/cdb-webservice/";
 
-    public CommandLineInterface(CompanyService companyService, ComputerService computerService) {
+    public CommandLineInterface() {
         scanner = new Scanner(System.in);
-        this.companyService = companyService;
-        this.computerService = computerService;
         this.client = ClientBuilder.newClient();
     }
 
@@ -66,48 +64,56 @@ public class CommandLineInterface {
     private void createComputer() {
         Computer c = new Computer();
         readComputer(c);
-
-        try {
-            c.setId(computerService.createComputer(c));
-            System.out.println("Created new computer with ID " + c.getId());
-        } catch (ServiceException | IncorrectValidationException e) {
-            Logger.error("couldnt create computer {}", e.getMessage());
-        }
+        client.target(REST_URL).path("computer/").request().post(Entity.entity(ComputerDTOMapper.createComputerDTO(c), MediaType.APPLICATION_JSON));
+        System.out.println("Created new computer");
     }
 
     private void deleteCompany() {
         Long id = readNotNullId();
-        companyService.deleteCompany(id);
+        client.target(REST_URL).path("company/" + id).request().delete();
+        System.out.println("Company deleted !");
     }
 
     private void deleteComputer() {
         Long id = readNotNullId();
-        Computer c = new ComputerBuilder().withId(id).build();
-        try {
-            computerService.deleteComputer(c);
-        } catch (ServiceException e) {
-            Logger.error("couldnt create computer {}", e.getMessage());
-        }
-    }
-
-    private void getCompanyList() {
-        System.out.println("******** Companies List ********");
-
-        try {
-            readPages(new CompanyListPage(companyService));
-        } catch (ServiceException e) {
-            Logger.error("couldnt create computer {}", e.getMessage());
-        }
+        client.target(REST_URL).path("computer/" + id).request().delete();
+        System.out.println("Computer deleted !");
     }
 
     private void getComputerList() {
         System.out.println("******** Computer List ********");
 
+        int pageSize = 10;
+        int pageCount = client.target(REST_URL).path("computers/size/" + pageSize + "/count")
+                .request(MediaType.APPLICATION_JSON).get(Integer.class);
+        GenericType<List<ComputerDTO>> genericType = new GenericType<List<ComputerDTO>>() {
+        };
+        WebTarget computersPath = client.target(REST_URL).path("computers");
         try {
-            readPages(new ComputerListPage(computerService));
-        } catch (ServiceException e) {
-            Logger.error("couldnt create computer {}", e.getMessage());
+            readPages(computersPath, genericType, (c -> {
+                try {
+                    return ComputerDTOMapper.createComputerFromDto((ComputerDTO) c);
+                } catch (InvalidDatesException e) {
+
+                }
+                return null;
+            }), pageCount, pageSize);
+        } catch (Exception e) {
+
         }
+    }
+
+    private void getCompanyList() {
+        System.out.println("******** Companies List ********");
+        int pageSize = 10;
+        int pageCount = client.target(REST_URL).path("companies/size/" + pageSize + "/count")
+                .request(MediaType.APPLICATION_JSON).get(Integer.class);
+        Logger.debug("pageCount : " + pageCount);
+        GenericType<List<CompanyDTO>> genericType = new GenericType<List<CompanyDTO>>() {
+        };
+        WebTarget companiesPath = client.target(REST_URL).path("companies");
+        readPages(companiesPath, genericType, (c -> CompanyDTOMapper.createCompanyFromDto((CompanyDTO) c)), pageCount,
+                pageSize);
     }
 
     private void getDetailsComputer() {
@@ -254,35 +260,37 @@ public class CommandLineInterface {
         return id;
     }
 
-    private <T extends Page<?>> void readPages(T page) {
+    private <T> void readPages(WebTarget restPath, GenericType<List<T>> genericType, DTOMapper dtoMapper, int pageCount,
+            int pageSize) {
         String choice = "f";
 
+        int page = 0;
         while (!choice.equals("q")) {
-
-            try {
-                switch (choice) {
-                case "n":
-                    page.next().forEach(System.out::println);
-                    break;
-                case "p":
-                    page.previous().forEach(System.out::println);
-                    break;
-                case "f":
-                    page.goToFirst().forEach(System.out::println);
-                    break;
-                case "l":
-                    page.goToLast().forEach(System.out::println);
-                    break;
-                case "q":
-                    System.out.println("Closing.");
-                    break;
-                default:
-                    System.out.println("Wrong choice.");
-                }
-            } catch (ServiceException e) {
-                Logger.error("Error while accessing pages {}", e);
-                System.out.println("Error while accessing pages");
+            switch (choice) {
+            case "n":
+                if (page < pageCount - 1)
+                    page++;
+                break;
+            case "p":
+                if (page >= 0)
+                    page--;
+                break;
+            case "f":
+                page = 0;
+                break;
+            case "l":
+                page = pageCount - 1;
+                break;
+            case "q":
+                System.out.println("Closing.");
+                return;
+            default:
+                System.out.println("Wrong choice.");
             }
+
+            Response responseEntity = restPath.path("/page/" + page).path("/size/" + pageSize)
+                    .request(MediaType.APPLICATION_JSON).get(Response.class);
+            responseEntity.readEntity(genericType).stream().map(c -> dtoMapper.FromDTO(c)).forEach(System.out::println);
 
             System.out.println("Reading Pages. Possible choices : [n]ext, [p]revious, [f]irst, [l]ast, [q]uit");
             choice = scanner.nextLine();

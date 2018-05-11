@@ -22,6 +22,7 @@ import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.dto.ComputerDTO;
 import com.excilys.formation.cdb.mapper.ComputerDTOMapper;
 import com.excilys.formation.cdb.model.Computer;
+import com.excilys.formation.cdb.services.CompanyService;
 import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
@@ -63,28 +64,28 @@ public class ComputerRestControllerImpl implements ComputerRestController {
         return computerService.getListComputers().stream().map((Computer c) -> ComputerDTOMapper.createComputerDTO(c))
                 .collect(Collectors.toList());
     }
-
+    
     @Override
-    @GetMapping(value = "/computer/size/{size}/count")
+    @GetMapping(value = "/computers/size/{size}/count")
     public ResponseEntity<Integer> getComputerPageCount(@PathVariable int size) {
         return new ResponseEntity<>(computerService.getListComputersPageCount(size), HttpStatus.OK);
     }
 
     @Override
-    @GetMapping(value = "/computer/page/{page}/size/{size}")
+    @GetMapping(value = "/computers/page/{page}/size/{size}")
     public ResponseEntity<List<ComputerDTO>> getComputerPage(@PathVariable int page, @PathVariable int size) {
         return new ResponseEntity<>(computerService.getListComputers(page, size, SortableComputerColumn.ID, true)
                 .stream().map(c -> ComputerDTOMapper.createComputerDTO(c)).collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @Override
-    @GetMapping(value = "/computer/size/{size}/search/{search}")
+    @GetMapping(value = "/computers/size/{size}/search/{search}")
     public ResponseEntity<Integer> getComputerPageSearchCount(@PathVariable int page, @PathVariable String search) {
         return new ResponseEntity<>(computerService.getListComputersPageCount(page, search), HttpStatus.OK);
     }
     
     @Override
-    @GetMapping(value = "/computer/page/{page}/size/{size}/search/{search}")
+    @GetMapping(value = "/computers/page/{page}/size/{size}/search/{search}")
     public ResponseEntity<List<ComputerDTO>> getComputerPageSearch(@PathVariable int page, @PathVariable int size,
             @PathVariable String search) {
         return new ResponseEntity<>(
@@ -94,7 +95,7 @@ public class ComputerRestControllerImpl implements ComputerRestController {
     }
 
     @Override
-    @GetMapping(value = "/computer/page/{page}/size/{size}/column/{column}/ascending/{ascending}")
+    @GetMapping(value = "/computers/page/{page}/size/{size}/column/{column}/ascending/{ascending}")
     public ResponseEntity<List<ComputerDTO>> getComputerPageSorted(@PathVariable int page, @PathVariable int size,
             @PathVariable SortableComputerColumn column, @PathVariable boolean ascending) {
         return new ResponseEntity<>(computerService.getListComputers(page, size, column, ascending).stream()
@@ -102,7 +103,7 @@ public class ComputerRestControllerImpl implements ComputerRestController {
     }
 
     @Override
-    @GetMapping(value = "/computer/page/{page}/size/{size}/search/{search}/column/{column}/ascending/{ascending}")
+    @GetMapping(value = "/computers/page/{page}/size/{size}/search/{search}/column/{column}/ascending/{ascending}")
     public ResponseEntity<List<ComputerDTO>> getComputerPageSortedSearch(@PathVariable int page, @PathVariable int size,
             @PathVariable String search, @PathVariable SortableComputerColumn column, @PathVariable boolean ascending) {
         return new ResponseEntity<>(computerService.getListComputers(page, size, column, ascending, search).stream()
@@ -116,7 +117,7 @@ public class ComputerRestControllerImpl implements ComputerRestController {
         ResponseEntity<String> response;
         try {
             computerService.createComputer(ComputerDTOMapper.createComputerFromDto(computerDTO));
-            response = new ResponseEntity<>(HttpStatus.OK);
+            response = new ResponseEntity<>(HttpStatus.CREATED);
         } catch (ServiceException | IncorrectValidationException e) {
             LOGGER.debug("couldn't create computer {}", e);
             response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -142,12 +143,12 @@ public class ComputerRestControllerImpl implements ComputerRestController {
     }
 
     @Override
-    @DeleteMapping(value = "/computer")
+    @DeleteMapping(value = "/computer/{id}")
     public ResponseEntity<String> deleteComputer(@PathVariable long id) {
         ResponseEntity<String> response;
 
         try {
-            computerService.deleteComputer(id);
+            CompanyService.deleteComputer(id);
             response = new ResponseEntity<>(HttpStatus.OK);
         } catch (ServiceException e) {
             response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

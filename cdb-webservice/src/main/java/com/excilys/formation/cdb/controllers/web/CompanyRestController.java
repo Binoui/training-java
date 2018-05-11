@@ -14,4 +14,10 @@ public interface CompanyRestController {
 
     List<CompanyDTO> getCompanies();
 
+    ResponseEntity<Integer> getCompanyPageCount(int size);
+
+    ResponseEntity<List<CompanyDTO>> getCompanyPage(int page, int size);
+
+    ResponseEntity<String> deleteCompany(long id);
+
 }
