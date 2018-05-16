@@ -20,4 +20,6 @@ public interface CompanyRestController {
 
     ResponseEntity<String> deleteCompany(long id);
 
+    ResponseEntity<String> editCompany(CompanyDTO companyDto);
+
 }

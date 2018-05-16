@@ -1,5 +1,6 @@
 package com.excilys.formation.cdb.controllers.web;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -70,7 +71,7 @@ public class ComputerRestControllerImpl implements ComputerRestController {
     public ResponseEntity<Integer> getComputerPageCount(@PathVariable int size) {
         return new ResponseEntity<>(computerService.getListComputersPageCount(size), HttpStatus.OK);
     }
-
+    
     @Override
     @GetMapping(value = "/computers/page/{page}/size/{size}")
     public ResponseEntity<List<ComputerDTO>> getComputerPage(@PathVariable int page, @PathVariable int size) {
@@ -148,7 +149,7 @@ public class ComputerRestControllerImpl implements ComputerRestController {
         ResponseEntity<String> response;
 
         try {
-            CompanyService.deleteComputer(id);
+            computerService.deleteComputer(id);
             response = new ResponseEntity<>(HttpStatus.OK);
         } catch (ServiceException e) {
             response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

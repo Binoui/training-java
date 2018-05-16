@@ -26,6 +26,11 @@ public class CompanyServiceImpl implements CompanyService {
     public void deleteCompany(Long id) {
         companyDAO.deleteCompany(id);
     }
+    
+    @Override
+    public void updateCompany(Company c) {
+        companyDAO.updateCompany(c);
+    }
 
     @Override
     public Optional<Company> getCompany(Company c) {

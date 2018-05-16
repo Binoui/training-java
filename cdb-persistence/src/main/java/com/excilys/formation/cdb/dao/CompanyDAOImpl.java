@@ -101,4 +101,10 @@ public class CompanyDAOImpl implements CompanyDAO {
     public void init() {
         criteriaBuilder = entityManager.getCriteriaBuilder();
     }
+
+    @Override
+    public void updateCompany(Company company) {
+        Logger.info("update company");
+        entityManager.merge(company);
+    }
 }

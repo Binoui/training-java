@@ -17,4 +17,6 @@ public interface CompanyDAO {
     List<Company> getListCompanies(int pageNumber, int pageSize);
 
     public int getListCompaniesPageCount(int pageSize);
+
+    void updateCompany(Company c);
 }

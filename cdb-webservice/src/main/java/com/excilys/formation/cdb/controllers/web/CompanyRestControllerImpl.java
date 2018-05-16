@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.excilys.formation.cdb.dto.CompanyDTO;
@@ -61,6 +63,22 @@ public class CompanyRestControllerImpl implements CompanyRestController {
     public ResponseEntity<List<CompanyDTO>> getCompanyPage(@PathVariable int page, @PathVariable int size) {
         return new ResponseEntity<>(companyService.getListCompanies(page, size)
                 .stream().map(c -> CompanyDTOMapper.createCompanyDTO(c)).collect(Collectors.toList()), HttpStatus.OK);
+    }
+    
+    @Override
+    @PutMapping(value = "/company")
+    public ResponseEntity<String> editCompany(@RequestBody CompanyDTO companyDto) {
+
+        ResponseEntity<String> response;
+        try {
+            companyService.updateCompany(CompanyDTOMapper.createCompanyFromDto(companyDto));
+            response = new ResponseEntity<>(HttpStatus.OK);
+        } catch (ServiceException | IncorrectValidationException e) {
+            LOGGER.debug("Cannot edit company {}", e);
+            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        return response;
     }
     
     @Override
