@@ -20,4 +20,5 @@ public interface CompanyService {
 
     Optional<Company> getCompany(Company c);
 
+    void updateCompany(Company c);
 }

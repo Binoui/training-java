@@ -28,6 +28,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
     
     @Override
+    @Transactional
     public void updateCompany(Company c) {
         companyDAO.updateCompany(c);
     }

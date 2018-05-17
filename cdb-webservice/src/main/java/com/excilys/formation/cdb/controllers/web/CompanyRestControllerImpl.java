@@ -70,19 +70,13 @@ public class CompanyRestControllerImpl implements CompanyRestController {
     public ResponseEntity<String> editCompany(@RequestBody CompanyDTO companyDto) {
 
         ResponseEntity<String> response;
-        try {
-            companyService.updateCompany(CompanyDTOMapper.createCompanyFromDto(companyDto));
-            response = new ResponseEntity<>(HttpStatus.OK);
-        } catch (ServiceException | IncorrectValidationException e) {
-            LOGGER.debug("Cannot edit company {}", e);
-            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-
+        companyService.updateCompany(CompanyDTOMapper.createCompanyFromDto(companyDto));
+        response = new ResponseEntity<>(HttpStatus.OK);
         return response;
     }
     
     @Override
-    @DeleteMapping(value = "/computer/{id}")
+    @DeleteMapping(value = "/company/{id}")
     public ResponseEntity<String> deleteCompany(@PathVariable long id) {
         ResponseEntity<String> response;
         companyService.deleteCompany(id);
