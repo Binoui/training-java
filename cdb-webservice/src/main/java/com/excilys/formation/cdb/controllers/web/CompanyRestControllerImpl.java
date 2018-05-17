@@ -19,8 +19,15 @@ import com.excilys.formation.cdb.dto.CompanyDTO;
 import com.excilys.formation.cdb.mapper.CompanyDTOMapper;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.services.CompanyService;
+import com.excilys.formation.cdb.services.ServiceException;
+import com.excilys.formation.cdb.validators.IncorrectValidationException;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @RestController
+@Api
 public class CompanyRestControllerImpl implements CompanyRestController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CompanyRestControllerImpl.class);
@@ -32,8 +39,13 @@ public class CompanyRestControllerImpl implements CompanyRestController {
     }
 
     @Override
+    @ApiOperation(
+            value = "Find company from an Id",
+            response = CompanyDTO.class
+        )
     @GetMapping(value = "/company/{id}")
-    public ResponseEntity<CompanyDTO> getCompany(@PathVariable long id) {
+    public ResponseEntity<CompanyDTO> getCompany(@ApiParam( value = "Page to fetch", required = true ) @PathVariable long id) {
+        
         ResponseEntity<CompanyDTO> response;
         Optional<Company> optionalCompany = companyService.getCompany(id);
         if (optionalCompany.isPresent()) {
@@ -46,6 +58,11 @@ public class CompanyRestControllerImpl implements CompanyRestController {
     }
 
     @Override
+    @ApiOperation(
+            value = "List all companies",
+            response = CompanyDTO.class,
+            responseContainer = "List"
+        )
     @GetMapping(value = "/companies")
     public List<CompanyDTO> getCompanies() {
         return companyService.getListCompanies().stream().map((Company c) -> CompanyDTOMapper.createCompanyDTO(c))
@@ -53,12 +70,21 @@ public class CompanyRestControllerImpl implements CompanyRestController {
     }
     
     @Override
+    @ApiOperation(
+            value = "Get the count of company",
+            response = Integer.class
+        )
     @GetMapping(value = "/companies/size/{size}/count")
     public ResponseEntity<Integer> getCompanyPageCount(@PathVariable int size) {
         return new ResponseEntity<>(companyService.getListCompaniesPageCount(size), HttpStatus.OK);
     }
 
     @Override
+    @ApiOperation(
+            value = "List companies with page and size of the page",
+            response = CompanyDTO.class,
+            responseContainer = "List"
+        )
     @GetMapping(value = "/companies/page/{page}/size/{size}")
     public ResponseEntity<List<CompanyDTO>> getCompanyPage(@PathVariable int page, @PathVariable int size) {
         return new ResponseEntity<>(companyService.getListCompanies(page, size)
@@ -66,17 +92,16 @@ public class CompanyRestControllerImpl implements CompanyRestController {
     }
     
     @Override
+    @ApiOperation(
+            value = "Update company from an Id",
+            response = CompanyDTO.class
+        )
     @PutMapping(value = "/company")
     public ResponseEntity<String> editCompany(@RequestBody CompanyDTO companyDto) {
 
         ResponseEntity<String> response;
-        try {
-            companyService.updateCompany(CompanyDTOMapper.createCompanyFromDto(companyDto));
-            response = new ResponseEntity<>(HttpStatus.OK);
-        } catch (ServiceException | IncorrectValidationException e) {
-            LOGGER.debug("Cannot edit company {}", e);
-            response = new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        companyService.updateCompany(CompanyDTOMapper.createCompanyFromDto(companyDto));
+        response = new ResponseEntity<>(HttpStatus.OK);
 
         return response;
     }

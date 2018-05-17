@@ -6,7 +6,7 @@ import com.excilys.formation.cdb.dao.SortableComputerColumn;
 
 class SortableComputerColumnEnumConverter extends PropertyEditorSupport {
     @Override
-    public void setAsText(final String text) throws IllegalArgumentException {
+    public void setAsText(final String text) {
         setValue(SortableComputerColumn.valueOf(text.trim().toUpperCase()));
     }
 }
