@@ -1,6 +1,5 @@
 package com.excilys.formation.cdb.services;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,7 +51,7 @@ public class ComputerServiceImpl implements ComputerService {
             throw new ServiceException("cannot find computer");
         }
     }
-    
+
     @Override
     @Transactional
     public void deleteComputer(long id) throws ServiceException {

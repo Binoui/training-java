@@ -6,7 +6,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,9 +25,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         this.userDetailsService = userService;
     }
 
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder(11);
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                // .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests().antMatchers("/computer/edit", "/computer/add", "/computer/delete")
+                .access("hasRole('ROLE_ADMIN')").and().formLogin().loginPage("/login").usernameParameter("username")
+                .passwordParameter("password").defaultSuccessUrl("/computer/dashboard").and().logout()
+                .logoutUrl("/logout").logoutSuccessUrl("/computer/dashboard").and().csrf().and().exceptionHandling()
+                .accessDeniedPage("/403").and().addFilter(digestAuthenticationFilter());
     }
 
     @Bean
@@ -48,14 +53,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         return filter;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                // .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/computer/edit", "/computer/add", "/computer/delete")
-                .access("hasRole('ROLE_ADMIN')").and().formLogin().loginPage("/login").usernameParameter("username")
-                .passwordParameter("password").defaultSuccessUrl("/computer/dashboard").and().logout()
-                .logoutUrl("/logout").logoutSuccessUrl("/computer/dashboard").and().csrf().and().exceptionHandling()
-                .accessDeniedPage("/403").and().addFilter(digestAuthenticationFilter());
+    @Bean
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder(11);
     }
 }

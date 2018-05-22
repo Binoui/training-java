@@ -6,13 +6,14 @@ import java.util.Optional;
 import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
-import com.excilys.formation.cdb.validators.UnknownComputerIdException;
 
 public interface ComputerService {
 
     Long createComputer(Computer c) throws IncorrectValidationException, ServiceException;
 
     void deleteComputer(Computer c) throws ServiceException;
+
+    void deleteComputer(long id) throws ServiceException;
 
     void deleteComputers(List<Long> idsToDelete);
 
@@ -36,7 +37,5 @@ public interface ComputerService {
     int getListComputersPageCount(int pageSize, String searchWord);
 
     void updateComputer(Computer c) throws IncorrectValidationException, ServiceException;
-
-    void deleteComputer(long id) throws ServiceException;
 
 }

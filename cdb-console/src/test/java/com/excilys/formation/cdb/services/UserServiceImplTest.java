@@ -7,7 +7,6 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,7 +23,7 @@ public class UserServiceImplTest {
 
     @Autowired
     private UserService userService;
-    
+
     @Test
     public void test() throws UserPrincipalNotFoundException {
         User user = userService.loadUserByUsername("user");

@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.cdb.dao.CompanyDAO;
+import com.excilys.formation.cdb.dao.SortableCompanyColumn;
 import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 
@@ -26,12 +27,6 @@ public class CompanyServiceImpl implements CompanyService {
     public void deleteCompany(Long id) {
         companyDAO.deleteCompany(id);
     }
-    
-    @Override
-    @Transactional
-    public void updateCompany(Company c) {
-        companyDAO.updateCompany(c);
-    }
 
     @Override
     public Optional<Company> getCompany(Company c) {
@@ -44,17 +39,29 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public List<Computer> getCompanyComputers(int idCompany) {
+        return companyDAO.getCompanyComputers(idCompany);
+    }
+
+    @Override
     public List<Company> getListCompanies() {
         return companyDAO.getListCompanies();
     }
 
     @Override
-    public List<Company> getListCompanies(int pageNumber, int pageSize) {
-        return companyDAO.getListCompanies(pageNumber, pageSize);
+    public int getListCompaniesPageCount(int pageSize) {
+        return companyDAO.getListCompaniesPageCount(pageSize);
     }
 
     @Override
-    public int getListCompaniesPageCount(int pageSize) {
-        return companyDAO.getListCompaniesPageCount(pageSize);
+    @Transactional
+    public void updateCompany(Company c) {
+        companyDAO.updateCompany(c);
+    }
+
+    @Override
+    public List<Company> getListCompanies(int pageNumber, int pageSize, SortableCompanyColumn column, boolean ascending,
+            String search) {
+        return companyDAO.getListCompanies(pageNumber, pageSize, column, ascending, search);
     }
 }

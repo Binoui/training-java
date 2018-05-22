@@ -9,6 +9,18 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class LoginController {
 
+    @GetMapping(value = "/403")
+    private ModelAndView handle403Get(ModelAndView modelAndView) {
+        modelAndView.setViewName("403");
+        return modelAndView;
+    }
+
+    @PostMapping(value = "/403")
+    private ModelAndView handle403Post(ModelAndView modelAndView) {
+        modelAndView.setViewName("403");
+        return modelAndView;
+    }
+
     @GetMapping(value = "/login")
     private ModelAndView loginGet(ModelAndView modelAndView) {
         modelAndView.setViewName("login");
@@ -20,18 +32,6 @@ public class LoginController {
         SecurityContextHolder.getContext().setAuthentication(null);
         modelAndView.addObject("logout", "Logout complete !");
         modelAndView.setViewName("login");
-        return modelAndView;
-    }
-
-    @GetMapping(value = "/403")
-    private ModelAndView handle403Get(ModelAndView modelAndView) {
-        modelAndView.setViewName("403");
-        return modelAndView;
-    }
-
-    @PostMapping(value = "/403")
-    private ModelAndView handle403Post(ModelAndView modelAndView) {
-        modelAndView.setViewName("403");
         return modelAndView;
     }
 
