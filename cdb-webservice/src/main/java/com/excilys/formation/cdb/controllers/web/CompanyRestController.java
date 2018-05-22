@@ -20,8 +20,6 @@ public interface CompanyRestController {
 
     List<ComputerDTO> getCompanyComputers(int idCompany);
 
-    ResponseEntity<Integer> getCompanyPageCount(int size);
-
     ResponseEntity<List<CompanyDTO>> getCompanyPageSortedSearch(int page, int size, String search,
             SortableCompanyColumn column, boolean ascending);
 

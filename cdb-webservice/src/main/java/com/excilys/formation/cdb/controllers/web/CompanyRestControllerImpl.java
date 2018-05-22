@@ -105,13 +105,6 @@ public class CompanyRestControllerImpl implements CompanyRestController {
     }
 
     @Override
-    @ApiOperation(value = "Get the count of company", response = Integer.class)
-    @GetMapping(value = "/companies/size/{size}/count")
-    public ResponseEntity<Integer> getCompanyPageCount(@PathVariable int size) {
-        return new ResponseEntity<>(companyService.getListCompaniesPageCount(size), HttpStatus.OK);
-    }
-
-    @Override
     @GetMapping(value = "/companies/page")
     public ResponseEntity<List<CompanyDTO>> getCompanyPageSortedSearch(@RequestParam int page,
             @RequestParam(defaultValue = "10") int size,
