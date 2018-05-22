@@ -28,4 +28,6 @@ public interface CompanyService {
     void createCompany(Company c);
 
     int getListCompaniesPageCount(int size, String search);
+
+    int getCompaniesCount(String searchWord);
 }
