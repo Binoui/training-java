@@ -25,4 +25,6 @@ public interface CompanyDAO {
 
     List<Company> getListCompanies(int pageNumber, int pageSize, SortableCompanyColumn sortBy, boolean ascending,
             String searchWord);
+
+    void createCompany(Company c);
 }

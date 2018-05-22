@@ -10,11 +10,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +33,13 @@ public class CompanyDAOImpl implements CompanyDAO {
     private EntityManager entityManager;
 
     private CriteriaBuilder criteriaBuilder;
+
+    @Override
+    public void createCompany(Company c) {
+        c.setId(null);
+        entityManager.persist(c);
+        entityManager.flush();
+    }
 
     @Override
     public void deleteCompany(Long id) {
@@ -122,6 +126,15 @@ public class CompanyDAOImpl implements CompanyDAO {
         return getPageFromQuery(pageNumber, pageSize, criteriaQuery);
     }
 
+    @Override
+    public int getListCompaniesPageCount(int pageSize) {
+        Logger.info("get page count");
+        CriteriaBuilder qb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+        cq.select(qb.count(cq.from(Company.class)));
+        return (int) Math.ceil(entityManager.createQuery(cq).getSingleResult() / (double) pageSize);
+    }
+
     private Order getOrderByFromAscending(SortableCompanyColumn column, boolean ascending, Root<Company> root) {
         Order orderBy;
         if (ascending) {
@@ -137,15 +150,6 @@ public class CompanyDAOImpl implements CompanyDAO {
         typedQuery.setFirstResult(pageSize * pageNumber);
         typedQuery.setMaxResults(pageSize);
         return typedQuery.getResultList();
-    }
-
-    @Override
-    public int getListCompaniesPageCount(int pageSize) {
-        Logger.info("get page count");
-        CriteriaBuilder qb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
-        cq.select(qb.count(cq.from(Company.class)));
-        return (int) Math.ceil(entityManager.createQuery(cq).getSingleResult() / (double) pageSize);
     }
 
     @PostConstruct

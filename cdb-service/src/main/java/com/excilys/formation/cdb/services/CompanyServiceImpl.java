@@ -64,4 +64,9 @@ public class CompanyServiceImpl implements CompanyService {
             String search) {
         return companyDAO.getListCompanies(pageNumber, pageSize, column, ascending, search);
     }
+
+    @Override
+    public void createCompany(Company c) {
+        companyDAO.createCompany(c);
+    }
 }

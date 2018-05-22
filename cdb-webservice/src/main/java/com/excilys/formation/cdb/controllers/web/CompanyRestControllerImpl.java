@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,6 +41,13 @@ public class CompanyRestControllerImpl implements CompanyRestController {
 
     public CompanyRestControllerImpl(CompanyService companyService) {
         this.companyService = companyService;
+    }
+
+    @Override
+    @PostMapping(value = "/company")
+    public ResponseEntity<String> createCompany(@RequestBody String companyName) {
+        companyService.createCompany(new Company(0l, companyName));
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
@@ -90,6 +98,7 @@ public class CompanyRestControllerImpl implements CompanyRestController {
 
     @Override
     @GetMapping(value = "/company/{id}/computers")
+    @ApiOperation(value = "Get all computers from a given company", response = ComputerDTO.class, responseContainer = "List")
     public List<ComputerDTO> getCompanyComputers(@PathVariable int id) {
         return companyService.getCompanyComputers(id).stream().map(c -> ComputerDTOMapper.createComputerDTO(c))
                 .collect(Collectors.toList());
@@ -105,7 +114,7 @@ public class CompanyRestControllerImpl implements CompanyRestController {
     @Override
     @GetMapping(value = "/companies/page")
     public ResponseEntity<List<CompanyDTO>> getCompanyPageSortedSearch(@RequestParam int page,
-            @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "", required = false) String search,
             @RequestParam(defaultValue = "ID") SortableCompanyColumn column,
             @RequestParam(defaultValue = "true") boolean ascending) {
         return new ResponseEntity<>(companyService.getListCompanies(page, size, column, ascending, search).stream()

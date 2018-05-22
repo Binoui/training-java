@@ -28,8 +28,11 @@ import com.excilys.formation.cdb.services.ComputerService;
 import com.excilys.formation.cdb.services.ServiceException;
 import com.excilys.formation.cdb.validators.IncorrectValidationException;
 
+import io.swagger.annotations.Api;
+
 @RestController
 @CrossOrigin
+@Api
 public class ComputerRestControllerImpl implements ComputerRestController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputerRestControllerImpl.class);
@@ -104,14 +107,14 @@ public class ComputerRestControllerImpl implements ComputerRestController {
     @Override
     @GetMapping(value = "/computers/page/count")
     public ResponseEntity<Integer> getComputerPageCountSearch(@RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "") String search) {
+            @RequestParam(defaultValue = "", required = false) String search) {
         return new ResponseEntity<>(computerService.getListComputersPageCount(size, search), HttpStatus.OK);
     }
 
     @Override
     @GetMapping(value = "/computers/page")
     public ResponseEntity<List<ComputerDTO>> getComputerPageSortedSearch(@RequestParam int page,
-            @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "", required = false) String search,
             @RequestParam(defaultValue = "ID") SortableComputerColumn column,
             @RequestParam(defaultValue = "true") boolean ascending) {
         return new ResponseEntity<>(computerService.getListComputers(page, size, column, ascending, search).stream()

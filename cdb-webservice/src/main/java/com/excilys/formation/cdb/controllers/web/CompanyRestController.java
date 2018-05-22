@@ -25,4 +25,6 @@ public interface CompanyRestController {
     ResponseEntity<List<CompanyDTO>> getCompanyPageSortedSearch(int page, int size, String search,
             SortableCompanyColumn column, boolean ascending);
 
+    ResponseEntity<String> createCompany(String name);
+
 }
