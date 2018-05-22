@@ -11,22 +11,23 @@ import com.excilys.formation.cdb.model.User;
 public class UserServiceImpl implements UserService {
 
     private final AccountStatusUserDetailsChecker detailsChecker = new AccountStatusUserDetailsChecker();
-    
+
     private UserDAO userDAO;
-    
+
     public UserServiceImpl(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
     @Override
-    public final User loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDAO.getUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("user not found"));
-        detailsChecker.check(user);
-        return user;
+    public void addUser(User user) {
+        userDAO.addUser(user);
     }
 
     @Override
-    public void addUser(User user) {
-        userDAO.addUser(user);
+    public final User loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userDAO.getUserByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        detailsChecker.check(user);
+        return user;
     }
 }

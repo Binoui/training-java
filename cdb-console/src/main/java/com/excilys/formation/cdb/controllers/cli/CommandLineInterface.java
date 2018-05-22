@@ -29,14 +29,12 @@ import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 import com.excilys.formation.cdb.model.Computer;
 import com.excilys.formation.cdb.validators.InvalidDatesException;
 
-interface DTOMapper {
-    Object FromDTO(Object a);
-}
-
 @Controller
 public class CommandLineInterface {
 
     private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(CommandLineInterface.class);
+
+    private static final String REST_URL = "http://localhost:8080/cdb-webservice/";
 
     public static void main(String[] arg) {
         @SuppressWarnings("resource")
@@ -50,7 +48,6 @@ public class CommandLineInterface {
 
     private Client client;
     private Scanner scanner;
-    private static final String REST_URL = "http://localhost:8080/cdb-webservice/";
 
     public CommandLineInterface() {
         scanner = new Scanner(System.in);
@@ -64,7 +61,8 @@ public class CommandLineInterface {
     private void createComputer() {
         Computer c = new Computer();
         readComputer(c);
-        client.target(REST_URL).path("computer/").request().post(Entity.entity(ComputerDTOMapper.createComputerDTO(c), MediaType.APPLICATION_JSON));
+        client.target(REST_URL).path("computer/").request()
+                .post(Entity.entity(ComputerDTOMapper.createComputerDTO(c), MediaType.APPLICATION_JSON));
         System.out.println("Created new computer");
     }
 
@@ -78,6 +76,19 @@ public class CommandLineInterface {
         Long id = readNotNullId();
         client.target(REST_URL).path("computer/" + id).request().delete();
         System.out.println("Computer deleted !");
+    }
+
+    private void getCompanyList() {
+        System.out.println("******** Companies List ********");
+        int pageSize = 10;
+        int pageCount = client.target(REST_URL).path("companies/size/" + pageSize + "/count")
+                .request(MediaType.APPLICATION_JSON).get(Integer.class);
+        Logger.debug("pageCount : " + pageCount);
+        GenericType<List<CompanyDTO>> genericType = new GenericType<List<CompanyDTO>>() {
+        };
+        WebTarget companiesPath = client.target(REST_URL).path("companies");
+        readPages(companiesPath, genericType, (c -> CompanyDTOMapper.createCompanyFromDto((CompanyDTO) c)), pageCount,
+                pageSize);
     }
 
     private void getComputerList() {
@@ -101,19 +112,6 @@ public class CommandLineInterface {
         } catch (Exception e) {
 
         }
-    }
-
-    private void getCompanyList() {
-        System.out.println("******** Companies List ********");
-        int pageSize = 10;
-        int pageCount = client.target(REST_URL).path("companies/size/" + pageSize + "/count")
-                .request(MediaType.APPLICATION_JSON).get(Integer.class);
-        Logger.debug("pageCount : " + pageCount);
-        GenericType<List<CompanyDTO>> genericType = new GenericType<List<CompanyDTO>>() {
-        };
-        WebTarget companiesPath = client.target(REST_URL).path("companies");
-        readPages(companiesPath, genericType, (c -> CompanyDTOMapper.createCompanyFromDto((CompanyDTO) c)), pageCount,
-                pageSize);
     }
 
     private void getDetailsComputer() {
@@ -268,12 +266,14 @@ public class CommandLineInterface {
         while (!choice.equals("q")) {
             switch (choice) {
             case "n":
-                if (page < pageCount - 1)
+                if (page < (pageCount - 1)) {
                     page++;
+                }
                 break;
             case "p":
-                if (page >= 0)
+                if (page >= 0) {
                     page--;
+                }
                 break;
             case "f":
                 page = 0;
@@ -305,4 +305,8 @@ public class CommandLineInterface {
         client.target(REST_URL).path("computer").request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(ComputerDTOMapper.createComputerDTO(c), MediaType.APPLICATION_JSON));
     }
+}
+
+interface DTOMapper {
+    Object FromDTO(Object a);
 }

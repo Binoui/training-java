@@ -10,16 +10,16 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 public class GlobalExceptionHandler {
     private static final String EXCEPTION_ATTRIBUTE_NAME = "exception";
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ModelAndView handle(NoHandlerFoundException exception) {
-        ModelAndView model = new ModelAndView("404");
+    @ExceptionHandler(AccessDeniedException.class)
+    public ModelAndView handle(AccessDeniedException exception) {
+        ModelAndView model = new ModelAndView("403");
         model.addObject(EXCEPTION_ATTRIBUTE_NAME, exception);
         return model;
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ModelAndView handle(AccessDeniedException exception) {
-        ModelAndView model = new ModelAndView("403");
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ModelAndView handle(NoHandlerFoundException exception) {
+        ModelAndView model = new ModelAndView("404");
         model.addObject(EXCEPTION_ATTRIBUTE_NAME, exception);
         return model;
     }

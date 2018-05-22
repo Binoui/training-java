@@ -7,8 +7,9 @@ import com.excilys.formation.cdb.model.User;
 
 public interface UserService extends UserDetailsService {
 
-    User loadUserByUsername(String username) throws UsernameNotFoundException;
-
     void addUser(User user);
+
+    @Override
+    User loadUserByUsername(String username) throws UsernameNotFoundException;
 
 }

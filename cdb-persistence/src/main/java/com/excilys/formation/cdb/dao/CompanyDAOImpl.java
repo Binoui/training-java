@@ -10,9 +10,14 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -68,6 +73,15 @@ public class CompanyDAOImpl implements CompanyDAO {
     }
 
     @Override
+    public List<Computer> getCompanyComputers(int idCompany) {
+        CriteriaBuilder qb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Computer> query = qb.createQuery(Computer.class);
+        Root<Computer> rootComputer = query.from(Computer.class);
+        query.where(criteriaBuilder.equal(rootComputer.get(Computer_.company), idCompany));
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    @Override
     public List<Company> getListCompanies() {
         Logger.info("get list companies");
         CriteriaQuery<Company> query = entityManager.getCriteriaBuilder().createQuery(Company.class);
@@ -82,7 +96,44 @@ public class CompanyDAOImpl implements CompanyDAO {
         CriteriaQuery<Company> criteriaQuery = criteriaBuilder.createQuery(Company.class);
         Root<Company> from = criteriaQuery.from(Company.class);
         CriteriaQuery<Company> select = criteriaQuery.select(from);
-        TypedQuery<Company> typedQuery = entityManager.createQuery(select);
+        return getPageFromQuery(pageNumber, pageSize, select);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Company> getListCompanies(int pageNumber, int pageSize, SortableCompanyColumn column, boolean ascending,
+            String searchWord) {
+        Logger.info("list companies with pages / search");
+        if (StringUtils.isBlank(searchWord)) {
+            Logger.info("search word was null, using regular list companies");
+            return getListCompanies(pageNumber, pageSize);
+        }
+
+        searchWord = '%' + searchWord + '%';
+
+        CriteriaQuery<Company> criteriaQuery = criteriaBuilder.createQuery(Company.class);
+        Root<Company> root = criteriaQuery.from(Company.class);
+        Path<String> companyNamePath = root.get(Company_.ca_name);
+        criteriaQuery.where(criteriaBuilder.like(companyNamePath, searchWord));
+
+        Order orderBy = getOrderByFromAscending(column, ascending, root);
+        criteriaQuery.orderBy(orderBy);
+
+        return getPageFromQuery(pageNumber, pageSize, criteriaQuery);
+    }
+
+    private Order getOrderByFromAscending(SortableCompanyColumn column, boolean ascending, Root<Company> root) {
+        Order orderBy;
+        if (ascending) {
+            orderBy = criteriaBuilder.asc(root.get(column.getColumn()));
+        } else {
+            orderBy = criteriaBuilder.desc(root.get(column.getColumn()));
+        }
+        return orderBy;
+    }
+
+    private List<Company> getPageFromQuery(int pageNumber, int pageSize, CriteriaQuery<Company> criteriaQuery) {
+        TypedQuery<Company> typedQuery = entityManager.createQuery(criteriaQuery);
         typedQuery.setFirstResult(pageSize * pageNumber);
         typedQuery.setMaxResults(pageSize);
         return typedQuery.getResultList();
