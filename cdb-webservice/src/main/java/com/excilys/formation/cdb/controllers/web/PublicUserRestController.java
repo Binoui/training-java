@@ -1,26 +1,24 @@
 package com.excilys.formation.cdb.controllers.web;
 
-import com.octoperf.service.UserAuthenticationService;
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.excilys.formation.cdb.services.UserAuthenticationService;
+
 import javax.servlet.http.HttpServletRequest;
 
-import static lombok.AccessLevel.PACKAGE;
-import static lombok.AccessLevel.PRIVATE;
 
 @RestController
 @RequestMapping("/public/users")
-@FieldDefaults(level = PRIVATE, makeFinal = true)
-@AllArgsConstructor(access = PACKAGE)
 public class PublicUserRestController {
-    @NonNull
-    UserAuthenticationService authentication;
+
+    private UserAuthenticationService authentication;
+
+    protected PublicUserRestController(UserAuthenticationService auth) {
+        authentication = auth;
+    }
 
     @PostMapping("/login")
     String login(final HttpServletRequest request, @RequestParam("username") final String username,

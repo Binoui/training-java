@@ -1,6 +1,5 @@
 package com.excilys.formation.cdb.config;
 
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -26,7 +25,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/public/**"));
+    private static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/company/**"), new AntPathRequestMatcher("/companies/**"), new AntPathRequestMatcher("/computer/**"), new AntPathRequestMatcher("/computers/**"));
     private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);
 
     private final TokenAuthenticationProvider provider;
@@ -72,13 +71,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         final SimpleUrlAuthenticationSuccessHandler successHandler = new SimpleUrlAuthenticationSuccessHandler();
         successHandler.setRedirectStrategy(new NoRedirectStrategy());
         return successHandler;
-    }
-
-    @Bean
-    FilterRegistrationBean<?> disableAutoRegistration(final TokenAuthenticationFilter filter) {
-        final FilterRegistrationBean registration = new FilterRegistrationBean<>(filter);
-        registration.setEnabled(false);
-        return registration;
     }
 
     @Bean

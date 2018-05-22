@@ -29,6 +29,8 @@ public class User implements UserDetails {
 
         private String password;
 
+        private String token;
+
         private Collection<Role> roles;
 
         public UserBuilder() {
@@ -57,6 +59,11 @@ public class User implements UserDetails {
             this.username = username;
             return this;
         }
+
+        public UserBuilder withToken(String token) {
+            this.token = token;
+            return this;
+        }
     }
 
     @Id
@@ -69,6 +76,8 @@ public class User implements UserDetails {
 
     @Column(name = "us_password")
     private String password;
+
+    private String token;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "us_id", referencedColumnName = "us_id"), inverseJoinColumns = @JoinColumn(name = "ro_id", referencedColumnName = "ro_id"))
@@ -88,7 +97,14 @@ public class User implements UserDetails {
         this.id = builder.id;
         this.username = builder.username;
         this.password = builder.password;
-        this.roles = builder.roles;
+        
+        if (builder.roles != null) {
+            this.roles = builder.roles;
+        } else {   
+           this.roles = new ArrayList<>(); 
+        }
+        
+        this.token = builder.token;
     }
 
     @Override
@@ -152,6 +168,10 @@ public class User implements UserDetails {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getToken() {
+        return token;
     }
 
 }
