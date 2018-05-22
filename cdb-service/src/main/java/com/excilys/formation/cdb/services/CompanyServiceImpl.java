@@ -49,6 +49,11 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    public int getCompaniesCount(String searchWord) {
+        return companyDAO.getCompanyCount(searchWord);
+    }
+    
+    @Override
     public int getListCompaniesPageCount(int pageSize) {
         return companyDAO.getListCompaniesPageCount(pageSize);
     }
@@ -66,6 +71,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    @Transactional
     public void createCompany(Company c) {
         companyDAO.createCompany(c);
     }

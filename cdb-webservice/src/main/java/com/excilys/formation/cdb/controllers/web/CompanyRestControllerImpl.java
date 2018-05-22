@@ -78,6 +78,12 @@ public class CompanyRestControllerImpl implements CompanyRestController {
         return companyService.getListCompanies().stream().map((Company c) -> CompanyDTOMapper.createCompanyDTO(c))
                 .collect(Collectors.toList());
     }
+    
+    @Override
+    @GetMapping(value = "/companies/count")
+    public int getCompaniesCount(@RequestParam(defaultValue = "", required = false) String searchWord) {
+        return companyService.getCompaniesCount(searchWord);
+    } 
 
     @Override
     @ApiOperation(value = "Find company from an Id", response = CompanyDTO.class)
