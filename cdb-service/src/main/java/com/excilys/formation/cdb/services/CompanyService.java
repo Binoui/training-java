@@ -26,4 +26,6 @@ public interface CompanyService {
     void updateCompany(Company c);
 
     void createCompany(Company c);
+
+    int getListCompaniesPageCount(int size, String search);
 }

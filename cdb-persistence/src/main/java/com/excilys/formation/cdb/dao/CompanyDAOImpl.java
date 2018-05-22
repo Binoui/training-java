@@ -10,6 +10,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
@@ -134,6 +136,20 @@ public class CompanyDAOImpl implements CompanyDAO {
         cq.select(qb.count(cq.from(Company.class)));
         return (int) Math.ceil(entityManager.createQuery(cq).getSingleResult() / (double) pageSize);
     }
+    
+    @Override
+    public int getCompanyCount(String searchWord) {
+        Logger.info("getCompanyCount with searchWord : " + searchWord);
+        CriteriaQuery<Long> queryLong = criteriaBuilder.createQuery(Long.class);
+        Root<Company> companyRoot = queryLong.from(Company.class);
+        queryLong.select(criteriaBuilder.count(companyRoot));
+
+        searchWord = '%' + searchWord + '%';
+        Path<String> companyNamePath = companyRoot.get(Company_.ca_name);
+        queryLong.where(criteriaBuilder.like(companyNamePath, searchWord));
+        
+        return entityManager.createQuery(queryLong).getSingleResult().intValue();
+    }
 
     private Order getOrderByFromAscending(SortableCompanyColumn column, boolean ascending, Root<Company> root) {
         Order orderBy;
@@ -143,6 +159,16 @@ public class CompanyDAOImpl implements CompanyDAO {
             orderBy = criteriaBuilder.desc(root.get(column.getColumn()));
         }
         return orderBy;
+    }
+
+    @Override
+    public int getListCompaniesPageCount(int pageSize, String searchWord) {
+        int pageCount = 0;
+
+        int companyCount = getCompanyCount(searchWord);
+        pageCount = ((companyCount + pageSize) - 1) / pageSize;
+
+        return pageCount;
     }
 
     private List<Company> getPageFromQuery(int pageNumber, int pageSize, CriteriaQuery<Company> criteriaQuery) {

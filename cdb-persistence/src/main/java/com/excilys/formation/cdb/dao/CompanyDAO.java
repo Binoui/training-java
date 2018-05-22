@@ -27,4 +27,8 @@ public interface CompanyDAO {
             String searchWord);
 
     void createCompany(Company c);
+
+    int getCompanyCount(String searchWord);
+
+    int getListCompaniesPageCount(int pageSize, String searchWord);
 }

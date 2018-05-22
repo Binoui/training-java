@@ -114,10 +114,19 @@ public class CompanyRestControllerImpl implements CompanyRestController {
     @Override
     @GetMapping(value = "/companies/page")
     public ResponseEntity<List<CompanyDTO>> getCompanyPageSortedSearch(@RequestParam int page,
-            @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "", required = false) String search,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "", required = false) String search,
             @RequestParam(defaultValue = "ID") SortableCompanyColumn column,
             @RequestParam(defaultValue = "true") boolean ascending) {
         return new ResponseEntity<>(companyService.getListCompanies(page, size, column, ascending, search).stream()
                 .map(c -> CompanyDTOMapper.createCompanyDTO(c)).collect(Collectors.toList()), HttpStatus.OK);
     }
+
+    @Override
+    @GetMapping(value = "/companies/page/count")
+    public ResponseEntity<Integer> getCompanyPageCountSearch(@RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "", required = false) String search) {
+        return new ResponseEntity<>(companyService.getListCompaniesPageCount(size, search), HttpStatus.OK);
+    }
+
 }

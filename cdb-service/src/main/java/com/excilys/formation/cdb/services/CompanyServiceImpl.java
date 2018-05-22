@@ -69,4 +69,9 @@ public class CompanyServiceImpl implements CompanyService {
     public void createCompany(Company c) {
         companyDAO.createCompany(c);
     }
+
+    @Override
+    public int getListCompaniesPageCount(int size, String search) {
+        return companyDAO.getListCompaniesPageCount(size, search);
+    }
 }

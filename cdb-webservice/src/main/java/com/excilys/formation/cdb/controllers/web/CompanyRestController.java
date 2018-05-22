@@ -27,4 +27,6 @@ public interface CompanyRestController {
 
     ResponseEntity<String> createCompany(String name);
 
+    ResponseEntity<Integer> getCompanyPageCountSearch(int size, String search);
+
 }
