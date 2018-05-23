@@ -1,9 +1,12 @@
 package com.excilys.formation.cdb.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.excilys.formation.cdb.model.User;
-import com.excilys.formation.cdb.model.User.UserBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,15 +16,37 @@ import java.util.UUID;
 @Service
 public class UserAuthenticationServiceImpl implements UserAuthenticationService {
 
-    Map<String, User> users = new HashMap<>();
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthenticationService.class);
+
+    private Map<String, User> users = new HashMap<>();
+    private UserService userService;
+
+    public UserAuthenticationServiceImpl(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public Optional<String> login(final String username, final String password) {
-        final String token = UUID.randomUUID().toString();
-        final User user = new UserBuilder().withToken(token).withUsername(username).withPassword(password).build();
 
-        users.put(token, user);
-        return Optional.of(token);
+        Optional<String> optionalToken;
+
+        try {
+            User user = userService.loadUserByUsername(username);
+            if (BCrypt.checkpw(password, user.getPassword())) {
+                LOGGER.debug("im in partner");
+                String token = UUID.randomUUID().toString();
+                users.put(token, user);
+                optionalToken = Optional.of(token);
+            } else {
+                LOGGER.debug("rekt");
+                optionalToken = Optional.empty();
+            }
+        } catch (UsernameNotFoundException e) {
+            LOGGER.debug("o shit");
+            optionalToken = Optional.empty();
+        }
+
+        return optionalToken;
     }
 
     @Override
@@ -31,6 +56,6 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
 
     @Override
     public void logout(final User user) {
-        users.remove(user.getToken());
+//        users.remove(user.getToken());
     }
 }

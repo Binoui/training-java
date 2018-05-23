@@ -1,7 +1,6 @@
 package com.excilys.formation.cdb.controllers.web;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,9 +8,7 @@ import com.excilys.formation.cdb.services.UserAuthenticationService;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 @RestController
-@RequestMapping("/public/users")
 public class PublicUserRestController {
 
     private UserAuthenticationService authentication;

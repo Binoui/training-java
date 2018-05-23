@@ -25,8 +25,8 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(new AntPathRequestMatcher("/company/**"), new AntPathRequestMatcher("/companies/**"), new AntPathRequestMatcher("/computer/**"), new AntPathRequestMatcher("/computers/**"));
-    private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);
+    private static final RequestMatcher PROTECTED_URLS = new AntPathRequestMatcher("/forbidden/**");
+    private static final RequestMatcher PUBLIC_URLS = new NegatedRequestMatcher(PROTECTED_URLS);
 
     private final TokenAuthenticationProvider provider;
 
