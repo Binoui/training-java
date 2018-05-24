@@ -8,9 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -126,6 +128,11 @@ public class CompanyRestControllerImpl implements CompanyRestController {
     public ResponseEntity<Integer> getCompanyPageCountSearch(@RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "", required = false) String search) {
         return new ResponseEntity<>(companyService.getListCompaniesPageCount(size, search), HttpStatus.OK);
+    }
+    
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(SortableCompanyColumn.class, new SortableCompanyColumnEnumConverter());
     }
 
 }

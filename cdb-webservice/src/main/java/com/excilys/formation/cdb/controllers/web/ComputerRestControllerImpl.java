@@ -42,6 +42,11 @@ public class ComputerRestControllerImpl implements ComputerRestController {
     public ComputerRestControllerImpl(ComputerService computerService) {
         this.computerService = computerService;
     }
+    
+    @GetMapping(value = "/forbidden")
+    public void testForbidden() {
+        return;
+    }
 
     @Override
     @PostMapping(value = "/computer")
@@ -103,6 +108,12 @@ public class ComputerRestControllerImpl implements ComputerRestController {
         }
         return response;
     }
+    
+    @Override
+    @GetMapping(value="/computers/count") 
+    public ResponseEntity<Integer> getComputerCount(@RequestParam(defaultValue = "", required = false) String search){
+        return new ResponseEntity<>(computerService.getComputerCount(search), HttpStatus.OK);
+    }
 
     @Override
     @GetMapping(value = "/computers/page/count")
@@ -128,7 +139,6 @@ public class ComputerRestControllerImpl implements ComputerRestController {
                 .collect(Collectors.toList());
     }
 
-    @Override
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(SortableComputerColumn.class, new SortableComputerColumnEnumConverter());

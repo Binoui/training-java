@@ -25,6 +25,6 @@ public interface ComputerRestController {
 
     List<ComputerDTO> getComputers();
 
-    void initBinder(WebDataBinder binder);
+    ResponseEntity<Integer> getComputerCount(String search);
 
 }
