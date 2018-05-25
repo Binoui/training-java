@@ -42,11 +42,6 @@ public class ComputerRestControllerImpl implements ComputerRestController {
     public ComputerRestControllerImpl(ComputerService computerService) {
         this.computerService = computerService;
     }
-    
-    @GetMapping(value = "/forbidden")
-    public void testForbidden() {
-        return;
-    }
 
     @Override
     @PostMapping(value = "/computer")
@@ -108,10 +103,10 @@ public class ComputerRestControllerImpl implements ComputerRestController {
         }
         return response;
     }
-    
+
     @Override
-    @GetMapping(value="/computers/count") 
-    public ResponseEntity<Integer> getComputerCount(@RequestParam(defaultValue = "", required = false) String search){
+    @GetMapping(value = "/computers/count")
+    public ResponseEntity<Integer> getComputerCount(@RequestParam(defaultValue = "", required = false) String search) {
         return new ResponseEntity<>(computerService.getComputerCount(search), HttpStatus.OK);
     }
 
@@ -125,7 +120,8 @@ public class ComputerRestControllerImpl implements ComputerRestController {
     @Override
     @GetMapping(value = "/computers/page")
     public ResponseEntity<List<ComputerDTO>> getComputerPageSortedSearch(@RequestParam int page,
-            @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "", required = false) String search,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "", required = false) String search,
             @RequestParam(defaultValue = "ID") SortableComputerColumn column,
             @RequestParam(defaultValue = "true") boolean ascending) {
         return new ResponseEntity<>(computerService.getListComputers(page, size, column, ascending, search).stream()

@@ -1,7 +1,5 @@
 package com.excilys.formation.cdb.services;
 
-import java.util.Optional;
-
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 

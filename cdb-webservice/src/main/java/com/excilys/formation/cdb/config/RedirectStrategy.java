@@ -1,10 +1,11 @@
 package com.excilys.formation.cdb.config;
 
-import org.springframework.security.web.RedirectStrategy;
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.springframework.security.web.RedirectStrategy;
 
 class NoRedirectStrategy implements RedirectStrategy {
 

@@ -6,10 +6,10 @@ import com.excilys.formation.cdb.model.User;
 
 public interface UserAuthenticationService {
 
-    Optional<String> login(String username, String password);
-
     Optional<User> findByToken(String token);
 
-    void logout(User user);
+    Optional<String> login(String username, String password);
+
+    void logout(String token);
 
 }

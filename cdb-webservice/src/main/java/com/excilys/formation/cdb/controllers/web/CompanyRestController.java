@@ -10,23 +10,23 @@ import com.excilys.formation.cdb.dto.ComputerDTO;
 
 public interface CompanyRestController {
 
+    ResponseEntity<String> createCompany(String name);
+
     ResponseEntity<String> deleteCompany(long id);
 
     ResponseEntity<String> editCompany(CompanyDTO companyDto);
 
     List<CompanyDTO> getCompanies();
 
+    int getCompaniesCount(String searchWord);
+
     ResponseEntity<CompanyDTO> getCompany(long id);
 
     List<ComputerDTO> getCompanyComputers(int idCompany);
 
-    ResponseEntity<List<CompanyDTO>> getCompanyPageSortedSearch(int page, int size, String search,
-            SortableCompanyColumn column, boolean ascending);
-
-    ResponseEntity<String> createCompany(String name);
-
     ResponseEntity<Integer> getCompanyPageCountSearch(int size, String search);
 
-    int getCompaniesCount(String searchWord);
+    ResponseEntity<List<CompanyDTO>> getCompanyPageSortedSearch(int page, int size, String search,
+            SortableCompanyColumn column, boolean ascending);
 
 }

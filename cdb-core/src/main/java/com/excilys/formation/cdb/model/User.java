@@ -89,11 +89,11 @@ public class User implements UserDetails {
         this.id = builder.id;
         this.username = builder.username;
         this.password = builder.password;
-        
+
         if (builder.roles != null) {
             this.roles = builder.roles;
-        } else {   
-           this.roles = new ArrayList<>(); 
+        } else {
+            this.roles = new ArrayList<>();
         }
     }
 

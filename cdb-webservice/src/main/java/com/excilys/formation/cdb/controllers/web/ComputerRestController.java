@@ -3,7 +3,6 @@ package com.excilys.formation.cdb.controllers.web;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.WebDataBinder;
 
 import com.excilys.formation.cdb.dao.SortableComputerColumn;
 import com.excilys.formation.cdb.dto.ComputerDTO;
@@ -18,13 +17,13 @@ public interface ComputerRestController {
 
     ResponseEntity<ComputerDTO> getComputerById(long id);
 
+    ResponseEntity<Integer> getComputerCount(String search);
+
     ResponseEntity<Integer> getComputerPageCountSearch(int size, String search);
 
     ResponseEntity<List<ComputerDTO>> getComputerPageSortedSearch(int page, int size, String search,
             SortableComputerColumn column, boolean ascending);
 
     List<ComputerDTO> getComputers();
-
-    ResponseEntity<Integer> getComputerCount(String search);
 
 }

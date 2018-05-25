@@ -9,7 +9,11 @@ import com.excilys.formation.cdb.model.Computer;
 
 public interface CompanyService {
 
+    void createCompany(Company c);
+
     void deleteCompany(Long id);
+
+    int getCompaniesCount(String searchWord);
 
     Optional<Company> getCompany(Company c);
 
@@ -19,15 +23,12 @@ public interface CompanyService {
 
     List<Company> getListCompanies();
 
-    List<Company> getListCompanies(int pageNumber, int pageSize, SortableCompanyColumn column, boolean ascending, String search);
+    List<Company> getListCompanies(int pageNumber, int pageSize, SortableCompanyColumn column, boolean ascending,
+            String search);
 
     int getListCompaniesPageCount(int pageSize);
 
-    void updateCompany(Company c);
-
-    void createCompany(Company c);
-
     int getListCompaniesPageCount(int size, String search);
 
-    int getCompaniesCount(String searchWord);
+    void updateCompany(Company c);
 }

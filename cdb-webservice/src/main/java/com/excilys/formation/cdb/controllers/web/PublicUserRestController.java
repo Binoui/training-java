@@ -27,8 +27,8 @@ public class PublicUserRestController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(final HttpServletRequest request, @RequestParam("username") final String username,
-            @RequestParam("password") final String password) {
+    public ResponseEntity<String> login(final HttpServletRequest request,
+            @RequestParam("username") final String username, @RequestParam("password") final String password) {
         Optional<String> token = authentication.login(username, password);
 
         if (token.isPresent()) {

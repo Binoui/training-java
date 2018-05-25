@@ -7,6 +7,8 @@ import com.excilys.formation.cdb.model.Company;
 import com.excilys.formation.cdb.model.Computer;
 
 public interface CompanyDAO {
+    void createCompany(Company c);
+
     void deleteCompany(Long id);
 
     Optional<Company> getCompany(Company c);
@@ -15,20 +17,21 @@ public interface CompanyDAO {
 
     List<Computer> getCompanyComputers(int idCompany);
 
+    int getCompanyCount(String searchWord);
+
     List<Company> getListCompanies();
 
     List<Company> getListCompanies(int pageNumber, int pageSize);
 
-    public int getListCompaniesPageCount(int pageSize);
-
-    void updateCompany(Company c);
+    List<Company> getListCompanies(int pageNumber, int pageSize, SortableCompanyColumn column, boolean ascending);
 
     List<Company> getListCompanies(int pageNumber, int pageSize, SortableCompanyColumn sortBy, boolean ascending,
             String searchWord);
 
-    void createCompany(Company c);
-
-    int getCompanyCount(String searchWord);
+    public int getListCompaniesPageCount(int pageSize);
 
     int getListCompaniesPageCount(int pageSize, String searchWord);
+
+    void updateCompany(Company c);
+
 }

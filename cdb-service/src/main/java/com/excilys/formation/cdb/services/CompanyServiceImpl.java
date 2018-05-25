@@ -24,8 +24,19 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional
+    public void createCompany(Company c) {
+        companyDAO.createCompany(c);
+    }
+
+    @Override
+    @Transactional
     public void deleteCompany(Long id) {
         companyDAO.deleteCompany(id);
+    }
+
+    @Override
+    public int getCompaniesCount(String searchWord) {
+        return companyDAO.getCompanyCount(searchWord);
     }
 
     @Override
@@ -49,35 +60,24 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public int getCompaniesCount(String searchWord) {
-        return companyDAO.getCompanyCount(searchWord);
-    }
-    
-    @Override
-    public int getListCompaniesPageCount(int pageSize) {
-        return companyDAO.getListCompaniesPageCount(pageSize);
-    }
-
-    @Override
-    @Transactional
-    public void updateCompany(Company c) {
-        companyDAO.updateCompany(c);
-    }
-
-    @Override
     public List<Company> getListCompanies(int pageNumber, int pageSize, SortableCompanyColumn column, boolean ascending,
             String search) {
         return companyDAO.getListCompanies(pageNumber, pageSize, column, ascending, search);
     }
 
     @Override
-    @Transactional
-    public void createCompany(Company c) {
-        companyDAO.createCompany(c);
+    public int getListCompaniesPageCount(int pageSize) {
+        return companyDAO.getListCompaniesPageCount(pageSize);
     }
 
     @Override
     public int getListCompaniesPageCount(int size, String search) {
         return companyDAO.getListCompaniesPageCount(size, search);
+    }
+
+    @Override
+    @Transactional
+    public void updateCompany(Company c) {
+        companyDAO.updateCompany(c);
     }
 }

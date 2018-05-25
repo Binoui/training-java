@@ -1,7 +1,12 @@
 package com.excilys.formation.cdb.config;
 
+import static java.util.Objects.requireNonNull;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,15 +22,22 @@ import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import static java.util.Objects.requireNonNull;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final RequestMatcher PROTECTED_URLS = new AntPathRequestMatcher("/forbidden/**");
+
+    private static final RequestMatcher PROTECTED_URLS = new OrRequestMatcher(
+            new AntPathRequestMatcher("/company/**", HttpMethod.POST.toString()),
+            new AntPathRequestMatcher("/company/**", HttpMethod.PUT.toString()),
+            new AntPathRequestMatcher("/company/**", HttpMethod.DELETE.toString()),
+            new AntPathRequestMatcher("/computer/**", HttpMethod.POST.toString()),
+            new AntPathRequestMatcher("/computer/**", HttpMethod.PUT.toString()),
+            new AntPathRequestMatcher("/computer/**", HttpMethod.DELETE.toString()),
+            new AntPathRequestMatcher("/computer/**", HttpMethod.DELETE.toString()),
+            new AntPathRequestMatcher("/logout/**"),
+            new AntPathRequestMatcher("/current/**", HttpMethod.GET.toString()));
+
     private static final RequestMatcher PUBLIC_URLS = new NegatedRequestMatcher(PROTECTED_URLS);
 
     private final TokenAuthenticationProvider provider;
@@ -41,21 +53,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    protected void configure(final HttpSecurity http) throws Exception {
+        http.sessionManagement().sessionCreationPolicy(STATELESS).and().exceptionHandling()
+                .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS).and()
+                .authenticationProvider(provider)
+                .addFilterBefore(restAuthenticationFilter(), AnonymousAuthenticationFilter.class).authorizeRequests()
+                .antMatchers(HttpMethod.PUT).access("hasRole('ROLE_ADMIN')").antMatchers(HttpMethod.DELETE)
+                .access("hasRole('ROLE_ADMIN')").anyRequest().authenticated().and().csrf().disable().formLogin()
+                .disable().httpBasic().disable().logout().disable();
+    }
+
+    @Override
     public void configure(final WebSecurity web) {
         web.ignoring().requestMatchers(PUBLIC_URLS);
     }
 
-    @Override
-    protected void configure(final HttpSecurity http) throws Exception {
-        http.sessionManagement().sessionCreationPolicy(STATELESS).and().exceptionHandling()
-                // this entry point handles when you request a protected page and you are not
-                // yet
-                // authenticated
-                .defaultAuthenticationEntryPointFor(forbiddenEntryPoint(), PROTECTED_URLS).and()
-                .authenticationProvider(provider)
-                .addFilterBefore(restAuthenticationFilter(), AnonymousAuthenticationFilter.class).authorizeRequests()
-                .anyRequest().authenticated().and().csrf().disable().formLogin().disable().httpBasic().disable()
-                .logout().disable();
+    @Bean
+    AuthenticationEntryPoint forbiddenEntryPoint() {
+        return new HttpStatusEntryPoint(UNAUTHORIZED);
     }
 
     @Bean
@@ -71,11 +86,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         final SimpleUrlAuthenticationSuccessHandler successHandler = new SimpleUrlAuthenticationSuccessHandler();
         successHandler.setRedirectStrategy(new NoRedirectStrategy());
         return successHandler;
-    }
-
-    @Bean
-    AuthenticationEntryPoint forbiddenEntryPoint() {
-        return new HttpStatusEntryPoint(UNAUTHORIZED);
     }
 
 }

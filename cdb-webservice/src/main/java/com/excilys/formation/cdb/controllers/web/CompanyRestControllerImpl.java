@@ -80,12 +80,12 @@ public class CompanyRestControllerImpl implements CompanyRestController {
         return companyService.getListCompanies().stream().map((Company c) -> CompanyDTOMapper.createCompanyDTO(c))
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     @GetMapping(value = "/companies/count")
     public int getCompaniesCount(@RequestParam(defaultValue = "", required = false) String searchWord) {
         return companyService.getCompaniesCount(searchWord);
-    } 
+    }
 
     @Override
     @ApiOperation(value = "Find company from an Id", response = CompanyDTO.class)
@@ -113,6 +113,13 @@ public class CompanyRestControllerImpl implements CompanyRestController {
     }
 
     @Override
+    @GetMapping(value = "/companies/page/count")
+    public ResponseEntity<Integer> getCompanyPageCountSearch(@RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "", required = false) String search) {
+        return new ResponseEntity<>(companyService.getListCompaniesPageCount(size, search), HttpStatus.OK);
+    }
+
+    @Override
     @GetMapping(value = "/companies/page")
     public ResponseEntity<List<CompanyDTO>> getCompanyPageSortedSearch(@RequestParam int page,
             @RequestParam(defaultValue = "10") int size,
@@ -123,13 +130,6 @@ public class CompanyRestControllerImpl implements CompanyRestController {
                 .map(c -> CompanyDTOMapper.createCompanyDTO(c)).collect(Collectors.toList()), HttpStatus.OK);
     }
 
-    @Override
-    @GetMapping(value = "/companies/page/count")
-    public ResponseEntity<Integer> getCompanyPageCountSearch(@RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "", required = false) String search) {
-        return new ResponseEntity<>(companyService.getListCompaniesPageCount(size, search), HttpStatus.OK);
-    }
-    
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(SortableCompanyColumn.class, new SortableCompanyColumnEnumConverter());

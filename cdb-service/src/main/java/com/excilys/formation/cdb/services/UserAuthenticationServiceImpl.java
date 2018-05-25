@@ -1,5 +1,10 @@
 package com.excilys.formation.cdb.services;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -7,11 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import com.excilys.formation.cdb.model.User;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UserAuthenticationServiceImpl implements UserAuthenticationService {
@@ -26,6 +26,11 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     }
 
     @Override
+    public Optional<User> findByToken(final String token) {
+        return Optional.ofNullable(users.get(token));
+    }
+
+    @Override
     public Optional<String> login(final String username, final String password) {
 
         Optional<String> optionalToken;
@@ -33,16 +38,16 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         try {
             User user = userService.loadUserByUsername(username);
             if (BCrypt.checkpw(password, user.getPassword())) {
-                LOGGER.debug("im in partner");
                 String token = UUID.randomUUID().toString();
                 users.put(token, user);
                 optionalToken = Optional.of(token);
+                LOGGER.info("user " + username + " logging in with token : " + token);
             } else {
-                LOGGER.debug("rekt");
                 optionalToken = Optional.empty();
+                LOGGER.info("user " + username + " entered wrong password");
             }
         } catch (UsernameNotFoundException e) {
-            LOGGER.debug("o shit");
+            LOGGER.info("user not found with username " + username + " : {}", e);
             optionalToken = Optional.empty();
         }
 
@@ -50,12 +55,9 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     }
 
     @Override
-    public Optional<User> findByToken(final String token) {
-        return Optional.ofNullable(users.get(token));
-    }
+    public void logout(String token) {
+        User userLoggingOut = users.remove(token);
+        LOGGER.info("user " + userLoggingOut.getUsername() + " logged out");
 
-    @Override
-    public void logout(final User user) {
-//        users.remove(user.getToken());
     }
 }
