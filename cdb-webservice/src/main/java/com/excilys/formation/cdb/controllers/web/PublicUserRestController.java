@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.excilys.formation.cdb.dao.NameAlreadyPresentException;
 import com.excilys.formation.cdb.services.UserAuthenticationService;
 
 @RestController
@@ -36,6 +37,17 @@ public class PublicUserRestController {
         } else {
             LOGGER.info("User tried to log in with wrong infos. User : " + username + ", password : " + password);
             return new ResponseEntity<>("wrong username or password", HttpStatus.UNAUTHORIZED);
+        }
+    }
+    
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestParam("username") String username, @RequestParam("password") String password) {
+        Optional<String> token;
+        try {
+            token = authentication.register(username, password);
+            return new ResponseEntity<>(token.get(), HttpStatus.OK);
+        } catch (NameAlreadyPresentException e) {
+            return new ResponseEntity<>("Username already in use", HttpStatus.BAD_REQUEST);
         }
     }
 }

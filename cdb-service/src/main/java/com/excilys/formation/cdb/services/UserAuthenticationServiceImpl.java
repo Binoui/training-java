@@ -1,5 +1,6 @@
 package com.excilys.formation.cdb.services;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +12,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import com.excilys.formation.cdb.dao.NameAlreadyPresentException;
+import com.excilys.formation.cdb.model.Role;
 import com.excilys.formation.cdb.model.User;
+import com.excilys.formation.cdb.model.User.UserBuilder;
 
 @Service
 public class UserAuthenticationServiceImpl implements UserAuthenticationService {
@@ -59,5 +63,16 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         User userLoggingOut = users.remove(token);
         LOGGER.info("user " + userLoggingOut.getUsername() + " logged out");
 
+    }
+
+    @Override
+    public Optional<String> register(String username, String password) throws NameAlreadyPresentException {
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(11));
+        ArrayList<Role> roles = new ArrayList<>();
+        Role role = new Role("ROLE_USER");
+        role.setId(2L);
+        roles.add(role);
+        userService.addUser(new UserBuilder().withPassword(hashedPassword).withUsername(username).withRoles(roles).build());
+        return login(username, password);
     }
 }

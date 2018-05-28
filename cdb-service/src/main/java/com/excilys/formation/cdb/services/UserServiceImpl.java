@@ -1,13 +1,18 @@
 package com.excilys.formation.cdb.services;
 
+import javax.transaction.Transactional;
+
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.excilys.formation.cdb.dao.NameAlreadyPresentException;
 import com.excilys.formation.cdb.dao.UserDAO;
 import com.excilys.formation.cdb.model.User;
 
 @Service
+@EnableTransactionManagement
 public class UserServiceImpl implements UserService {
 
     private final AccountStatusUserDetailsChecker detailsChecker = new AccountStatusUserDetailsChecker();
@@ -19,7 +24,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUser(User user) {
+    @Transactional
+    public void addUser(User user) throws NameAlreadyPresentException {
         userDAO.addUser(user);
     }
 

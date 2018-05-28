@@ -6,7 +6,7 @@ import com.excilys.formation.cdb.model.User;
 
 public interface UserDAO {
 
-    void addUser(User user);
+    void addUser(User user) throws NameAlreadyPresentException;
 
     Optional<User> getUserByUsername(String username);
 

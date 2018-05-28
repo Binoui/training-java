@@ -1,5 +1,6 @@
 package com.excilys.formation.cdb.dao;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
 
+import com.excilys.formation.cdb.model.Role;
 import com.excilys.formation.cdb.model.User;
 import com.excilys.formation.cdb.model.User_;
 
@@ -24,8 +26,14 @@ public class UserDAOImpl implements UserDAO {
     private CriteriaBuilder criteriaBuilder;
 
     @Override
-    public void addUser(User user) {
-        entityManager.persist(user);
+    public void addUser(User user) throws NameAlreadyPresentException {
+        try {
+            entityManager.persist(user);
+        } catch (Exception e) {
+            if (e instanceof SQLIntegrityConstraintViolationException) {
+                throw new NameAlreadyPresentException(); 
+            }
+        }
     }
 
     @Override
