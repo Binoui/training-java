@@ -45,7 +45,7 @@ public class PublicUserRestController {
         Optional<String> token;
         try {
             token = authentication.register(username, password);
-            return new ResponseEntity<>(token.get(), HttpStatus.OK);
+            return new ResponseEntity<>(token.get(), HttpStatus.CREATED);
         } catch (NameAlreadyPresentException e) {
             return new ResponseEntity<>("Username already in use", HttpStatus.BAD_REQUEST);
         }

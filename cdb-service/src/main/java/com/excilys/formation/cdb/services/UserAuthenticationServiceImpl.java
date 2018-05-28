@@ -70,6 +70,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     }
 
     @Override
+    @Transactional
     public Optional<String> register(String username, String password) throws NameAlreadyPresentException {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(11));
         ArrayList<Role> roles = new ArrayList<>();
