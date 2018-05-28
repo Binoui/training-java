@@ -6,11 +6,15 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
+import javax.validation.ConstraintViolationException;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.cdb.model.Role;
@@ -19,6 +23,8 @@ import com.excilys.formation.cdb.model.User_;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
+
+    private static final Logger Logger = LoggerFactory.getLogger(ComputerDAOImpl.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -29,10 +35,10 @@ public class UserDAOImpl implements UserDAO {
     public void addUser(User user) throws NameAlreadyPresentException {
         try {
             entityManager.persist(user);
+            entityManager.flush();
         } catch (Exception e) {
-            if (e instanceof SQLIntegrityConstraintViolationException) {
-                throw new NameAlreadyPresentException(); 
-            }
+            Logger.error("Error adding user : {}", e);
+            throw new NameAlreadyPresentException();
         }
     }
 

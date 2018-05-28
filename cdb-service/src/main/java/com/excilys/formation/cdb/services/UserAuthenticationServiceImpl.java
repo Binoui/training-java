@@ -6,11 +6,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.excilys.formation.cdb.dao.NameAlreadyPresentException;
 import com.excilys.formation.cdb.model.Role;
@@ -18,6 +21,7 @@ import com.excilys.formation.cdb.model.User;
 import com.excilys.formation.cdb.model.User.UserBuilder;
 
 @Service
+@EnableTransactionManagement
 public class UserAuthenticationServiceImpl implements UserAuthenticationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthenticationService.class);
@@ -73,6 +77,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         role.setId(2L);
         roles.add(role);
         userService.addUser(new UserBuilder().withPassword(hashedPassword).withUsername(username).withRoles(roles).build());
+
         return login(username, password);
     }
 }

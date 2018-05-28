@@ -12,7 +12,6 @@ import com.excilys.formation.cdb.dao.UserDAO;
 import com.excilys.formation.cdb.model.User;
 
 @Service
-@EnableTransactionManagement
 public class UserServiceImpl implements UserService {
 
     private final AccountStatusUserDetailsChecker detailsChecker = new AccountStatusUserDetailsChecker();
@@ -24,7 +23,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public void addUser(User user) throws NameAlreadyPresentException {
         userDAO.addUser(user);
     }
