@@ -6,6 +6,8 @@ import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 
 public class CompanyDTOMapper {
 
+    private CompanyDTOMapper() {}
+    
     public static CompanyDTO createCompanyDTO(Company company) {
         CompanyDTO caDto = new CompanyDTO();
         caDto.setId(company.getId());

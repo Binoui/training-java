@@ -1,11 +1,8 @@
 package com.excilys.formation.cdb.services;
 
-import javax.transaction.Transactional;
-
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.excilys.formation.cdb.dao.NameAlreadyPresentException;
 import com.excilys.formation.cdb.dao.UserDAO;

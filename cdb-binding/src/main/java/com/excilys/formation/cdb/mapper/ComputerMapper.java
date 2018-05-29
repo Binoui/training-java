@@ -10,6 +10,8 @@ import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 
 public class ComputerMapper {
 
+    private ComputerMapper() {}
+    
     public static Computer createComputer(ResultSet rs) throws SQLException {
 
         Long id = rs.getLong("cu_id");

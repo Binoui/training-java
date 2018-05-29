@@ -9,6 +9,8 @@ import com.excilys.formation.cdb.model.Computer;
 
 public class ComputerValidator {
 
+    private ComputerValidator() {}
+    
     private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(ComputerValidator.class);
 
     public static void validateComputer(Computer c) throws IncorrectValidationException {

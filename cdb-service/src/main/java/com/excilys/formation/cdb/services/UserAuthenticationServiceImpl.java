@@ -76,7 +76,8 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
         Role role = new Role("ROLE_USER");
         role.setId(2L);
         roles.add(role);
-        userService.addUser(new UserBuilder().withPassword(hashedPassword).withUsername(username).withRoles(roles).build());
+        userService.addUser(
+                new UserBuilder().withPassword(hashedPassword).withUsername(username).withRoles(roles).build());
 
         return login(username, password);
     }

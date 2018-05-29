@@ -1,23 +1,19 @@
 package com.excilys.formation.cdb.dao;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
-import javax.validation.ConstraintViolationException;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import com.excilys.formation.cdb.model.Role;
 import com.excilys.formation.cdb.model.User;
 import com.excilys.formation.cdb.model.User_;
 
