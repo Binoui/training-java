@@ -9,7 +9,7 @@ import com.excilys.formation.cdb.model.Company.CompanyBuilder;
 public class CompanyMapper {
     
     private CompanyMapper() {}
-
+    
     public static Company createCompany(ResultSet rs) throws SQLException {
         Long id = rs.getLong("ca_id");
 
