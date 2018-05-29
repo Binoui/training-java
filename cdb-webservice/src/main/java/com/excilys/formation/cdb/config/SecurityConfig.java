@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             new AntPathRequestMatcher("/computer/**", HttpMethod.PUT.toString()),
             new AntPathRequestMatcher("/computer/**", HttpMethod.DELETE.toString()),
             new AntPathRequestMatcher("/computer/**", HttpMethod.DELETE.toString()),
-            new AntPathRequestMatcher("/logout/**"),
+            new AntPathRequestMatcher("/logout/**", HttpMethod.POST.toString()),
             new AntPathRequestMatcher("/current/**", HttpMethod.GET.toString()));
 
     private static final RequestMatcher PUBLIC_URLS = new NegatedRequestMatcher(PROTECTED_URLS);

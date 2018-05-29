@@ -66,7 +66,6 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     public void logout(String token) {
         User userLoggingOut = users.remove(token);
         LOGGER.info("user " + userLoggingOut.getUsername() + " logged out");
-
     }
 
     @Override
