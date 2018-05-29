@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import com.excilys.formation.cdb.model.Computer;
 
 public class ComputerValidator {
+    
+    private ComputerValidator() {}
 
     private static final org.slf4j.Logger Logger = LoggerFactory.getLogger(ComputerValidator.class);
 

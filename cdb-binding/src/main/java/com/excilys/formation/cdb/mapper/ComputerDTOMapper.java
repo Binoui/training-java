@@ -12,6 +12,8 @@ import com.excilys.formation.cdb.model.Computer.ComputerBuilder;
 import com.excilys.formation.cdb.validators.InvalidDatesException;
 
 public class ComputerDTOMapper {
+    
+    private ComputerDTOMapper() {}
 
     public static ComputerDTO createComputerDTO(Computer computer) {
         ComputerDTO computerDto = new ComputerDTO();
